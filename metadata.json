@@ -1,0 +1,6 @@
+{
+  "name": "Aura Turnos - Gestión y Reserva para Negocios",
+  "description": "Sistema avanzado de reserva de turnos, señas automáticas por Mercado Pago, agenda inteligente y gestión clínica para estudios de estética, pestañas, salones y consultorios.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
