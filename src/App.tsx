@@ -19,12 +19,14 @@ import { CheckoutView } from './components/CheckoutView';
 import { AppointmentsView } from './components/AppointmentsView';
 import { ProfileView } from './components/ProfileView';
 import { AdminDashboard } from './components/AdminDashboard';
+import { AdminLogin } from './components/AdminLogin';
 import { MedicalConsentModal } from './components/MedicalConsentModal';
 import { LoyaltyModal } from './components/LoyaltyModal';
 import { NotificationsModal } from './components/NotificationsModal';
 import { PaymentMethodsModal } from './components/PaymentMethodsModal';
 import { firestoreService } from './lib/firestoreService';
-import { isFirebaseConfigured } from './lib/firebase';
+import { auth, isFirebaseConfigured } from './lib/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 export default function App() {
   // Persistence with localStorage
@@ -69,14 +71,91 @@ export default function App() {
     return saved ? JSON.parse(saved) : INITIAL_PAYMENT_TRANSACTIONS;
   });
 
+  // Check if current URL route points to admin
+  const checkIsAdminPath = () => {
+    if (typeof window === 'undefined') return false;
+    const path = window.location.pathname.toLowerCase();
+    const search = window.location.search.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    return (
+      path === '/admin' || 
+      path.startsWith('/admin/') || 
+      search.includes('admin=true') || 
+      search.includes('admin=1') || 
+      hash.startsWith('#/admin')
+    );
+  };
+
+  const [isAdminRoute, setIsAdminRoute] = useState<boolean>(() => checkIsAdminPath());
+  const [adminUser, setAdminUser] = useState<any>(() => {
+    const saved = localStorage.getItem('aura_admin_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const isAdminMode = isAdminRoute && Boolean(adminUser);
+
+  // Listen to browser navigation (back/forward)
+  useEffect(() => {
+    const onPopState = () => {
+      setIsAdminRoute(checkIsAdminPath());
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  // Listen to Firebase Auth state for administrator
+  useEffect(() => {
+    if (!auth) return;
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAdminUser(user);
+        localStorage.setItem('aura_admin_user', JSON.stringify({ 
+          email: user.email, 
+          displayName: user.displayName 
+        }));
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const navigateToAdmin = () => {
+    window.history.pushState({}, '', '/admin');
+    setIsAdminRoute(true);
+  };
+
+  const navigateToClient = () => {
+    window.history.pushState({}, '', '/');
+    setIsAdminRoute(false);
+  };
+
+  const handleAdminLoginSuccess = (user?: any) => {
+    if (user) {
+      setAdminUser(user);
+      localStorage.setItem('aura_admin_user', JSON.stringify({ 
+        email: user.email || 'admin@tusturnos.app', 
+        displayName: user.displayName || 'Administrador' 
+      }));
+    }
+    setToastNotice('¡Bienvenido! Sesión de administrador iniciada.');
+  };
+
+  const handleAdminLogout = async () => {
+    if (auth) {
+      try {
+        await signOut(auth);
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
+    }
+    setAdminUser(null);
+    localStorage.removeItem('aura_admin_user');
+    setToastNotice('Sesión de administrador cerrada.');
+  };
+
   // Navigation and view modes (starts at perfil-clinico/login if not logged in)
   const [activeTab, setActiveTab] = useState<string>(() => {
     const isLogged = localStorage.getItem('aura_is_logged_in') === 'true';
     return isLogged ? 'servicios' : 'perfil-clinico';
-  });
-  const [isAdminMode, setIsAdminMode] = useState<boolean>(() => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('admin') === 'true';
   });
   const [isMobileFrame, setIsMobileFrame] = useState<boolean>(false);
 
@@ -490,7 +569,17 @@ export default function App() {
     setToastNotice(userData?.name ? `¡Hola ${userData.name}! Bienvenido a tus turnos.` : '¡Bienvenido(a)! Ya podés reservar.');
   };
 
-  const isLoginPage = !isLoggedIn;
+  // If visiting /admin but not authenticated as admin, render dedicated AdminLogin
+  if (isAdminRoute && !adminUser) {
+    return (
+      <AdminLogin
+        onLoginSuccess={handleAdminLoginSuccess}
+        onGoToClient={navigateToClient}
+      />
+    );
+  }
+
+  const isLoginPage = !isAdminMode && !isLoggedIn;
 
   return (
     <div className={`min-h-screen bg-[#e9eeeb] text-[#18211f] flex flex-col items-center antialiased selection:bg-[#d9f56a] selection:text-[#123c32] ${
@@ -555,7 +644,8 @@ export default function App() {
               onUpdateServices={handleUpdateServices}
               onUpdateBusiness={handleUpdateBusiness}
               onOpenBusinessSettings={() => alert('Configuración de negocio')}
-              onSwitchToClientMode={() => setIsAdminMode(false)}
+              onSwitchToClientMode={navigateToClient}
+              onLogoutAdmin={handleAdminLogout}
             />
           ) : !isLoggedIn ? (
             /* Mandatory Login Screen as first page */
@@ -572,6 +662,7 @@ export default function App() {
               onUpdateProfile={handleUpdateProfile}
               onLogout={handleLogout}
               onLogin={handleLogin}
+              onNavigateToAdmin={navigateToAdmin}
             />
           ) : (
             /* Client Experience Flow */

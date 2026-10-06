@@ -40,6 +40,7 @@ interface AdminDashboardProps {
   onUpdateBusiness: (fields: Partial<Business>) => void;
   onOpenBusinessSettings?: () => void;
   onSwitchToClientMode: () => void;
+  onLogoutAdmin?: () => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -50,6 +51,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onUpdateServices,
   onUpdateBusiness,
   onSwitchToClientMode,
+  onLogoutAdmin,
 }) => {
   // Navigation tabs
   const [activeTab, setActiveTab] = useState<'agenda' | 'servicios' | 'horarios' | 'equipo' | 'ajustes'>('agenda');
@@ -412,6 +414,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             >
               Ver como Cliente
             </button>
+            {onLogoutAdmin && (
+              <button
+                onClick={onLogoutAdmin}
+                className="px-3.5 py-2 rounded-full bg-red-500/20 hover:bg-red-500/30 text-white font-semibold text-xs border border-red-500/30 transition-all cursor-pointer"
+              >
+                Cerrar Sesión
+              </button>
+            )}
           </div>
         </div>
 

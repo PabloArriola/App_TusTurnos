@@ -35,6 +35,7 @@ interface ProfileViewProps {
   onUpdateProfile?: (updated: Partial<ClientProfile>) => void;
   onLogout?: () => void;
   onLogin?: (userData?: Partial<ClientProfile>) => void;
+  onNavigateToAdmin?: () => void;
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({
@@ -50,6 +51,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onUpdateProfile,
   onLogout,
   onLogin,
+  onNavigateToAdmin,
 }) => {
   const [notificationToggle, setNotificationToggle] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -208,6 +210,18 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <span className="text-lg">→</span>
             </button>
           </form>
+
+          {onNavigateToAdmin && (
+            <div className="mt-4 pt-3.5 border-t border-gray-100 text-center">
+              <button
+                type="button"
+                onClick={onNavigateToAdmin}
+                className="text-[11px] font-semibold text-[#66716d]/70 hover:text-[#123c32] hover:underline cursor-pointer transition-colors"
+              >
+                ¿Sos administrador del negocio? Ingresar al panel →
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );
