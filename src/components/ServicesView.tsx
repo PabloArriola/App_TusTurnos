@@ -204,36 +204,6 @@ export const ServicesView: React.FC<ServicesViewProps> = ({
             </div>
           </div>
         )}
-
-        {/* 3-column stats with vertical dividers */}
-        <div className="grid grid-cols-3 mt-5 py-4 px-1 bg-[#f7faf7] border border-[#d8e2de] rounded-[22px]">
-          <div className="text-center px-1.5 relative">
-            <strong className="block text-[#123c32] text-[20px] sm:text-[22px] tracking-tight font-bold">
-              ✦ {selectedSpecialist.experienceYears || 6}+
-            </strong>
-            <span className="block mt-1 text-[#66716d] text-[10px] font-bold tracking-wider uppercase">
-              AÑOS EXP.
-            </span>
-          </div>
-
-          <div className="text-center px-1.5 relative before:content-[''] before:absolute before:left-0 before:top-2 before:h-10 before:w-[1px] before:bg-[#d8e2de]">
-            <strong className="block text-[#123c32] text-[20px] sm:text-[22px] tracking-tight font-bold">
-              ♙ {selectedSpecialist.patientCount || '2.8k'}
-            </strong>
-            <span className="block mt-1 text-[#66716d] text-[10px] font-bold tracking-wider uppercase">
-              ATENDIDOS
-            </span>
-          </div>
-
-          <div className="text-center px-1.5 relative before:content-[''] before:absolute before:left-0 before:top-2 before:h-10 before:w-[1px] before:bg-[#d8e2de]">
-            <strong className="block text-[#123c32] text-[20px] sm:text-[22px] tracking-tight font-bold">
-              ♢ 100%
-            </strong>
-            <span className="block mt-1 text-[#66716d] text-[10px] font-bold tracking-wider uppercase">
-              SATISFACCIÓN
-            </span>
-          </div>
-        </div>
       </article>
 
       {/* COMBOS & PACKS SECTION */}
