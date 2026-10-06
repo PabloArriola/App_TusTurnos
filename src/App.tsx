@@ -23,6 +23,8 @@ import { MedicalConsentModal } from './components/MedicalConsentModal';
 import { LoyaltyModal } from './components/LoyaltyModal';
 import { NotificationsModal } from './components/NotificationsModal';
 import { PaymentMethodsModal } from './components/PaymentMethodsModal';
+import { firestoreService } from './lib/firestoreService';
+import { isFirebaseConfigured } from './lib/firebase';
 
 export default function App() {
   // Persistence with localStorage
@@ -119,19 +121,63 @@ export default function App() {
     localStorage.setItem('aura_transactions', JSON.stringify(transactions));
   }, [transactions]);
 
+  // Real-time synchronization with Firestore
+  useEffect(() => {
+    if (!isFirebaseConfigured) return;
+
+    const unsubAppts = firestoreService.subscribeAppointments((fireAppts) => {
+      if (fireAppts && fireAppts.length > 0) {
+        setAppointments(fireAppts);
+      }
+    });
+
+    const unsubBiz = firestoreService.subscribeBusiness(currentBusiness.id, (fireBiz) => {
+      if (fireBiz) {
+        setCurrentBusiness(fireBiz);
+      }
+    });
+
+    const unsubTxns = firestoreService.subscribeTransactions((fireTxns) => {
+      if (fireTxns && fireTxns.length > 0) {
+        setTransactions(fireTxns);
+      }
+    });
+
+    const unsubClient = firestoreService.subscribeClientProfile(clientProfile.id, (fireProfile) => {
+      if (fireProfile) {
+        setClientProfile(fireProfile);
+      }
+    });
+
+    return () => {
+      unsubAppts();
+      unsubBiz();
+      unsubTxns();
+      unsubClient();
+    };
+  }, []);
+
   const handleUpdateServices = (updatedServices: Service[]) => {
-    setCurrentBusiness((prev) => ({
-      ...prev,
-      services: updatedServices,
-    }));
+    setCurrentBusiness((prev) => {
+      const updated = {
+        ...prev,
+        services: updatedServices,
+      };
+      firestoreService.saveBusiness(updated);
+      return updated;
+    });
     setToastNotice('Catálogo de servicios y señas actualizado con éxito.');
   };
 
   const handleUpdateBusiness = (updatedFields: Partial<Business>) => {
-    setCurrentBusiness((prev) => ({
-      ...prev,
-      ...updatedFields,
-    }));
+    setCurrentBusiness((prev) => {
+      const updated = {
+        ...prev,
+        ...updatedFields,
+      };
+      firestoreService.saveBusiness(updated);
+      return updated;
+    });
     setToastNotice('Configuración del estudio guardada con éxito.');
   };
 
@@ -236,9 +282,11 @@ export default function App() {
       setAppointments((prev) =>
         prev.map((a) => (a.id === reschedulingAppointment.id ? newAppt : a))
       );
+      firestoreService.saveAppointment(newAppt);
       setReschedulingAppointment(null);
     } else if (allAppts && allAppts.length > 0) {
       setAppointments((prev) => [...allAppts, ...prev]);
+      firestoreService.saveAppointmentsBatch(allAppts);
 
       // Automatically generate official receipts for each booking deposit
       const newTxns: PaymentTransaction[] = allAppts.map((appt) => ({
@@ -262,15 +310,21 @@ export default function App() {
         clientDni: clientProfile.billingInfo?.cuitCuil || '27-38834190-4',
       }));
       setTransactions((prev) => [...newTxns, ...prev]);
+      newTxns.forEach((t) => firestoreService.saveTransaction(t));
 
       // Reward points for bookings
-      setClientProfile((prev) => ({
-        ...prev,
-        loyaltyPoints: prev.loyaltyPoints + 150 * allAppts.length,
-        loyaltyCashBalance: prev.loyaltyCashBalance + 1500 * allAppts.length,
-      }));
+      setClientProfile((prev) => {
+        const updated = {
+          ...prev,
+          loyaltyPoints: prev.loyaltyPoints + 150 * allAppts.length,
+          loyaltyCashBalance: prev.loyaltyCashBalance + 1500 * allAppts.length,
+        };
+        firestoreService.saveClientProfile(updated);
+        return updated;
+      });
     } else {
       setAppointments((prev) => [newAppt, ...prev]);
+      firestoreService.saveAppointment(newAppt);
 
       // Automatically generate a new official receipt for this booking deposit
       const newTxn: PaymentTransaction = {
@@ -294,13 +348,18 @@ export default function App() {
         clientDni: clientProfile.billingInfo?.cuitCuil || '27-38834190-4',
       };
       setTransactions((prev) => [newTxn, ...prev]);
+      firestoreService.saveTransaction(newTxn);
 
       // Reward points for booking
-      setClientProfile((prev) => ({
-        ...prev,
-        loyaltyPoints: prev.loyaltyPoints + 150,
-        loyaltyCashBalance: prev.loyaltyCashBalance + 1500,
-      }));
+      setClientProfile((prev) => {
+        const updated = {
+          ...prev,
+          loyaltyPoints: prev.loyaltyPoints + 150,
+          loyaltyCashBalance: prev.loyaltyCashBalance + 1500,
+        };
+        firestoreService.saveClientProfile(updated);
+        return updated;
+      });
     }
 
     // Reset flow items
@@ -313,10 +372,12 @@ export default function App() {
     setAppointments((prev) =>
       prev.map((a) => (a.id === id ? { ...a, status: 'cancelado' } : a))
     );
+    firestoreService.updateAppointmentStatus(id, 'cancelado');
   };
 
   const handleDeleteAppointment = (id: string) => {
     setAppointments((prev) => prev.filter((a) => a.id !== id));
+    firestoreService.updateAppointmentStatus(id, 'cancelado');
     setToastNotice('Registro eliminado de tu historial con éxito.');
   };
 
@@ -324,10 +385,12 @@ export default function App() {
     setAppointments((prev) =>
       prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a))
     );
+    firestoreService.updateAppointmentStatus(id, newStatus);
   };
 
   const handleAddManualAppointment = (newAppt: Appointment) => {
     setAppointments((prev) => [newAppt, ...prev]);
+    firestoreService.saveAppointment(newAppt);
   };
 
   const handleApplyDiscount = (amount: number, code: string) => {
