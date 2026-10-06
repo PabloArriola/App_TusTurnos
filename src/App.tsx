@@ -59,7 +59,10 @@ export default function App() {
 
   // Navigation and view modes
   const [activeTab, setActiveTab] = useState<string>('servicios');
-  const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
+  const [isAdminMode, setIsAdminMode] = useState<boolean>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('admin') === 'true';
+  });
   const [isMobileFrame, setIsMobileFrame] = useState<boolean>(false);
 
   // Booking process flow state (one service at a time)
@@ -486,10 +489,7 @@ export default function App() {
           onSelectBusiness={handleSelectBusiness}
           activeTab={activeTab}
           clientProfile={clientProfile}
-          isMobileFrame={isMobileFrame}
-          onToggleMobileFrame={() => setIsMobileFrame(!isMobileFrame)}
           isAdminMode={isAdminMode}
-          onToggleAdminMode={() => setIsAdminMode(!isAdminMode)}
           onOpenNotifications={() => setShowNotificationsModal(true)}
           onNavigateToTab={(tab) => {
             setIsAdminMode(false);

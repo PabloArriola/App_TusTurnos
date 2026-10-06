@@ -3,14 +3,8 @@ import { Business, ClientProfile } from '../types';
 import { 
   Building2, 
   ChevronDown, 
-  Smartphone, 
-  Monitor, 
-  ShieldCheck, 
-  Sparkles, 
-  Share2, 
   Check, 
   CalendarDays,
-  UserCheck,
   Edit2,
   Upload,
   X,
@@ -23,10 +17,10 @@ interface HeaderProps {
   onSelectBusiness: (business: Business) => void;
   activeTab: string;
   clientProfile: ClientProfile;
-  isMobileFrame: boolean;
-  onToggleMobileFrame: () => void;
-  isAdminMode: boolean;
-  onToggleAdminMode: () => void;
+  isMobileFrame?: boolean;
+  onToggleMobileFrame?: () => void;
+  isAdminMode?: boolean;
+  onToggleAdminMode?: () => void;
   onOpenNotifications: () => void;
   onNavigateToTab: (tab: string) => void;
   onUpdateBusiness?: (fields: Partial<Business>) => void;
@@ -38,16 +32,12 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectBusiness,
   activeTab,
   clientProfile,
-  isMobileFrame,
-  onToggleMobileFrame,
   isAdminMode,
-  onToggleAdminMode,
   onOpenNotifications,
   onNavigateToTab,
   onUpdateBusiness,
 }) => {
   const [showBusinessMenu, setShowBusinessMenu] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
 
   // Business Name & Title Edit Modal state
   const [showEditBusinessModal, setShowEditBusinessModal] = useState(false);
@@ -116,13 +106,6 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  const handleCopyLink = () => {
-    const fakeUrl = `https://auraturnos.com/${currentBusiness.slug}`;
-    navigator.clipboard?.writeText(fakeUrl);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
-  };
-
   const presetLogos = [
     'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=200&h=200&q=80',
     'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=200&h=200&q=80',
@@ -132,55 +115,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      {/* Top Banner for multi-business & competitor benchmark bar */}
-      <div className="bg-[#062217] text-white text-xs py-1.5 px-4 flex items-center justify-between border-b border-white/10 z-50">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-          <span className="inline-flex items-center gap-1 font-extrabold text-[#d0ef68] uppercase tracking-wider text-[11px] whitespace-nowrap">
-            <Sparkles className="w-3.5 h-3.5" />
-            TusTurnos Pro
-          </span>
-          <span className="text-white/40 hidden sm:inline">|</span>
-          <span className="text-white/80 hidden md:inline truncate text-[11px]">
-            Plataforma integral: Señas Mercado Pago, WhatsApp directo y Ficha médica
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          {/* Share Link Button */}
-          <button 
-            onClick={handleCopyLink}
-            className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/10 hover:bg-white/20 text-[#d0ef68] transition-colors text-[11px]"
-            title="Copiar link público del negocio"
-          >
-            {copiedLink ? <Check className="w-3 h-3 text-[#d0ef68]" /> : <Share2 className="w-3 h-3" />}
-            <span className="hidden sm:inline">{copiedLink ? '¡Link Copiado!' : `tusturnos.app/${currentBusiness.slug}`}</span>
-          </button>
-
-          {/* Frame mode toggle */}
-          <button
-            onClick={onToggleMobileFrame}
-            className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/20 text-white/90 transition-colors text-[11px]"
-            title={isMobileFrame ? 'Ver en pantalla completa' : 'Ver en marco de celular'}
-          >
-            {isMobileFrame ? <Monitor className="w-3 h-3" /> : <Smartphone className="w-3 h-3" />}
-            <span className="hidden sm:inline">{isMobileFrame ? 'Desktop' : 'Móvil'}</span>
-          </button>
-
-          {/* Admin vs Client Toggle */}
-          <button
-            onClick={onToggleAdminMode}
-            className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
-              isAdminMode 
-                ? 'bg-[#d0ef68] text-[#171e00] shadow-sm' 
-                : 'bg-white/10 text-white hover:bg-white/20'
-            }`}
-          >
-            {isAdminMode ? <ShieldCheck className="w-3 h-3" /> : <UserCheck className="w-3 h-3" />}
-            <span>{isAdminMode ? 'Modo Dueño (Activo)' : 'Ver como Dueño'}</span>
-          </button>
-        </div>
-      </div>
-
       {/* Main Stylized Topbar (Fidelity to user HTML & CSS) */}
       <header className="sticky top-0 w-full z-40 bg-surface/90 backdrop-blur-xl border-b border-[#d8e2de]/80 shadow-[0_4px_20px_rgba(18,60,50,0.05)]">
         <div className="max-w-[540px] mx-auto px-4 sm:px-5 py-3.5 flex items-center justify-between">
