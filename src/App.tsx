@@ -56,7 +56,7 @@ export default function App() {
   });
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    return localStorage.getItem('aura_is_logged_in') !== 'false';
+    return localStorage.getItem('aura_is_logged_in') === 'true';
   });
 
   const [appointments, setAppointments] = useState<Appointment[]>(() => {
@@ -69,8 +69,11 @@ export default function App() {
     return saved ? JSON.parse(saved) : INITIAL_PAYMENT_TRANSACTIONS;
   });
 
-  // Navigation and view modes
-  const [activeTab, setActiveTab] = useState<string>('servicios');
+  // Navigation and view modes (starts at perfil-clinico/login if not logged in)
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    const isLogged = localStorage.getItem('aura_is_logged_in') === 'true';
+    return isLogged ? 'servicios' : 'perfil-clinico';
+  });
   const [isAdminMode, setIsAdminMode] = useState<boolean>(() => {
     const params = new URLSearchParams(window.location.search);
     return params.get('admin') === 'true';
@@ -468,6 +471,7 @@ export default function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.setItem('aura_is_logged_in', 'false');
+    setActiveTab('perfil-clinico');
     setToastNotice('Sesión cerrada correctamente.');
   };
 
@@ -475,12 +479,18 @@ export default function App() {
     setIsLoggedIn(true);
     localStorage.setItem('aura_is_logged_in', 'true');
     if (userData) {
-      setClientProfile((prev) => ({ ...prev, ...userData }));
+      setClientProfile((prev) => {
+        const updated = { ...prev, ...userData };
+        localStorage.setItem('aura_client_profile', JSON.stringify(updated));
+        firestoreService.saveClientProfile(updated);
+        return updated;
+      });
     }
-    setToastNotice('¡Bienvenida a tu cuenta!');
+    setActiveTab('servicios');
+    setToastNotice(userData?.name ? `¡Hola ${userData.name}! Bienvenido a tus turnos.` : '¡Bienvenido(a)! Ya podés reservar.');
   };
 
-  const isLoginPage = activeTab === 'perfil-clinico' && !isLoggedIn;
+  const isLoginPage = !isLoggedIn;
 
   return (
     <div className={`min-h-screen bg-[#e9eeeb] text-[#18211f] flex flex-col items-center antialiased selection:bg-[#d9f56a] selection:text-[#123c32] ${
@@ -546,6 +556,22 @@ export default function App() {
               onUpdateBusiness={handleUpdateBusiness}
               onOpenBusinessSettings={() => alert('Configuración de negocio')}
               onSwitchToClientMode={() => setIsAdminMode(false)}
+            />
+          ) : !isLoggedIn ? (
+            /* Mandatory Login Screen as first page */
+            <ProfileView
+              clientProfile={clientProfile}
+              appointments={appointments}
+              currentBusiness={currentBusiness}
+              transactions={transactions}
+              isLoggedIn={isLoggedIn}
+              onNavigateToTab={setActiveTab}
+              onOpenMedicalSheet={() => setShowMedicalModal(true)}
+              onOpenLoyaltyModal={() => setShowLoyaltyModal(true)}
+              onOpenPaymentMethodsModal={() => setShowPaymentMethodsModal(true)}
+              onUpdateProfile={handleUpdateProfile}
+              onLogout={handleLogout}
+              onLogin={handleLogin}
             />
           ) : (
             /* Client Experience Flow */

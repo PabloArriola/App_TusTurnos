@@ -136,79 +136,78 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&h=300&q=80',
   ];
 
-  // If not logged in, render Aesthetic Login screen
+  // If not logged in, render mandatory Login screen
   if (!isLoggedIn) {
     return (
-      <div className="flex flex-col w-full max-w-[520px] mx-auto px-3.5 sm:px-4 py-8 animate-in fade-in duration-200">
-        <button
-          type="button"
-          onClick={() => onNavigateToTab('servicios')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#66716d] hover:text-[#123c32] mb-3 transition-colors cursor-pointer self-start"
-        >
-          ← Volver a servicios
-        </button>
-        <div className="card-aesthetic p-6 sm:p-8 text-center relative overflow-hidden">
-          <div className="w-16 h-16 rounded-full bg-[#123c32] text-[#d9f56a] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#123c32]/20">
-            <span className="text-2xl font-bold">✦</span>
+      <div className="flex flex-col w-full max-w-[460px] mx-auto px-4 py-8 animate-in fade-in duration-200">
+        <div className="card-aesthetic p-6 sm:p-8 text-center relative overflow-hidden shadow-[0_20px_50px_rgba(18,60,50,0.12)]">
+          {/* Top Brand Avatar Icon */}
+          <div className="w-16 h-16 rounded-[22px] bg-[#123c32] text-[#d9f56a] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#123c32]/25">
+            <span className="material-symbols-outlined text-[30px]">person</span>
           </div>
 
-          <span className="inline-block px-3 py-1.5 rounded-full text-xs font-bold tracking-wide bg-[#eaf2ed] text-[#123c32] mb-2">
-            MI CUENTA AURA
+          <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-[#eaf2ed] text-[#123c32] mb-2.5">
+            TusTurnos · Acceso
           </span>
 
           <h2 className="text-2xl sm:text-3xl font-bold text-[#123c32] tracking-tight">
-            Acceso a tu Perfil
+            Ingreso de Paciente
           </h2>
-          <p className="text-xs sm:text-sm text-[#66716d] mt-1.5 mb-6 max-w-xs mx-auto">
-            Ingresá tu WhatsApp para consultar tus reservas activas, historial de señas y ficha de consentimiento.
+          <p className="text-xs sm:text-sm text-[#66716d] mt-2 mb-6 max-w-xs mx-auto leading-relaxed">
+            Ingresá tu nombre y número de teléfono para comenzar a reservar tus turnos.
           </p>
 
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (!loginName.trim() || !loginPhone.trim()) {
-                alert('Completá tu nombre y teléfono para ingresar.');
+              if (!loginName.trim()) {
+                alert('Por favor ingresá tu nombre completo.');
                 return;
               }
-              onLogin?.({ name: loginName, phone: loginPhone });
+              if (!loginPhone.trim()) {
+                alert('Por favor ingresá tu número de teléfono.');
+                return;
+              }
+              onLogin?.({ name: loginName.trim(), phone: loginPhone.trim() });
             }}
-            className="space-y-3.5 text-left"
+            className="space-y-4 text-left"
           >
             <div>
-              <label className="block text-xs font-semibold text-[#66716d] mb-1">Nombre Completo</label>
+              <label className="block text-xs font-bold text-[#18211f] mb-1.5">
+                Nombre y Apellido <span className="text-red-500">*</span>
+              </label>
               <input
                 type="text"
+                required
                 value={loginName}
                 onChange={(e) => setLoginName(e.target.value)}
-                placeholder="Ej. Valentina Rossi"
-                className="w-full px-4 py-2.5 rounded-2xl bg-white border border-[#d8e2de] text-xs sm:text-sm font-medium text-[#18211f] focus:outline-none focus:ring-2 focus:ring-[#123c32]"
+                placeholder="Ej. Juan Pérez"
+                className="w-full px-4 py-3 rounded-2xl bg-white border border-[#d8e2de] text-sm font-medium text-[#18211f] placeholder:text-[#66716d]/50 focus:outline-none focus:ring-2 focus:ring-[#123c32] transition-all shadow-xs"
               />
             </div>
+
             <div>
-              <label className="block text-xs font-semibold text-[#66716d] mb-1">WhatsApp</label>
+              <label className="block text-xs font-bold text-[#18211f] mb-1.5">
+                Teléfono / WhatsApp <span className="text-red-500">*</span>
+              </label>
               <input
                 type="tel"
+                required
                 value={loginPhone}
                 onChange={(e) => setLoginPhone(e.target.value)}
-                placeholder="+54 9 11 ..."
-                className="w-full px-4 py-2.5 rounded-2xl bg-white border border-[#d8e2de] text-xs sm:text-sm font-medium text-[#18211f] focus:outline-none focus:ring-2 focus:ring-[#123c32]"
+                placeholder="Ej. 11 2345 6789"
+                className="w-full px-4 py-3 rounded-2xl bg-white border border-[#d8e2de] text-sm font-medium text-[#18211f] placeholder:text-[#66716d]/50 focus:outline-none focus:ring-2 focus:ring-[#123c32] transition-all shadow-xs"
               />
             </div>
+
             <button
               type="submit"
-              className="w-full py-4 px-5 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white text-sm font-bold shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all cursor-pointer mt-2"
+              className="w-full py-4 px-5 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white text-sm sm:text-base font-bold shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all cursor-pointer mt-2 flex items-center justify-center gap-2 active:scale-[0.98]"
             >
-              Iniciar Sesión
+              <span>Ingresar y Ver Turnos</span>
+              <span className="text-lg">→</span>
             </button>
           </form>
-
-          <button
-            type="button"
-            onClick={() => onLogin?.()}
-            className="mt-5 text-xs text-[#123c32] font-bold hover:underline cursor-pointer block mx-auto"
-          >
-            Acceder como Valentina Rossi (Cuenta Demo)
-          </button>
         </div>
       </div>
     );
