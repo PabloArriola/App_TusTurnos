@@ -480,6 +480,8 @@ export default function App() {
     setToastNotice('¡Bienvenida a tu cuenta!');
   };
 
+  const isLoginPage = activeTab === 'perfil-clinico' && !isLoggedIn;
+
   return (
     <div className={`min-h-screen bg-[#e9eeeb] text-[#18211f] flex flex-col items-center antialiased selection:bg-[#d9f56a] selection:text-[#123c32] ${
       isMobileFrame ? 'h-screen overflow-hidden justify-center p-2 sm:p-4' : 'justify-start'
@@ -494,21 +496,23 @@ export default function App() {
               : 'max-w-[520px] app-canvas min-h-screen flex flex-col relative shadow-[0_16px_40px_rgba(18,60,50,0.08)]'
         }`}
       >
-        {/* Sticky App Header */}
-        <Header
-          currentBusiness={currentBusiness}
-          allBusinesses={businesses}
-          onSelectBusiness={handleSelectBusiness}
-          activeTab={activeTab}
-          clientProfile={clientProfile}
-          isAdminMode={isAdminMode}
-          onOpenNotifications={() => setShowNotificationsModal(true)}
-          onNavigateToTab={(tab) => {
-            setIsAdminMode(false);
-            setActiveTab(tab);
-          }}
-          onUpdateBusiness={handleUpdateBusiness}
-        />
+        {/* Sticky App Header (Oculto en pantalla de login) */}
+        {!isLoginPage && (
+          <Header
+            currentBusiness={currentBusiness}
+            allBusinesses={businesses}
+            onSelectBusiness={handleSelectBusiness}
+            activeTab={activeTab}
+            clientProfile={clientProfile}
+            isAdminMode={isAdminMode}
+            onOpenNotifications={() => setShowNotificationsModal(true)}
+            onNavigateToTab={(tab) => {
+              setIsAdminMode(false);
+              setActiveTab(tab);
+            }}
+            onUpdateBusiness={handleUpdateBusiness}
+          />
+        )}
 
         {/* Toast Alert Notice (Fidelity to user CSS .toast) */}
         {toastNotice && (
@@ -528,7 +532,7 @@ export default function App() {
         )}
 
         {/* Main View Area */}
-        <main className={`flex-1 w-full pt-4 pb-32 ${
+        <main className={`flex-1 w-full ${isLoginPage ? 'py-6 flex flex-col justify-center' : 'pt-4 pb-32'} ${
           isMobileFrame ? 'overflow-y-auto overflow-x-hidden relative overscroll-contain' : ''
         }`}>
           {isAdminMode ? (
@@ -644,7 +648,7 @@ export default function App() {
         </main>
 
         {/* Floating Capsule Bottom Nav for mobile frame */}
-        {!isAdminMode && isMobileFrame && (
+        {!isAdminMode && !isLoginPage && isMobileFrame && (
           <BottomNav
             activeTab={activeTab}
             isMobileFrame={true}
@@ -670,7 +674,7 @@ export default function App() {
       </div>
 
       {/* Floating Capsule Bottom Nav for fullscreen / standard mode (outside container so fixed is 100% attached to viewport) */}
-      {!isAdminMode && !isMobileFrame && (
+      {!isAdminMode && !isLoginPage && !isMobileFrame && (
         <BottomNav
           activeTab={activeTab}
           isMobileFrame={false}

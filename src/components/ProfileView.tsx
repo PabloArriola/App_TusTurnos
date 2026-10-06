@@ -140,6 +140,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   if (!isLoggedIn) {
     return (
       <div className="flex flex-col w-full max-w-[520px] mx-auto px-3.5 sm:px-4 py-8 animate-in fade-in duration-200">
+        <button
+          type="button"
+          onClick={() => onNavigateToTab('servicios')}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#66716d] hover:text-[#123c32] mb-3 transition-colors cursor-pointer self-start"
+        >
+          ← Volver a servicios
+        </button>
         <div className="card-aesthetic p-6 sm:p-8 text-center relative overflow-hidden">
           <div className="w-16 h-16 rounded-full bg-[#123c32] text-[#d9f56a] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#123c32]/20">
             <span className="text-2xl font-bold">✦</span>
