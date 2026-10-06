@@ -8,6 +8,7 @@ import {
   Calendar as CalendarIcon, 
   Plus, 
   ChevronRight, 
+  ChevronLeft,
   X,
   Sparkles,
   Check
@@ -118,6 +119,13 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
   const daysInMonth = Array.from({ length: daysInMonthCount }, (_, i) => i + 1);
   const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
   const leadingBlanks = (firstDayOfWeek + 6) % 7; // Monday-first
+
+  // Trailing and leading days calculation to match the reference calendar grid (complete 5 or 6 rows of 7 days)
+  const prevMonthDaysCount = new Date(currentYear, currentMonth, 0).getDate();
+  const prevMonthDays = Array.from({ length: leadingBlanks }, (_, i) => prevMonthDaysCount - leadingBlanks + 1 + i);
+  const totalGridCells = (leadingBlanks + daysInMonthCount > 35) ? 42 : 35;
+  const trailingBlanksCount = totalGridCells - (leadingBlanks + daysInMonthCount);
+  const nextMonthDays = Array.from({ length: trailingBlanksCount }, (_, i) => i + 1);
 
   // Safe active day within current month
   const activeDay = Math.min(selectedDay, daysInMonthCount);
@@ -343,37 +351,66 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                   type="button"
                   onClick={handlePrevMonth}
                   aria-label="Mes anterior"
-                  className="w-9 h-9 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center hover:bg-[#d8e2de] active:scale-90 transition-all cursor-pointer"
+                  className="w-9 h-9 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center hover:bg-[#d8e2de] active:scale-90 transition-all cursor-pointer shadow-xs"
                 >
-                  <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+                  <ChevronLeft className="w-5 h-5 stroke-[2.2]" />
                 </button>
                 <button
                   type="button"
                   onClick={handleNextMonth}
                   aria-label="Mes siguiente"
-                  className="w-9 h-9 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center hover:bg-[#d8e2de] active:scale-90 transition-all cursor-pointer"
+                  className="w-9 h-9 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center hover:bg-[#d8e2de] active:scale-90 transition-all cursor-pointer shadow-xs"
                 >
-                  <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+                  <ChevronRight className="w-5 h-5 stroke-[2.2]" />
                 </button>
               </div>
             </div>
 
-            {/* Weekday Labels */}
-            <div className="grid grid-cols-7 gap-1 text-center mb-2">
-              {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((day) => (
-                <span key={day} className="text-[11px] text-[#66716d] uppercase tracking-wider font-bold">
-                  {day}
+            {/* Weekday Labels (Mon-Fri slate, Sat-Sun terracotta/coral matching reference) */}
+            <div className="grid grid-cols-7 gap-1 sm:gap-2 text-center mb-2 px-0.5">
+              {[
+                { label: 'Lun', isWeekend: false },
+                { label: 'Mar', isWeekend: false },
+                { label: 'Mié', isWeekend: false },
+                { label: 'Jue', isWeekend: false },
+                { label: 'Vie', isWeekend: false },
+                { label: 'Sáb', isWeekend: true },
+                { label: 'Dom', isWeekend: true },
+              ].map(({ label, isWeekend }) => (
+                <span
+                  key={label}
+                  className={`text-[11px] sm:text-xs tracking-wider font-bold ${
+                    isWeekend ? 'text-[#e07a5f]' : 'text-[#64748b]'
+                  }`}
+                >
+                  {label}
                 </span>
               ))}
             </div>
 
-            {/* Month Day Grid */}
-            <div className="grid grid-cols-7 gap-y-2 gap-x-1 text-center place-items-center">
-              {Array.from({ length: leadingBlanks }).map((_, i) => (
-                <span key={`blank-${i}`} className="w-9 h-9 sm:w-10 sm:h-10" />
-              ))}
+            {/* Month Day Grid (Card squares matching reference model) */}
+            <div className="grid grid-cols-7 gap-1 sm:gap-2">
+              {/* Previous Month Overflow Days (Diagonal striped hatched cells) */}
+              {prevMonthDays.map((prevDay, i) => {
+                const isWeekend = i === 5 || i === 6;
+                return (
+                  <div
+                    key={`prev-${prevDay}`}
+                    className={`h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none opacity-60 ${
+                      isWeekend ? 'cal-cell-striped-warm' : 'cal-cell-striped-gray'
+                    }`}
+                  >
+                    <span className="text-[11px] sm:text-xs font-medium text-gray-400 leading-none">
+                      {prevDay}
+                    </span>
+                  </div>
+                );
+              })}
 
+              {/* Current Month Days */}
               {daysInMonth.map((dayNum) => {
+                const colIdx = (leadingBlanks + dayNum - 1) % 7;
+                const isWeekend = colIdx === 5 || colIdx === 6;
                 const isSelected = activeDay === dayNum;
                 const available = isDayAvailable(dayNum);
                 const isPast = isPastDate(dayNum);
@@ -383,13 +420,22 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                     <button
                       key={dayNum}
                       type="button"
-                      onClick={() => {
-                        setSelectedDay(dayNum);
-                      }}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#123c32] text-white font-bold text-sm sm:text-base flex items-center justify-center shadow-[0_6px_16px_rgba(18,60,50,0.25)] scale-105 transition-transform active:scale-95 relative cursor-pointer"
+                      onClick={() => setSelectedDay(dayNum)}
+                      className="h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none bg-[#f6c344] text-[#1c1917] shadow-[0_6px_18px_rgba(246,195,68,0.45)] ring-2 ring-[#eab308]/70 cursor-pointer active:scale-95 transition-all scale-[1.02]"
                     >
-                      {dayNum}
-                      <span className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#d9f56a]"></span>
+                      <div className="w-full flex items-center justify-between">
+                        <span className="text-xs sm:text-sm font-bold text-[#1c1917] leading-none">
+                          {dayNum}
+                        </span>
+                        <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-white/95 flex items-center justify-center text-[#1c1917] shadow-xs">
+                          <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" />
+                        </div>
+                      </div>
+                      <div className="w-full truncate">
+                        <span className="text-[9px] sm:text-[10px] font-extrabold text-[#1c1917] tracking-tight block truncate">
+                          Turno
+                        </span>
+                      </div>
                     </button>
                   );
                 }
@@ -399,26 +445,68 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                     <button
                       key={dayNum}
                       type="button"
-                      onClick={() => {
-                        setSelectedDay(dayNum);
-                      }}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#edf2ef] text-[#123c32] font-semibold text-xs sm:text-sm flex items-center justify-center transition-all active:scale-95 hover:bg-[#d9f56a] hover:text-[#123c32] hover:font-bold cursor-pointer"
+                      onClick={() => setSelectedDay(dayNum)}
+                      className="h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none bg-[#f2f4f3] hover:bg-[#e7eee9] active:scale-95 transition-all cursor-pointer group border border-transparent hover:border-[#123c32]/15"
                     >
-                      {dayNum}
+                      <div className="w-full flex items-center justify-between">
+                        <span className="text-xs sm:text-sm font-semibold text-[#18211f] group-hover:font-bold leading-none">
+                          {dayNum}
+                        </span>
+                      </div>
+                      <div className="w-full">
+                        <span className="text-[8px] sm:text-[9px] font-semibold text-[#123c32]/50 group-hover:text-[#123c32] block truncate">
+                          Libre
+                        </span>
+                      </div>
                     </button>
                   );
                 }
 
                 return (
-                  <span
+                  <div
                     key={dayNum}
-                    title={isPast ? 'Fecha pasada' : 'Día cerrado'}
-                    className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs sm:text-sm text-[#66716d]/35 select-none cursor-not-allowed"
+                    title={isPast ? 'Fecha anterior' : 'Día cerrado'}
+                    className={`h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none cursor-not-allowed opacity-75 ${
+                      isWeekend ? 'cal-cell-striped-warm' : 'cal-cell-striped-gray'
+                    }`}
                   >
-                    {dayNum}
-                  </span>
+                    <span className="text-[11px] sm:text-xs font-medium text-gray-400 leading-none">
+                      {dayNum}
+                    </span>
+                  </div>
                 );
               })}
+
+              {/* Next Month Overflow Days (Diagonal striped hatched cells) */}
+              {nextMonthDays.map((nextDay, i) => {
+                const colIdx = (leadingBlanks + daysInMonthCount + i) % 7;
+                const isWeekend = colIdx === 5 || colIdx === 6;
+                return (
+                  <div
+                    key={`next-${nextDay}`}
+                    className={`h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none opacity-60 ${
+                      isWeekend ? 'cal-cell-striped-warm' : 'cal-cell-striped-gray'
+                    }`}
+                  >
+                    <span className="text-[11px] sm:text-xs font-medium text-gray-400 leading-none">
+                      {nextDay}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Event / Status Capsule Pills inspired by user reference model */}
+            <div className="mt-3.5 pt-3.5 border-t border-[#d8e2de]/70 flex flex-wrap items-center gap-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#fef9c3] border border-[#fde047] text-[#854d0e] text-[11px] sm:text-xs font-semibold shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#eab308]"></span>
+                <span>Turno seleccionado: <strong>{formattedDate}</strong></span>
+              </div>
+
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f4f7f5] border border-[#d8e2de] text-[#123c32] text-[11px] sm:text-xs font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#123c32]"></span>
+                <span>Atención: {business.availableDays?.length ? 'Lunes a Sábados' : 'Lun a Sáb'} ({business.schedule || '09:00 - 20:30'})</span>
+              </div>
             </div>
           </div>
 

@@ -205,3 +205,27 @@
     radial-gradient(circle at 90% 5%, rgba(217, 245, 106, 0.20), transparent 28%),
     linear-gradient(180deg, #f7faf7 0%, #f2f7f3 100%);
 }
+
+/* Calendar Hatch Pattern Styles matching user reference */
+.cal-cell-striped-gray {
+  background-color: #f6f7f8;
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(160, 174, 192, 0.25) 0,
+    rgba(160, 174, 192, 0.25) 1.2px,
+    transparent 1.2px,
+    transparent 6px
+  );
+}
+
+.cal-cell-striped-warm {
+  background-color: #fdfaf6;
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(217, 155, 102, 0.32) 0,
+    rgba(217, 155, 102, 0.32) 1.2px,
+    transparent 1.2px,
+    transparent 6px
+  );
+}
+
