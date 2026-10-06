@@ -312,7 +312,7 @@ export const INITIAL_CLIENT_PROFILE: ClientProfile = {
   name: 'Valentina Rossi',
   email: 'valentina.rossi@aura.clinic',
   phone: '+5491123456789',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&h=300&q=80',
+  avatar: '/avatar-sketch.svg',
   isVip: true,
   medicalSheetCompleted: 80,
   loyaltyPoints: 1450,

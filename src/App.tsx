@@ -40,7 +40,19 @@ export default function App() {
 
   const [clientProfile, setClientProfile] = useState<ClientProfile>(() => {
     const saved = localStorage.getItem('aura_client_profile');
-    return saved ? JSON.parse(saved) : INITIAL_CLIENT_PROFILE;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.avatar && parsed.avatar.includes('photo-1534528741775-53994a69daeb')) {
+          parsed.avatar = '/avatar-sketch.svg';
+          localStorage.setItem('aura_client_profile', JSON.stringify(parsed));
+        }
+        return parsed;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return INITIAL_CLIENT_PROFILE;
   });
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {

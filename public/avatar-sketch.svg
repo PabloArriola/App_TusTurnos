@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="100%" height="100%">
+  <!-- Fondo suave y elegante -->
+  <rect width="240" height="240" fill="#f4f7f4" />
+  
+  <g fill="none" stroke="#123c32" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Boceto de hombros y torso (trazo artístico tipo pluma/dibujo) -->
+    <path d="M42 224 C 48 190, 78 168, 98 162 C 104 160, 114 170, 120 170 C 126 170, 136 160, 142 162 C 162 168, 192 190, 198 224" stroke-width="3" stroke-opacity="0.85" fill="#e5ece6" />
+    
+    <!-- Cuello -->
+    <path d="M104 140 L104 164 M136 140 L136 164" stroke-width="2.8" stroke-opacity="0.85" />
+    <path d="M112 152 Q120 156 128 152" stroke-width="1.8" stroke-opacity="0.5" />
+
+    <!-- Mandíbula y rostro -->
+    <path d="M88 98 C 88 132, 104 148, 120 148 C 136 148, 152 132, 152 98" stroke-width="3" stroke-opacity="0.9" fill="#fbfdfb" />
+    
+    <!-- Orejas esbozadas -->
+    <path d="M86 96 C82 98, 80 106, 84 112 C86 115, 88 116, 88 114" stroke-width="2" stroke-opacity="0.75" />
+    <path d="M154 96 C158 98, 160 106, 156 112 C154 115, 152 116, 152 114" stroke-width="2" stroke-opacity="0.75" />
+
+    <!-- Ojos en estilo boceto minimalista -->
+    <!-- Ojo izquierdo -->
+    <path d="M100 102 Q106 99 112 102" stroke-width="2.5" stroke-opacity="0.85" />
+    <circle cx="106" cy="103" r="1.5" fill="#123c32" />
+    <path d="M98 94 Q106 90 114 93" stroke-width="1.8" stroke-opacity="0.65" />
+
+    <!-- Ojo derecho -->
+    <path d="M128 102 Q134 99 140 102" stroke-width="2.5" stroke-opacity="0.85" />
+    <circle cx="134" cy="103" r="1.5" fill="#123c32" />
+    <path d="M126 93 Q134 90 142 94" stroke-width="1.8" stroke-opacity="0.65" />
+
+    <!-- Nariz sutil de boceto -->
+    <path d="M120 101 L118 117 Q120 120 123 119" stroke-width="2" stroke-opacity="0.75" />
+
+    <!-- Labios esbozados -->
+    <path d="M112 131 Q120 134 128 131" stroke-width="2.2" stroke-opacity="0.8" />
+    <path d="M116 135 Q120 137 124 135" stroke-width="1.6" stroke-opacity="0.55" />
+
+    <!-- Cabello con trazos fluidos de ilustración a mano alzada -->
+    <path d="M78 94 C 74 64, 94 42, 120 42 C 146 42, 166 64, 162 94 C 158 90, 150 76, 136 78 C 120 80, 114 86, 98 84 C 88 83, 82 88, 78 94 Z" stroke-width="3" stroke-opacity="0.9" fill="#123c32" />
+    
+    <!-- Mechones de detalle estilo sketch -->
+    <path d="M96 82 C 102 72, 118 70, 130 73" stroke-width="2" stroke="#d9f56a" stroke-opacity="0.8" />
+    <path d="M82 92 C 84 104, 86 118, 90 126" stroke-width="2.2" stroke-opacity="0.8" />
+    <path d="M158 92 C 156 104, 154 118, 150 126" stroke-width="2.2" stroke-opacity="0.8" />
+  </g>
+</svg>

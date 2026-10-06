@@ -239,13 +239,13 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={() => onNavigateToTab('perfil-clinico')}
-              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#a7b5e5] to-[#394d9a] text-white font-bold text-sm border-3 border-white shadow-[0_6px_18px_rgba(18,60,50,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all overflow-hidden cursor-pointer"
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-[16px] bg-gradient-to-br from-[#e4ece5] to-[#c1d3c6] text-[#123c32] font-bold text-sm border-2 border-white shadow-[0_6px_18px_rgba(18,60,50,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all overflow-hidden cursor-pointer"
               title="Mi Perfil Clínico"
             >
               {clientProfile.avatar ? (
                 <img
                   alt={clientProfile.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-[14px]"
                   src={clientProfile.avatar}
                 />
               ) : (

@@ -259,26 +259,26 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </p>
           </div>
 
-          {/* Avatar with Verified Badge */}
+          {/* Avatar with Verified Badge (Forma cuadrada con bordes redondeados) */}
           <div className="relative shrink-0 group">
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="w-[82px] h-[82px] sm:w-[86px] sm:h-[86px] rounded-full overflow-hidden bg-gradient-to-br from-[#c7d7cb] to-[#6b8d7d] border-[4px] border-white shadow-[0_8px_24px_rgba(18,60,50,0.14)] cursor-pointer relative"
+              className="w-[82px] h-[82px] sm:w-[88px] sm:h-[88px] rounded-[24px] overflow-hidden bg-gradient-to-br from-[#e4ece5] to-[#c1d3c6] border-[3.5px] border-white shadow-[0_8px_24px_rgba(18,60,50,0.14)] cursor-pointer relative"
               title="Tocar para subir nueva foto"
             >
               <img
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                className="w-full h-full object-cover rounded-[20px] group-hover:scale-105 transition-transform"
                 src={clientProfile.avatar}
                 alt={clientProfile.name}
               />
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity">
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity rounded-[20px]">
                 <Camera className="w-5 h-5" />
                 <span className="text-[8px] font-bold mt-0.5">Cambiar</span>
               </div>
             </div>
 
-            {/* Verified indicator dot */}
-            <div className="absolute -top-1 -left-1 w-6 h-6 rounded-full bg-[#d9f56a] text-[#123c32] flex items-center justify-center shadow-sm font-bold text-xs pointer-events-none border-2 border-white">
+            {/* Verified indicator badge */}
+            <div className="absolute -top-1.5 -left-1.5 w-6 h-6 rounded-lg bg-[#d9f56a] text-[#123c32] flex items-center justify-center shadow-sm font-bold text-xs pointer-events-none border-2 border-white">
               ✓
             </div>
           </div>
@@ -753,11 +753,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               {/* Photo preview & upload action */}
               <div className="flex flex-col items-center">
                 <div className="relative group">
-                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white ring-4 ring-[#123c32]/20 shadow-md">
+                  <div className="w-20 h-20 rounded-[22px] overflow-hidden border-2 border-white ring-4 ring-[#123c32]/20 shadow-md">
                     <img
                       src={editAvatar}
                       alt="Avatar Preview"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-[18px]"
                     />
                   </div>
                   <button
