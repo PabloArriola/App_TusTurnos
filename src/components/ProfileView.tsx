@@ -751,8 +751,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
       {/* Edit Profile & Photo Modal */}
       {isEditProfileModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="card-aesthetic max-w-sm w-full p-6 relative animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[100] bg-black/65 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="card-aesthetic max-w-sm w-full max-h-[90vh] overflow-y-auto p-6 relative animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between pb-3 border-b border-[#d8e2de]">
               <div className="flex items-center gap-2">
                 <Edit3 className="w-4 h-4 text-[#123c32]" />
@@ -884,6 +884,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       <ReceiptModal
         transaction={selectedReceiptTxn}
         isOpen={showReceiptModal}
+        businessPhone={currentBusiness.phoneWhatsapp}
         onClose={() => {
           setShowReceiptModal(false);
           setSelectedReceiptTxn(null);

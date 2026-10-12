@@ -42,7 +42,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     <div 
       className={`${
         isMobileFrame ? 'absolute' : 'fixed'
-      } bottom-0 inset-x-0 z-50 w-full flex justify-center pointer-events-none`}
+      } bottom-0 inset-x-0 z-40 w-full flex justify-center pointer-events-none`}
     >
       <nav 
         aria-label="Navegación principal"

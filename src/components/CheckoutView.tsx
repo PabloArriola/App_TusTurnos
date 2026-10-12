@@ -264,7 +264,17 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
           `\nYa aboné la seña total de ${formatPrice(calculatedDeposit)}. ¡Gracias!`
         : `¡Hola ${business.name}! Acabo de reservar mi turno para *${combinedTitle}* el día *${effectiveFormattedDate} a las ${effectiveTime} hs* (Reserva #${confirmedAppointment.id}). Ya aboné la seña de ${formatPrice(calculatedDeposit)}. ¡Gracias!`;
 
-    const whatsappUrl = `https://wa.me/${business.phoneWhatsapp.replace(/\+/g, '')}?text=${encodeURIComponent(whatsappMsg)}`;
+    const formatWhatsAppPhone = (rawPhone?: string) => {
+      const digits = (rawPhone || '3794825713').replace(/\D/g, '');
+      if (!digits) return '5493794825713';
+      if (digits.startsWith('549')) return digits;
+      if (digits.startsWith('54')) return '549' + digits.slice(2);
+      if (digits.startsWith('0')) return '549' + digits.slice(1);
+      if (digits.length === 10) return '549' + digits;
+      return digits;
+    };
+
+    const whatsappUrl = `https://wa.me/${formatWhatsAppPhone(business.phoneWhatsapp)}?text=${encodeURIComponent(whatsappMsg)}`;
 
     return (
       <div className="flex flex-col w-full max-w-[520px] mx-auto px-3.5 sm:px-4 space-y-4 pb-36 animate-in fade-in duration-300">

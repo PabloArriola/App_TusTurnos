@@ -29,15 +29,41 @@ import { auth, isFirebaseConfigured } from './lib/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 export default function App() {
+  const LEGACY_MOCK_PHONES = ['+5491138492019', '+5491145678901', '+5491198765432', '5491138492019', '5491145678901', '5491198765432'];
+
   // Persistence with localStorage
   const [businesses, setBusinesses] = useState<Business[]>(() => {
     const saved = localStorage.getItem('aura_businesses');
-    return saved ? JSON.parse(saved) : INITIAL_BUSINESSES;
+    if (saved) {
+      try {
+        const parsed: Business[] = JSON.parse(saved);
+        return parsed.map(b => ({
+          ...b,
+          phoneWhatsapp: (!b.phoneWhatsapp || LEGACY_MOCK_PHONES.includes(b.phoneWhatsapp))
+            ? '3794825713'
+            : b.phoneWhatsapp,
+        }));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return INITIAL_BUSINESSES;
   });
 
   const [currentBusiness, setCurrentBusiness] = useState<Business>(() => {
     const saved = localStorage.getItem('aura_current_business');
-    return saved ? JSON.parse(saved) : (businesses[0] || INITIAL_BUSINESSES[0]);
+    if (saved) {
+      try {
+        const parsed: Business = JSON.parse(saved);
+        if (!parsed.phoneWhatsapp || LEGACY_MOCK_PHONES.includes(parsed.phoneWhatsapp)) {
+          parsed.phoneWhatsapp = '3794825713';
+        }
+        return parsed;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return businesses[0] || INITIAL_BUSINESSES[0];
   });
 
   const [clientProfile, setClientProfile] = useState<ClientProfile>(() => {
@@ -230,7 +256,18 @@ export default function App() {
 
     const unsubBiz = firestoreService.subscribeBusiness(currentBusiness.id, (fireBiz) => {
       if (fireBiz) {
-        setCurrentBusiness(fireBiz);
+        const normalizedBiz = (!fireBiz.phoneWhatsapp || LEGACY_MOCK_PHONES.includes(fireBiz.phoneWhatsapp))
+          ? { ...fireBiz, phoneWhatsapp: '3794825713' }
+          : fireBiz;
+        if (normalizedBiz.phoneWhatsapp !== fireBiz.phoneWhatsapp) {
+          firestoreService.saveBusiness(normalizedBiz);
+        }
+        setCurrentBusiness(normalizedBiz);
+        setBusinesses((prev) => {
+          const next = prev.map((b) => (b.id === normalizedBiz.id ? normalizedBiz : b));
+          localStorage.setItem('aura_businesses', JSON.stringify(next));
+          return next;
+        });
       }
     });
 
@@ -261,6 +298,11 @@ export default function App() {
         services: updatedServices,
       };
       firestoreService.saveBusiness(updated);
+      setBusinesses((list) => {
+        const next = list.map((b) => (b.id === updated.id ? updated : b));
+        localStorage.setItem('aura_businesses', JSON.stringify(next));
+        return next;
+      });
       return updated;
     });
     setToastNotice('Catálogo de servicios y señas actualizado con éxito.');
@@ -273,6 +315,11 @@ export default function App() {
         ...updatedFields,
       };
       firestoreService.saveBusiness(updated);
+      setBusinesses((list) => {
+        const next = list.map((b) => (b.id === updated.id ? updated : b));
+        localStorage.setItem('aura_businesses', JSON.stringify(next));
+        return next;
+      });
       return updated;
     });
     setToastNotice('Configuración del estudio guardada con éxito.');

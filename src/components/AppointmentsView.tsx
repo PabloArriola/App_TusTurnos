@@ -193,8 +193,18 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
             const isCancelled = appt.status === 'cancelado';
             const isCompleted = appt.status === 'completado';
 
+            const formatWhatsAppPhone = (rawPhone?: string) => {
+              const digits = (rawPhone || '3794825713').replace(/\D/g, '');
+              if (!digits) return '5493794825713';
+              if (digits.startsWith('549')) return digits;
+              if (digits.startsWith('54')) return '549' + digits.slice(2);
+              if (digits.startsWith('0')) return '549' + digits.slice(1);
+              if (digits.length === 10) return '549' + digits;
+              return digits;
+            };
+
             const whatsappMsg = `Hola ${biz.name}, tengo una consulta sobre mi turno #${appt.id} para *${appt.serviceTitle}* del ${appt.date} a las ${appt.time} hs con ${appt.specialistName}.`;
-            const whatsappUrl = `https://wa.me/${biz.phoneWhatsapp.replace(/\+/g, '')}?text=${encodeURIComponent(whatsappMsg)}`;
+            const whatsappUrl = `https://wa.me/${formatWhatsAppPhone(biz.phoneWhatsapp)}?text=${encodeURIComponent(whatsappMsg)}`;
 
             return (
               <article

@@ -17,12 +17,14 @@ interface ReceiptModalProps {
   transaction: PaymentTransaction | null;
   isOpen: boolean;
   onClose: () => void;
+  businessPhone?: string;
 }
 
 export const ReceiptModal: React.FC<ReceiptModalProps> = ({
   transaction,
   isOpen,
   onClose,
+  businessPhone,
 }) => {
   const [downloading, setDownloading] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
@@ -188,8 +190,20 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
     window.print();
   };
 
+  const formatWhatsAppPhone = (rawPhone?: string): string => {
+    if (!rawPhone) return '5493794825713';
+    const digits = rawPhone.replace(/\D/g, '');
+    if (!digits) return '5493794825713';
+    if (digits.startsWith('549') && digits.length >= 12) return digits;
+    if (digits.startsWith('54') && !digits.startsWith('549')) return '549' + digits.slice(2);
+    if (digits.startsWith('0')) return '549' + digits.slice(1);
+    if (digits.length === 10) return '549' + digits;
+    if (digits.length > 10) return digits;
+    return '549' + digits;
+  };
+
   const handleShareWhatsApp = () => {
-    const text = `🧾 *Comprobante de Pago - Aura Turnos*%0A` +
+    const text = `🧾 *Comprobante de Pago - TusTurnos*%0A` +
       `Estudio: ${transaction.businessName}%0A` +
       `Concepto: ${transaction.concept}%0A` +
       `Monto Abonado: ${formatPrice(transaction.amount)}%0A` +
@@ -198,70 +212,71 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
       `Titular: ${transaction.clientName}%0A` +
       `Estado: Pago Acreditado ✓`;
 
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+    const targetPhone = formatWhatsAppPhone(businessPhone);
+    window.open(`https://wa.me/${targetPhone}?text=${text}`, '_blank');
     setCopiedShare(true);
     setTimeout(() => setCopiedShare(false), 2000);
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200 overflow-y-auto">
-      <div className="card-aesthetic max-w-sm sm:max-w-md w-full shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 my-auto p-0">
+    <div className="fixed inset-0 z-[100] bg-black/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
+      <div className="card-aesthetic max-w-sm sm:max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 p-0">
         {/* Header Bar */}
-        <div className="bg-[#123c32] p-5 text-white relative">
+        <div className="bg-[#123c32] p-4 sm:p-5 text-white relative shrink-0">
           <button
             type="button"
             onClick={onClose}
             aria-label="Cerrar recibo"
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+            className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
 
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-[#d9f56a] shadow-inner">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-[#d9f56a] shadow-inner shrink-0">
               <Receipt className="w-5 h-5" />
             </div>
             <div>
               <span className="text-[10px] font-bold text-[#d9f56a] uppercase tracking-wider block">
                 Comprobante Digital
               </span>
-              <h3 className="font-bold text-base text-white leading-tight">
+              <h3 className="font-bold text-sm sm:text-base text-white leading-tight">
                 Recibo de Pago Oficial
               </h3>
             </div>
           </div>
         </div>
 
-        {/* Printable/Visual Receipt Ticket Area */}
-        <div id="printable-receipt-card" className="p-5 sm:p-6 space-y-4 bg-white text-[#18211f]">
+        {/* Printable/Visual Receipt Ticket Area (Scrollable so it never cuts off) */}
+        <div id="printable-receipt-card" className="p-4 sm:p-5 space-y-3 bg-white text-[#18211f] flex-1 overflow-y-auto overscroll-contain">
           {/* Business Meta */}
-          <div className="text-center pb-3 border-b border-dashed border-[#d8e2de]">
-            <h4 className="font-bold text-base text-[#123c32] tracking-tight">
+          <div className="text-center pb-2.5 border-b border-dashed border-[#d8e2de]">
+            <h4 className="font-bold text-sm sm:text-base text-[#123c32] tracking-tight">
               {transaction.businessName}
             </h4>
-            <p className="text-xs text-[#66716d] mt-0.5">{transaction.businessAddress}</p>
+            <p className="text-[11px] sm:text-xs text-[#66716d] mt-0.5">{transaction.businessAddress}</p>
             {transaction.businessCuit && (
-              <p className="text-[11px] text-[#66716d]">CUIT: {transaction.businessCuit}</p>
+              <p className="text-[10px] sm:text-[11px] text-[#66716d]">CUIT: {transaction.businessCuit}</p>
             )}
           </div>
 
           {/* Amount & Status Badge */}
-          <div className="text-center py-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#efffc5] text-[#123c32] text-xs font-bold border border-[#d9f56a]/40 mb-2">
+          <div className="text-center py-0.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#efffc5] text-[#123c32] text-[11px] sm:text-xs font-bold border border-[#d9f56a]/40 mb-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-[#195344]" />
               <span>Pago Acreditado en Mercado Pago</span>
             </div>
 
-            <div className="text-3xl font-extrabold text-[#123c32] tracking-tight">
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#123c32] tracking-tight">
               {formatPrice(transaction.amount)}
             </div>
-            <p className="text-xs font-bold text-[#195344] mt-0.5">
+            <p className="text-[11px] sm:text-xs font-bold text-[#195344] mt-0.5">
               {transaction.concept}
             </p>
           </div>
 
           {/* Metadata Grid */}
-          <div className="bg-[#f7faf7] rounded-[22px] p-4 text-xs space-y-2.5 border border-[#d8e2de]">
+          <div className="bg-[#f7faf7] rounded-[18px] p-3.5 text-xs space-y-2 border border-[#d8e2de]">
             <div className="flex items-center justify-between">
               <span className="text-[#66716d]">Nº de Operación MP</span>
               <span className="font-mono font-bold text-[#123c32]">#{transaction.mpOperationNumber}</span>
@@ -274,7 +289,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
 
             <div className="flex items-center justify-between">
               <span className="text-[#66716d]">Medio de Pago</span>
-              <span className="font-semibold text-[#18211f]">{transaction.paymentMethod}</span>
+              <span className="font-semibold text-[#18211f] text-right ml-2">{transaction.paymentMethod}</span>
             </div>
 
             <div className="flex items-center justify-between">
@@ -310,23 +325,23 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
           </div>
 
           {/* Security & Verification Stamp */}
-          <div className="pt-2 flex items-center justify-between text-[11px] text-[#66716d] border-t border-dashed border-[#d8e2de]">
+          <div className="pt-1.5 flex items-center justify-between text-[11px] text-[#66716d] border-t border-dashed border-[#d8e2de]">
             <div className="flex items-center gap-1.5 text-[#123c32] font-semibold">
               <ShieldCheck className="w-4 h-4 text-[#123c32]" />
-              <span>Verificado por Aura Turnos & MP</span>
+              <span>Verificado por TusTurnos & MP</span>
             </div>
             <span className="font-mono text-[10px]">ID: {transaction.id}</span>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="p-4 bg-[#f7faf7] border-t border-[#d8e2de] space-y-2">
+        {/* Action Buttons (Fixed at bottom of modal card) */}
+        <div className="p-3.5 sm:p-4 bg-[#f7faf7] border-t border-[#d8e2de] space-y-2 shrink-0">
           {/* Main Download Button */}
           <button
             type="button"
             onClick={handleDownloadImage}
             disabled={downloading}
-            className="w-full py-3 px-4 rounded-[16px] bg-[#123c32] hover:bg-[#195344] text-white font-bold text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-2.5 sm:py-3 px-4 rounded-[16px] bg-[#123c32] hover:bg-[#195344] text-white font-bold text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
           >
             {downloading ? (
               <>

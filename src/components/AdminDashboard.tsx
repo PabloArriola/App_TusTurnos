@@ -92,7 +92,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [bizLogo, setBizLogo] = useState(business.logo);
   const [bizAddress, setBizAddress] = useState(business.address);
   const [bizCity, setBizCity] = useState(business.city);
-  const [bizWhatsapp, setBizWhatsapp] = useState(business.phoneWhatsapp);
+  const [bizWhatsapp, setBizWhatsapp] = useState(business.phoneWhatsapp || '3794825713');
   const [bizInstagram, setBizInstagram] = useState(business.instagram);
   const [bizAlias, setBizAlias] = useState(business.aliasCbu);
   const [bizBank, setBizBank] = useState(business.bankName);
@@ -103,6 +103,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [bizBufferMinutes, setBizBufferMinutes] = useState(business.bufferMinutes || 15);
   const [bizAvailableDays, setBizAvailableDays] = useState<number[]>(business.availableDays || [1, 2, 3, 4, 5, 6]);
   const logoInputRef = useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (business.phoneWhatsapp) {
+      setBizWhatsapp(business.phoneWhatsapp);
+    }
+  }, [business.phoneWhatsapp]);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -970,14 +976,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-on-surface mb-1">WhatsApp de Atención</label>
+                <label className="block text-xs font-semibold text-on-surface mb-1">
+                  WhatsApp de Recepción y Notificaciones
+                </label>
                 <input
                   type="text"
                   value={bizWhatsapp}
                   onChange={(e) => setBizWhatsapp(e.target.value)}
+                  placeholder="Ej: 3794825713"
                   className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container-high text-xs font-semibold text-on-surface"
                   required
                 />
+                <p className="text-[10px] text-on-surface-variant mt-1">
+                  A este número llegarán las confirmaciones de turnos, señas y consultas de tus pacientes.
+                </p>
               </div>
 
               <div className="sm:col-span-2">
