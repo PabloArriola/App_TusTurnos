@@ -19,7 +19,7 @@ import { CheckoutView } from './components/CheckoutView';
 import { AppointmentsView } from './components/AppointmentsView';
 import { ProfileView } from './components/ProfileView';
 import { AdminDashboard } from './components/AdminDashboard';
-import { AdminLogin } from './components/AdminLogin';
+import { AdminLogin, isAuthorizedAdminEmail, SUPER_ADMIN_EMAIL } from './components/AdminLogin';
 import { MedicalConsentModal } from './components/MedicalConsentModal';
 import { LoyaltyModal } from './components/LoyaltyModal';
 import { NotificationsModal } from './components/NotificationsModal';
@@ -42,6 +42,7 @@ export default function App() {
           phoneWhatsapp: (!b.phoneWhatsapp || LEGACY_MOCK_PHONES.includes(b.phoneWhatsapp))
             ? '3794825713'
             : b.phoneWhatsapp,
+          authorizedAdmins: Array.from(new Set([...(b.authorizedAdmins || []), SUPER_ADMIN_EMAIL])),
         }));
       } catch (e) {
         console.error(e);
@@ -58,6 +59,9 @@ export default function App() {
         if (!parsed.phoneWhatsapp || LEGACY_MOCK_PHONES.includes(parsed.phoneWhatsapp)) {
           parsed.phoneWhatsapp = '3794825713';
         }
+        parsed.authorizedAdmins = Array.from(
+          new Set([...(parsed.authorizedAdmins || []), SUPER_ADMIN_EMAIL])
+        );
         return parsed;
       } catch (e) {
         console.error(e);
@@ -115,10 +119,24 @@ export default function App() {
   const [isAdminRoute, setIsAdminRoute] = useState<boolean>(() => checkIsAdminPath());
   const [adminUser, setAdminUser] = useState<any>(() => {
     const saved = localStorage.getItem('aura_admin_user');
-    return saved ? JSON.parse(saved) : null;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (isAuthorizedAdminEmail(parsed?.email, currentBusiness.authorizedAdmins)) {
+          return parsed;
+        }
+        localStorage.removeItem('aura_admin_user');
+      } catch (e) {
+        localStorage.removeItem('aura_admin_user');
+      }
+    }
+    return null;
   });
 
-  const isAdminMode = isAdminRoute && Boolean(adminUser);
+  const isAdminMode =
+    isAdminRoute &&
+    Boolean(adminUser) &&
+    isAuthorizedAdminEmail(adminUser?.email, currentBusiness.authorizedAdmins);
 
   // Listen to browser navigation (back/forward)
   useEffect(() => {
@@ -129,20 +147,26 @@ export default function App() {
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  // Listen to Firebase Auth state for administrator
+  // Listen to Firebase Auth state for administrator (strictly enforce whitelist)
   useEffect(() => {
     if (!auth) return;
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setAdminUser(user);
-        localStorage.setItem('aura_admin_user', JSON.stringify({ 
-          email: user.email, 
-          displayName: user.displayName 
-        }));
+        if (isAuthorizedAdminEmail(user.email, currentBusiness.authorizedAdmins)) {
+          setAdminUser(user);
+          localStorage.setItem('aura_admin_user', JSON.stringify({ 
+            email: user.email, 
+            displayName: user.displayName 
+          }));
+        } else {
+          signOut(auth).catch(() => {});
+          setAdminUser(null);
+          localStorage.removeItem('aura_admin_user');
+        }
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [currentBusiness.authorizedAdmins]);
 
   const navigateToAdmin = () => {
     window.history.pushState({}, '', '/admin');
@@ -155,14 +179,14 @@ export default function App() {
   };
 
   const handleAdminLoginSuccess = (user?: any) => {
-    if (user) {
+    if (user && isAuthorizedAdminEmail(user.email, currentBusiness.authorizedAdmins)) {
       setAdminUser(user);
       localStorage.setItem('aura_admin_user', JSON.stringify({ 
-        email: user.email || 'admin@tusturnos.app', 
+        email: user.email, 
         displayName: user.displayName || 'Administrador' 
       }));
+      setToastNotice('¡Bienvenido! Sesión de administrador iniciada.');
     }
-    setToastNotice('¡Bienvenido! Sesión de administrador iniciada.');
   };
 
   const handleAdminLogout = async () => {
@@ -256,10 +280,20 @@ export default function App() {
 
     const unsubBiz = firestoreService.subscribeBusiness(currentBusiness.id, (fireBiz) => {
       if (fireBiz) {
-        const normalizedBiz = (!fireBiz.phoneWhatsapp || LEGACY_MOCK_PHONES.includes(fireBiz.phoneWhatsapp))
-          ? { ...fireBiz, phoneWhatsapp: '3794825713' }
-          : fireBiz;
-        if (normalizedBiz.phoneWhatsapp !== fireBiz.phoneWhatsapp) {
+        const mergedAdmins = Array.from(
+          new Set([...(fireBiz.authorizedAdmins || []), SUPER_ADMIN_EMAIL])
+        );
+        const normalizedBiz: Business = {
+          ...fireBiz,
+          phoneWhatsapp: (!fireBiz.phoneWhatsapp || LEGACY_MOCK_PHONES.includes(fireBiz.phoneWhatsapp))
+            ? '3794825713'
+            : fireBiz.phoneWhatsapp,
+          authorizedAdmins: mergedAdmins,
+        };
+        if (
+          normalizedBiz.phoneWhatsapp !== fireBiz.phoneWhatsapp ||
+          (fireBiz.authorizedAdmins || []).length !== mergedAdmins.length
+        ) {
           firestoreService.saveBusiness(normalizedBiz);
         }
         setCurrentBusiness(normalizedBiz);
@@ -616,10 +650,11 @@ export default function App() {
     setToastNotice(userData?.name ? `¡Hola ${userData.name}! Bienvenido a tus turnos.` : '¡Bienvenido(a)! Ya podés reservar.');
   };
 
-  // If visiting /admin but not authenticated as admin, render dedicated AdminLogin
-  if (isAdminRoute && !adminUser) {
+  // If visiting /admin but not authenticated as an authorized admin, render dedicated AdminLogin
+  if (isAdminRoute && !isAdminMode) {
     return (
       <AdminLogin
+        authorizedEmails={currentBusiness.authorizedAdmins || [SUPER_ADMIN_EMAIL]}
         onLoginSuccess={handleAdminLoginSuccess}
         onGoToClient={navigateToClient}
       />

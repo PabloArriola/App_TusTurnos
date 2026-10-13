@@ -60,6 +60,7 @@ export interface Business {
   bufferMinutes?: number;
   cancellationNoticeHours?: number;
   blockedSlots?: BlockedSlot[];
+  authorizedAdmins?: string[];
 }
 
 export interface Appointment {

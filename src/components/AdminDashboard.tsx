@@ -102,13 +102,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [bizClosingTime, setBizClosingTime] = useState(business.closingTime || '20:00');
   const [bizBufferMinutes, setBizBufferMinutes] = useState(business.bufferMinutes || 15);
   const [bizAvailableDays, setBizAvailableDays] = useState<number[]>(business.availableDays || [1, 2, 3, 4, 5, 6]);
+  const [bizAuthorizedAdmins, setBizAuthorizedAdmins] = useState<string[]>(() =>
+    Array.from(new Set([...(business.authorizedAdmins || []), 'arriolapablo.a@gmail.com']))
+  );
+  const [newAdminEmail, setNewAdminEmail] = useState('');
   const logoInputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (business.phoneWhatsapp) {
       setBizWhatsapp(business.phoneWhatsapp);
     }
-  }, [business.phoneWhatsapp]);
+    if (business.authorizedAdmins) {
+      setBizAuthorizedAdmins(
+        Array.from(new Set([...business.authorizedAdmins, 'arriolapablo.a@gmail.com']))
+      );
+    }
+  }, [business.phoneWhatsapp, business.authorizedAdmins]);
+
+  const handleAddAuthorizedAdmin = () => {
+    const clean = newAdminEmail.trim().toLowerCase();
+    if (!clean || !clean.includes('@')) return;
+    const updated = Array.from(new Set([...bizAuthorizedAdmins, clean, 'arriolapablo.a@gmail.com']));
+    setBizAuthorizedAdmins(updated);
+    setNewAdminEmail('');
+    onUpdateBusiness({ authorizedAdmins: updated });
+  };
+
+  const handleRemoveAuthorizedAdmin = (emailToRemove: string) => {
+    if (emailToRemove.toLowerCase() === 'arriolapablo.a@gmail.com') return;
+    const updated = bizAuthorizedAdmins.filter(
+      (e) => e.toLowerCase() !== emailToRemove.toLowerCase()
+    );
+    setBizAuthorizedAdmins(updated);
+    onUpdateBusiness({ authorizedAdmins: updated });
+  };
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -347,6 +374,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       bankName: bizBank.trim(),
       defaultDepositPercentage: Number(bizDepositDefault),
       cancellationNoticeHours: Number(bizCancelHours),
+      authorizedAdmins: bizAuthorizedAdmins,
     });
   };
 
@@ -1077,6 +1105,70 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container-high text-xs font-semibold text-on-surface"
                   />
                 </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-surface-container-high/60">
+              <div className="flex items-center gap-2 mb-1">
+                <ShieldCheck className="w-4 h-4 text-primary" />
+                <h3 className="font-bold text-xs text-on-surface">
+                  Administradores Autorizados (Acceso Exclusivo a /admin)
+                </h3>
+              </div>
+              <p className="text-[11px] text-on-surface-variant mb-3">
+                Solo las cuentas de Google o correos en esta lista tienen permiso para ingresar al Panel de Control en <strong>/admin</strong>. Cualquier otro correo será rechazado automáticamente.
+              </p>
+
+              {/* Current authorized list */}
+              <div className="space-y-2 mb-3">
+                {bizAuthorizedAdmins.map((adminMail) => {
+                  const isSuperAdmin = adminMail.toLowerCase() === 'arriolapablo.a@gmail.com';
+                  return (
+                    <div
+                      key={adminMail}
+                      className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-surface-container border border-surface-container-high text-xs"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
+                        <span className="font-semibold text-on-surface truncate">{adminMail}</span>
+                        {isSuperAdmin && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/15 text-primary shrink-0">
+                            Principal (Fijo)
+                          </span>
+                        )}
+                      </div>
+                      {!isSuperAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveAuthorizedAdmin(adminMail)}
+                          className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                          title="Quitar acceso de administrador"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Add new authorized email */}
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="email"
+                  value={newAdminEmail}
+                  onChange={(e) => setNewAdminEmail(e.target.value)}
+                  placeholder="Agregar otro correo de Google autorizado (ej: socio@gmail.com)"
+                  className="flex-1 px-3 py-2 rounded-xl bg-surface-container border border-surface-container-high text-xs font-medium text-on-surface"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddAuthorizedAdmin}
+                  className="px-4 py-2 rounded-xl bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Autorizar Correo</span>
+                </button>
               </div>
             </div>
 

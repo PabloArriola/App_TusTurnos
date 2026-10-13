@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
+  signOut,
   User
 } from 'firebase/auth';
 import { auth } from '../lib/firebase';
@@ -17,20 +18,38 @@ import {
   ArrowLeft, 
   AlertCircle, 
   CheckCircle2, 
-  KeyRound,
-  Sparkles
+  KeyRound
 } from 'lucide-react';
 
+export const SUPER_ADMIN_EMAIL = 'arriolapablo.a@gmail.com';
+
+export const isAuthorizedAdminEmail = (
+  rawEmail?: string | null,
+  extraAuthorizedEmails?: string[]
+): boolean => {
+  if (!rawEmail) return false;
+  const normalized = rawEmail.trim().toLowerCase();
+  if (!normalized) return false;
+  if (normalized === SUPER_ADMIN_EMAIL.toLowerCase()) return true;
+  if (Array.isArray(extraAuthorizedEmails)) {
+    return extraAuthorizedEmails.some(
+      (item) => item && item.trim().toLowerCase() === normalized
+    );
+  }
+  return false;
+};
+
 interface AdminLoginProps {
+  authorizedEmails?: string[];
   onLoginSuccess: (user?: User | { email: string; displayName?: string }) => void;
   onGoToClient: () => void;
 }
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({
+  authorizedEmails = [SUPER_ADMIN_EMAIL],
   onLoginSuccess,
   onGoToClient,
 }) => {
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -63,15 +82,15 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
     }
   };
 
-  // Google Sign-In Handler
+  // Google Sign-In Handler (Restricted to authorized emails only)
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     setErrorMessage(null);
     setSuccessMessage(null);
 
     if (!auth) {
-      // Local fallback if Firebase Auth is not active
-      onLoginSuccess({ email: 'admin@tusturnos.app', displayName: 'Administrador' });
+      setErrorMessage('El servicio de autenticación de Google no está disponible en este momento.');
+      setIsLoading(false);
       return;
     }
 
@@ -79,24 +98,45 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: 'select_account' });
       const result = await signInWithPopup(auth, provider);
-      setSuccessMessage('¡Bienvenido! Accediendo al panel administrativo...');
+      const userEmail = result.user.email || '';
+
+      // Enforce Admin Whitelist
+      if (!isAuthorizedAdminEmail(userEmail, authorizedEmails)) {
+        await signOut(auth);
+        setErrorMessage(
+          `Acceso denegado: la cuenta "${userEmail}" no tiene permisos de administrador. Solo usuarios autorizados pueden ingresar a este panel.`
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      setSuccessMessage('¡Identidad de administrador verificada! Accediendo al panel...');
       setTimeout(() => {
         onLoginSuccess(result.user);
       }, 600);
     } catch (err: any) {
       console.error('Google Sign-In Error:', err);
-      // If popup fails or operation not allowed in Firebase, explain clearly
       setErrorMessage(getFriendlyErrorMessage(err.code, err.message));
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Email / Password Handler
+  // Email / Password Handler (Restricted to authorized emails only)
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) {
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail || !password.trim()) {
       setErrorMessage('Por favor completá tu correo y contraseña.');
+      return;
+    }
+
+    // Enforce Admin Whitelist first
+    if (!isAuthorizedAdminEmail(cleanEmail, authorizedEmails)) {
+      setErrorMessage(
+        `Acceso denegado: el correo "${cleanEmail}" no está autorizado como administrador.`
+      );
       return;
     }
 
@@ -104,39 +144,53 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    // Master Key / Fallback Check (allows instant admin access even if Firebase Auth providers aren't yet enabled in console)
+    // Master Key / Fallback Check (only works if email is already in the authorized admin whitelist)
     if (password === 'admin123' || password === 'tusturnos2026') {
-      setSuccessMessage('Accediendo con credenciales maestras autorizadas...');
+      setSuccessMessage('Accediendo con credenciales de administrador autorizadas...');
       setTimeout(() => {
-        onLoginSuccess({ email: email.trim(), displayName: 'Administrador Principal' });
+        onLoginSuccess({ email: cleanEmail, displayName: 'Administrador Principal' });
       }, 500);
       setIsLoading(false);
       return;
     }
 
     if (!auth) {
-      onLoginSuccess({ email: email.trim(), displayName: 'Administrador' });
+      setErrorMessage('No se pudo conectar con el servidor de autenticación.');
       setIsLoading(false);
       return;
     }
 
     try {
-      if (authMode === 'login') {
-        const result = await signInWithEmailAndPassword(auth, email.trim(), password);
-        setSuccessMessage('¡Inicio de sesión correcto! Accediendo al panel...');
-        setTimeout(() => {
-          onLoginSuccess(result.user);
-        }, 500);
-      } else {
-        const result = await createUserWithEmailAndPassword(auth, email.trim(), password);
-        setSuccessMessage('¡Cuenta de administrador creada exitosamente!');
-        setTimeout(() => {
-          onLoginSuccess(result.user);
-        }, 600);
-      }
+      const result = await signInWithEmailAndPassword(auth, cleanEmail, password);
+      setSuccessMessage('¡Inicio de sesión correcto! Accediendo al panel...');
+      setTimeout(() => {
+        onLoginSuccess(result.user);
+      }, 500);
     } catch (err: any) {
-      console.error('Email Auth Error:', err);
-      setErrorMessage(getFriendlyErrorMessage(err.code, err.message));
+      // If this authorized admin email hasn't set up an email/password credential in Firebase yet, create it automatically on first login if password >= 6 chars
+      if (
+        (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') &&
+        password.trim().length >= 6
+      ) {
+        try {
+          const created = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+          setSuccessMessage('¡Credenciales de administrador activadas! Accediendo al panel...');
+          setTimeout(() => {
+            onLoginSuccess(created.user);
+          }, 500);
+          return;
+        } catch (createErr: any) {
+          // If email already exists (meaning wrong password), show wrong password message
+          if (createErr.code === 'auth/email-already-in-use') {
+            setErrorMessage('Contraseña incorrecta para esta cuenta de administrador.');
+          } else {
+            setErrorMessage(getFriendlyErrorMessage(createErr.code, createErr.message));
+          }
+        }
+      } else {
+        console.error('Email Auth Error:', err);
+        setErrorMessage(getFriendlyErrorMessage(err.code, err.message));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -144,15 +198,20 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
 
   // Password Reset Handler
   const handleForgotPassword = async () => {
-    if (!email.trim()) {
-      setErrorMessage('Ingresá tu correo en el campo de texto para recibir el enlace de recuperación.');
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail) {
+      setErrorMessage('Ingresá tu correo autorizado en el campo de texto para recibir el enlace de recuperación.');
+      return;
+    }
+    if (!isAuthorizedAdminEmail(cleanEmail, authorizedEmails)) {
+      setErrorMessage('Este correo no pertenece a una cuenta de administrador autorizada.');
       return;
     }
     if (!auth) return;
 
     try {
-      await sendPasswordResetEmail(auth, email.trim());
-      setSuccessMessage(`Te enviamos un correo a ${email} para restablecer tu contraseña.`);
+      await sendPasswordResetEmail(auth, cleanEmail);
+      setSuccessMessage(`Te enviamos un correo a ${cleanEmail} para restablecer tu contraseña.`);
       setErrorMessage(null);
     } catch (err: any) {
       setErrorMessage(getFriendlyErrorMessage(err.code, err.message));
@@ -185,14 +244,14 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
           </div>
 
           <span className="inline-block px-3 py-1 rounded-full text-[10px] font-extrabold tracking-widest uppercase bg-[#eaf2ed] text-[#123c32] mb-2">
-            Panel de Control · Administrador
+            Panel de Control · Acceso Exclusivo
           </span>
 
           <h1 className="text-2xl sm:text-3xl font-bold text-[#123c32] tracking-tight">
             Acceso Administrativo
           </h1>
           <p className="text-xs sm:text-sm text-[#66716d] mt-1.5 max-w-xs mx-auto leading-relaxed">
-            Ingresá con tu cuenta para administrar agendas, turnos, clientes y configuración.
+            Ingresá únicamente con una cuenta de administrador autorizada.
           </p>
         </div>
 
@@ -200,7 +259,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
         {errorMessage && (
           <div className="mb-4 p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2.5 animate-in fade-in duration-150">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600" />
-            <span className="leading-snug">{errorMessage}</span>
+            <span className="leading-snug font-medium">{errorMessage}</span>
           </div>
         )}
 
@@ -249,43 +308,11 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
           <div className="border-t border-gray-200 w-full"></div>
         </div>
 
-        {/* Auth Mode Toggle (Login vs Register) */}
-        <div className="flex bg-[#f2f5f3] p-1 rounded-2xl mb-4">
-          <button
-            type="button"
-            onClick={() => {
-              setAuthMode('login');
-              setErrorMessage(null);
-            }}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-              authMode === 'login'
-                ? 'bg-[#123c32] text-white shadow-xs'
-                : 'text-[#66716d] hover:text-[#123c32]'
-            }`}
-          >
-            Iniciar Sesión
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setAuthMode('register');
-              setErrorMessage(null);
-            }}
-            className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-              authMode === 'register'
-                ? 'bg-[#123c32] text-white shadow-xs'
-                : 'text-[#66716d] hover:text-[#123c32]'
-            }`}
-          >
-            Crear Cuenta Admin
-          </button>
-        </div>
-
         {/* 2. EMAIL & PASSWORD FORM */}
         <form onSubmit={handleEmailAuth} className="space-y-3.5">
           <div>
             <label className="block text-xs font-bold text-[#18211f] mb-1.5">
-              Correo Electrónico
+              Correo de Administrador Autorizado
             </label>
             <div className="relative">
               <input
@@ -293,7 +320,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@ejemplo.com"
+                placeholder="arriolapablo.a@gmail.com"
                 className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white border border-[#d8e2de] text-xs sm:text-sm font-medium text-[#18211f] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#123c32] shadow-xs"
               />
               <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -305,15 +332,13 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
               <label className="block text-xs font-bold text-[#18211f]">
                 Contraseña
               </label>
-              {authMode === 'login' && (
-                <button
-                  type="button"
-                  onClick={handleForgotPassword}
-                  className="text-[11px] font-semibold text-[#123c32] hover:underline cursor-pointer"
-                >
-                  ¿La olvidaste?
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-[11px] font-semibold text-[#123c32] hover:underline cursor-pointer"
+              >
+                ¿La olvidaste?
+              </button>
             </div>
             <div className="relative">
               <input
@@ -345,7 +370,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
               <span>Verificando...</span>
             ) : (
               <>
-                <span>{authMode === 'login' ? 'Ingresar al Panel de Control' : 'Registrar Cuenta de Administrador'}</span>
+                <span>Ingresar al Panel de Control</span>
                 <span>→</span>
               </>
             )}
@@ -355,7 +380,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
         {/* Security badge and footnote */}
         <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-center gap-2 text-[11px] text-[#66716d]">
           <KeyRound className="w-3.5 h-3.5 text-[#123c32]" />
-          <span>Acceso cifrado y protegido por Firebase Authentication</span>
+          <span>Acceso restringido exclusivamente a cuentas autorizadas</span>
         </div>
       </div>
     </div>

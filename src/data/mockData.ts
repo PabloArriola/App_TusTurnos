@@ -15,6 +15,7 @@ export const INITIAL_BUSINESSES: Business[] = [
     aliasCbu: 'LASH.BROWS.STUDIO',
     bankName: 'Mercado Pago / Banco Santander',
     defaultDepositPercentage: 30,
+    authorizedAdmins: ['arriolapablo.a@gmail.com'],
     specialists: [
       {
         id: 'spec_camila',
