@@ -20,7 +20,10 @@ import {
   MapPin, 
   ShieldCheck,
   Check,
-  CalendarDays
+  CalendarDays,
+  User,
+  Copy,
+  MessageCircle
 } from 'lucide-react';
 
 interface AdminAgendaViewProps {
@@ -831,97 +834,199 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
       )}
 
       {/* ============================================================ */}
-      {/* QUICK APPOINTMENT ACTION MODAL */}
+      {/* MODAL DETALLE DE TURNO SELECCIONADO (ESTILO BOUTIQUE SPA) */}
       {/* ============================================================ */}
       {activeAppointmentDetail && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-surface-container-lowest rounded-3xl max-w-sm sm:max-w-md w-full p-6 text-on-surface shadow-2xl border border-surface-container-high animate-in zoom-in-95 duration-200 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-surface-container-high/60">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-primary-container/20 text-primary flex items-center justify-center">
-                  <CalendarDays className="w-4 h-4" />
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="bg-white text-[#2F3E3A] rounded-[32px] max-w-sm sm:max-w-md w-full p-5 sm:p-6 shadow-[0_25px_60px_rgba(47,62,58,0.25)] border border-[#A8BDA3]/50 animate-in zoom-in-95 duration-200 space-y-3.5 my-auto relative overflow-hidden">
+            {/* Subtle luxury glow accent */}
+            <div className="absolute top-0 right-0 w-44 h-44 bg-[#D9E6D3]/35 rounded-full blur-3xl pointer-events-none -mr-12 -mt-12"></div>
+
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#A8BDA3]/40 relative z-10">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-[#2F3E3A] text-[#D9E6D3] flex items-center justify-center shadow-md shadow-[#2F3E3A]/20 shrink-0">
+                  <CalendarDays className="w-5 h-5 stroke-[2.2]" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-on-surface leading-tight">
+                  <h3 className="font-bold text-base sm:text-lg text-[#2F3E3A] leading-tight">
                     Detalles del Turno
                   </h3>
-                  <span className="text-[11px] text-secondary">ID: #{activeAppointmentDetail.id}</span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="font-mono text-xs font-semibold text-[#6F8A78]">
+                      #{activeAppointmentDetail.id}
+                    </span>
+                    <span className="text-[10px] text-[#A8BDA3]">·</span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      activeAppointmentDetail.status === 'confirmado'
+                        ? 'bg-[#D9E6D3] text-[#2F3E3A] border border-[#A8BDA3]/50'
+                        : activeAppointmentDetail.status === 'en_cabina'
+                        ? 'bg-[#2F3E3A] text-[#D9E6D3]'
+                        : activeAppointmentDetail.status === 'completado'
+                        ? 'bg-[#E8EFE5] text-[#6F8A78]'
+                        : 'bg-red-50 text-red-700 border border-red-200'
+                    }`}>
+                      {activeAppointmentDetail.status === 'confirmado'
+                        ? '✓ Confirmado'
+                        : activeAppointmentDetail.status === 'en_cabina'
+                        ? 'En Cabina'
+                        : activeAppointmentDetail.status === 'completado'
+                        ? 'Finalizado'
+                        : 'Cancelado'}
+                    </span>
+                  </div>
                 </div>
               </div>
+
               <button
                 type="button"
                 onClick={() => setActiveAppointmentDetail(null)}
-                className="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors"
+                className="w-8 h-8 rounded-full bg-[#F6F0E6] hover:bg-[#D9E6D3] text-[#2F3E3A] flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                aria-label="Cerrar modal"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Content Details */}
-            <div className="space-y-3 text-xs">
-              <div className="p-3 rounded-2xl bg-surface-container-low border border-surface-container-high/40">
-                <span className="text-secondary block text-[11px]">Tratamiento</span>
-                <p className="font-bold text-sm text-on-surface mt-0.5">
-                  {activeAppointmentDetail.serviceTitle}
-                </p>
-                <div className="flex items-center gap-3 text-secondary mt-1">
-                  <span>Profesional: <strong className="text-on-surface">{activeAppointmentDetail.specialistName}</strong></span>
-                  <span>·</span>
-                  <span>Duración: <strong className="text-on-surface">{activeAppointmentDetail.durationMinutes} min</strong></span>
+            {/* Treatment & Professional Card */}
+            <div className="p-3.5 rounded-[22px] bg-[#F6F0E6] border border-[#A8BDA3]/50 space-y-1.5">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6F8A78] block">
+                Tratamiento
+              </span>
+              <p className="font-bold text-sm sm:text-base text-[#2F3E3A] leading-snug">
+                {activeAppointmentDetail.serviceTitle}
+              </p>
+              <div className="flex items-center justify-between text-xs text-[#6F8A78] pt-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] text-[#6F8A78]">Profesional:</span>
+                  <strong className="text-[#2F3E3A] font-semibold">{activeAppointmentDetail.specialistName}</strong>
+                </div>
+                <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white text-[11px] font-bold text-[#2F3E3A] border border-[#A8BDA3]/40 shadow-xs">
+                  <Clock className="w-3 h-3 text-[#6F8A78]" />
+                  <span>{activeAppointmentDetail.durationMinutes} min</span>
                 </div>
               </div>
+            </div>
 
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-3 rounded-xl bg-surface-container-low">
-                  <span className="text-secondary block text-[10px]">Fecha & Hora</span>
-                  <span className="font-bold text-on-surface block mt-0.5">
-                    {activeAppointmentDetail.date} · {activeAppointmentDetail.time} hs
+            {/* Date, Time & Patient 2-Column Grid */}
+            <div className="grid grid-cols-2 gap-2.5 text-xs">
+              <div className="p-3 rounded-2xl bg-[#F6F0E6]/70 border border-[#A8BDA3]/40 flex flex-col justify-between">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#6F8A78] flex items-center gap-1 mb-1">
+                    <CalendarDays className="w-3 h-3 text-[#6F8A78]" />
+                    <span>Fecha & Hora</span>
+                  </span>
+                  <span className="font-bold text-xs text-[#2F3E3A] block">
+                    {activeAppointmentDetail.date}
                   </span>
                 </div>
+                <span className="inline-block mt-1 font-mono font-extrabold text-sm text-[#2F3E3A]">
+                  {activeAppointmentDetail.time} hs
+                </span>
+              </div>
 
-                <div className="p-3 rounded-xl bg-surface-container-low">
-                  <span className="text-secondary block text-[10px]">Paciente</span>
-                  <span className="font-bold text-on-surface block mt-0.5 truncate">
+              <div className="p-3 rounded-2xl bg-[#F6F0E6]/70 border border-[#A8BDA3]/40 flex flex-col justify-between">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#6F8A78] flex items-center gap-1 mb-1">
+                    <User className="w-3 h-3 text-[#6F8A78]" />
+                    <span>Paciente</span>
+                  </span>
+                  <span className="font-bold text-xs sm:text-sm text-[#2F3E3A] block truncate" title={activeAppointmentDetail.clientName}>
                     {activeAppointmentDetail.clientName}
                   </span>
                 </div>
+                {activeAppointmentDetail.clientPhone && (
+                  <a
+                    href={`https://wa.me/${activeAppointmentDetail.clientPhone.replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#25D366] hover:underline mt-1 truncate"
+                    title="Chatear por WhatsApp"
+                  >
+                    <Phone className="w-3 h-3 shrink-0" />
+                    <span className="truncate">{activeAppointmentDetail.clientPhone}</span>
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Client Notes (if available) */}
+            {activeAppointmentDetail.clientNotes && (
+              <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200/80 text-[11px] text-[#2F3E3A] leading-relaxed">
+                <span className="font-bold text-amber-900 block mb-0.5">Nota de la paciente:</span>
+                <span className="italic">"{activeAppointmentDetail.clientNotes}"</span>
+              </div>
+            )}
+
+            {/* Financial Breakdown (Ticket Voucher Style) */}
+            <div className="p-3.5 rounded-[22px] bg-[#F6F0E6] border border-[#A8BDA3]/50 space-y-2 text-xs">
+              <div className="flex items-center justify-between text-[#6F8A78]">
+                <span>Precio Total del Servicio:</span>
+                <span className="font-mono font-bold text-xs text-[#2F3E3A]">{formatPrice(activeAppointmentDetail.totalPrice)}</span>
               </div>
 
-              {/* Financial Breakdown */}
-              <div className="p-3 rounded-xl bg-surface-container-low/70 space-y-1.5 border border-surface-container-high/40">
-                <div className="flex items-center justify-between">
-                  <span className="text-secondary">Precio Total del Servicio:</span>
-                  <span className="font-bold text-on-surface">{formatPrice(activeAppointmentDetail.totalPrice)}</span>
-                </div>
-                <div className="flex items-center justify-between text-primary font-bold">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[#6F8A78] flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Seña Abonada (Mercado Pago):</span>
-                  <span>- {formatPrice(activeAppointmentDetail.depositPaid)}</span>
-                </div>
-                <div className="flex items-center justify-between pt-1 border-t border-surface-container-high/60 font-extrabold text-sm">
-                  <span>Saldo a Cobrar en Local:</span>
-                  <span className="text-emerald-700">{formatPrice(activeAppointmentDetail.remainingBalance)}</span>
-                </div>
+                </span>
+                <span className="font-mono font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md">
+                  - {formatPrice(activeAppointmentDetail.depositPaid)}
+                </span>
               </div>
 
-              {/* Status Switcher in Modal */}
-              <div>
-                <label className="block text-secondary font-semibold mb-1">
-                  Estado del Turno
-                </label>
-                <select
-                  value={activeAppointmentDetail.status}
-                  onChange={(e) => {
-                    const next = e.target.value as Appointment['status'];
-                    onUpdateAppointmentStatus(activeAppointmentDetail.id, next);
-                    setActiveAppointmentDetail((prev) => prev ? { ...prev, status: next } : null);
-                  }}
-                  className="w-full py-2 px-3 rounded-xl bg-surface-container border border-surface-container-high font-semibold text-xs text-on-surface cursor-pointer"
-                >
-                  <option value="confirmado">Confirmado (Seña MP)</option>
-                  <option value="en_cabina">En Cabina (Atendiendo)</option>
-                  <option value="completado">Completado (Saldado)</option>
-                  <option value="cancelado">Cancelado</option>
-                </select>
+              {/* Outstanding Balance Highlight Box */}
+              <div className="mt-2 p-3 rounded-xl bg-white border border-[#A8BDA3]/60 flex items-center justify-between shadow-xs">
+                <div>
+                  <span className="font-bold text-xs text-[#2F3E3A] block">
+                    Saldo a Cobrar en Local
+                  </span>
+                  <span className="text-[10px] text-[#6F8A78] block">
+                    Abonar en efectivo o transferencia
+                  </span>
+                </div>
+                <span className="text-lg sm:text-xl font-black font-mono text-[#2F3E3A] tracking-tight">
+                  {formatPrice(activeAppointmentDetail.remainingBalance)}
+                </span>
+              </div>
+            </div>
+
+            {/* Status Switcher (Interactive Pills) */}
+            <div>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6F8A78] block mb-1.5">
+                Estado del Turno
+              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                {[
+                  { value: 'confirmado', label: 'Confirmado', icon: Check },
+                  { value: 'en_cabina', label: 'En Cabina', icon: Sparkles },
+                  { value: 'completado', label: 'Completado', icon: CheckCircle2 },
+                  { value: 'cancelado', label: 'Cancelado', icon: X },
+                ].map((st) => {
+                  const isSelected = activeAppointmentDetail.status === st.value;
+                  const Icon = st.icon;
+                  return (
+                    <button
+                      key={st.value}
+                      type="button"
+                      onClick={() => {
+                        const next = st.value as Appointment['status'];
+                        onUpdateAppointmentStatus(activeAppointmentDetail.id, next);
+                        setActiveAppointmentDetail((prev) => (prev ? { ...prev, status: next } : null));
+                      }}
+                      className={`py-2 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
+                        isSelected
+                          ? st.value === 'cancelado'
+                            ? 'bg-red-600 text-white shadow-xs scale-[1.02]'
+                            : 'bg-[#2F3E3A] text-[#D9E6D3] shadow-xs scale-[1.02]'
+                          : 'bg-[#F6F0E6] hover:bg-[#D9E6D3]/60 text-[#6F8A78]'
+                      }`}
+                    >
+                      <Icon className="w-3 h-3" />
+                      <span>{st.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -930,16 +1035,16 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
               <button
                 type="button"
                 onClick={() => onSendWhatsAppReminder(activeAppointmentDetail)}
-                className="flex-1 py-2.5 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold shadow-md flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                className="flex-1 py-3.5 px-4 rounded-[18px] bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
               >
-                <Send className="w-3.5 h-3.5" />
+                <Send className="w-4 h-4" />
                 <span>Recordatorio WhatsApp</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveAppointmentDetail(null)}
-                className="px-4 py-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors cursor-pointer"
+                className="px-5 py-3.5 rounded-[18px] bg-[#F6F0E6] hover:bg-[#D9E6D3] text-[#2F3E3A] border border-[#A8BDA3]/50 font-bold text-xs sm:text-sm transition-all cursor-pointer active:scale-95"
               >
                 Cerrar
               </button>
