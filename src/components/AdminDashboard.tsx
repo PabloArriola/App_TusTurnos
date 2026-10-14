@@ -157,9 +157,68 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Specialist state
   const [showSpecialistModal, setShowSpecialistModal] = useState(false);
+  const [editingSpecialistId, setEditingSpecialistId] = useState<string | null>(null);
   const [specName, setSpecName] = useState('');
   const [specRole, setSpecRole] = useState('Master Lash Artist');
   const [specMatricula, setSpecMatricula] = useState('');
+  const [specAvatar, setSpecAvatar] = useState('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&h=300&q=80');
+  const specModalFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Helper to compress images client-side for fast loading & Firestore limits
+  const compressImage = (file: File, maxWidth = 400, quality = 0.85): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxWidth) {
+              width = Math.round((width * maxWidth) / height);
+              height = maxWidth;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = (err) => reject(err);
+      };
+      reader.onerror = (err) => reject(err);
+    });
+  };
+
+  // Direct image change handler from specialist card
+  const handleUpdateSpecialistImageDirect = async (specialistId: string, file: File) => {
+    try {
+      if (file.size > 8 * 1024 * 1024) {
+        alert('Por favor elegí una imagen menor a 8MB.');
+        return;
+      }
+      const base64 = await compressImage(file, 400, 0.85);
+      const updated = business.specialists.map((s) => {
+        if (s.id === specialistId) {
+          return { ...s, avatar: base64 };
+        }
+        return s;
+      });
+      onUpdateBusiness({ specialists: updated });
+    } catch (err) {
+      console.error('Error al actualizar la foto del profesional:', err);
+      alert('Hubo un problema al procesar la imagen.');
+    }
+  };
 
   // Business specific appointments
   const businessAppointments = appointments.filter((a) => a.businessId === business.id);
@@ -378,28 +437,90 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
   };
 
-  // Add specialist
-  const handleAddSpecialist = (e: React.FormEvent) => {
+  // Specialist Management Handlers
+  const handleOpenAddSpecialist = () => {
+    setEditingSpecialistId(null);
+    setSpecName('');
+    setSpecRole('Master Lash Artist');
+    setSpecMatricula('');
+    setSpecAvatar('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&h=300&q=80');
+    setShowSpecialistModal(true);
+  };
+
+  const handleOpenEditSpecialist = (spec: Specialist) => {
+    setEditingSpecialistId(spec.id);
+    setSpecName(spec.name);
+    setSpecRole(spec.role);
+    setSpecMatricula(spec.registrationNumber || '');
+    setSpecAvatar(spec.avatar || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&h=300&q=80');
+    setShowSpecialistModal(true);
+  };
+
+  const handleModalSpecImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 8 * 1024 * 1024) {
+        alert('Por favor elegí una imagen menor a 8MB.');
+        return;
+      }
+      try {
+        const base64 = await compressImage(file, 400, 0.85);
+        setSpecAvatar(base64);
+      } catch (err) {
+        console.error('Error al cargar la imagen:', err);
+      }
+    }
+  };
+
+  const handleSaveSpecialist = (e: React.FormEvent) => {
     e.preventDefault();
     if (!specName.trim()) return;
 
-    const newSpec: Specialist = {
-      id: `spec_${Date.now()}`,
-      name: specName.trim(),
-      role: specRole.trim(),
-      registrationNumber: specMatricula.trim() || 'Cert. Profesional',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&h=300&q=80',
-      rating: 5.0,
-      reviewCount: 1,
-      experienceYears: 3,
-      patientCount: '100+',
-      status: 'disponible',
-    };
+    if (editingSpecialistId) {
+      const updated = business.specialists.map((s) => {
+        if (s.id === editingSpecialistId) {
+          return {
+            ...s,
+            name: specName.trim(),
+            role: specRole.trim(),
+            registrationNumber: specMatricula.trim() || 'Cert. Profesional',
+            avatar: specAvatar,
+          };
+        }
+        return s;
+      });
+      onUpdateBusiness({ specialists: updated });
+    } else {
+      const newSpec: Specialist = {
+        id: `spec_${Date.now()}`,
+        name: specName.trim(),
+        role: specRole.trim(),
+        registrationNumber: specMatricula.trim() || 'Cert. Profesional',
+        avatar: specAvatar || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&h=300&q=80',
+        rating: 5.0,
+        reviewCount: 1,
+        experienceYears: 3,
+        patientCount: '100+',
+        status: 'disponible',
+      };
+      onUpdateBusiness({ specialists: [...business.specialists, newSpec] });
+    }
 
-    onUpdateBusiness({ specialists: [...business.specialists, newSpec] });
     setShowSpecialistModal(false);
+    setEditingSpecialistId(null);
     setSpecName('');
     setSpecMatricula('');
+  };
+
+  const handleDeleteSpecialist = (specId: string) => {
+    if (business.specialists.length <= 1) {
+      alert('Debe haber al menos un especialista en el equipo.');
+      return;
+    }
+    if (confirm('¿Estás seguro de que deseás eliminar este profesional del equipo?')) {
+      const updated = business.specialists.filter((s) => s.id !== specId);
+      onUpdateBusiness({ specialists: updated });
+    }
   };
 
   const daysLabels = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
@@ -844,40 +965,100 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div>
               <h2 className="text-base font-bold text-on-surface">Equipo de Profesionales</h2>
               <p className="text-xs text-secondary">
-                Gestioná al staff de especialistas que atienden los turnos.
+                Gestioná al staff de especialistas que atienden los turnos y sus fotos de perfil.
               </p>
             </div>
             <button
-              onClick={() => setShowSpecialistModal(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-primary-container text-on-primary text-xs font-bold shadow-sm active:scale-95 transition-all"
+              type="button"
+              onClick={handleOpenAddSpecialist}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-primary-container text-on-primary text-xs font-bold shadow-sm active:scale-95 transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>+ Profesional</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {business.specialists.map((spec) => (
               <div
                 key={spec.id}
-                className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_10px_30px_rgba(0,70,55,0.04)] border border-surface-container-high/60 flex items-start gap-3"
+                className="bg-surface-container-lowest rounded-2xl p-4 shadow-[0_10px_30px_rgba(0,70,55,0.04)] border border-surface-container-high/60 flex items-start gap-3.5 relative group hover:border-primary/40 transition-colors"
               >
-                <div className="w-14 h-14 rounded-2xl overflow-hidden bg-surface-container ring-2 ring-primary/20 shrink-0">
-                  <img src={spec.avatar} alt={spec.name} className="w-full h-full object-cover" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-sm text-on-surface truncate">{spec.name}</h4>
-                    <span className="text-xs font-bold text-amber-600 flex items-center gap-0.5">
-                      ★ {spec.rating}
-                    </span>
+                {/* Avatar with direct photo upload badge */}
+                <div className="relative shrink-0">
+                  <div className="w-16 h-16 rounded-2xl overflow-hidden bg-surface-container ring-2 ring-primary/20 shadow-xs relative">
+                    <img src={spec.avatar} alt={spec.name} className="w-full h-full object-cover" />
                   </div>
-                  <p className="text-xs text-primary font-medium">{spec.role}</p>
+                  {/* Quick Camera Change Button */}
+                  <label
+                    htmlFor={`spec-file-${spec.id}`}
+                    title="Cambiar foto de este profesional"
+                    className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#123c32] hover:bg-[#195344] text-[#d9f56a] flex items-center justify-center shadow-md cursor-pointer transition-transform hover:scale-110 active:scale-95 border-2 border-white"
+                  >
+                    <Camera className="w-3.5 h-3.5" />
+                    <input
+                      id={`spec-file-${spec.id}`}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleUpdateSpecialistImageDirect(spec.id, f);
+                      }}
+                    />
+                  </label>
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <h4 className="font-bold text-sm text-on-surface truncate">{spec.name}</h4>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs font-bold text-amber-600 flex items-center gap-0.5 mr-1">
+                        ★ {spec.rating}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEditSpecialist(spec)}
+                        title="Editar datos y foto del profesional"
+                        className="p-1 rounded-lg text-secondary hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteSpecialist(spec.id)}
+                        title="Eliminar profesional"
+                        className="p-1 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-xs text-primary font-medium truncate">{spec.role}</p>
                   <p className="text-[11px] text-secondary mt-0.5">{spec.registrationNumber}</p>
-                  <div className="mt-2 flex items-center gap-2">
+
+                  <div className="mt-2.5 flex items-center justify-between gap-2 pt-1 border-t border-surface-container-high/40">
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-800">
                       En Cabina / Activa
                     </span>
+                    <label
+                      htmlFor={`spec-file-text-${spec.id}`}
+                      className="text-[11px] font-semibold text-primary hover:text-primary/80 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
+                      title="Subir nueva foto"
+                    >
+                      <Upload className="w-3 h-3" />
+                      <span>Cambiar foto</span>
+                      <input
+                        id={`spec-file-text-${spec.id}`}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) handleUpdateSpecialistImageDirect(spec.id, f);
+                        }}
+                      />
+                    </label>
                   </div>
                 </div>
               </div>
@@ -1463,26 +1644,70 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       )}
 
       {/* ============================================================ */}
-      {/* MODAL: AGREGAR ESPECIALISTA */}
+      {/* MODAL: AGREGAR / EDITAR ESPECIALISTA CON CARGA DE IMAGEN */}
       {/* ============================================================ */}
       {showSpecialistModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <form
-            onSubmit={handleAddSpecialist}
+            onSubmit={handleSaveSpecialist}
             className="bg-surface-container-lowest rounded-3xl max-w-sm w-full p-6 text-on-surface shadow-2xl border border-surface-container-high animate-in zoom-in-95 duration-200"
           >
             <div className="flex items-center justify-between pb-3 border-b border-surface-container-high/60">
-              <h3 className="font-bold text-base text-on-surface">Agregar Especialista</h3>
+              <h3 className="font-bold text-base text-on-surface">
+                {editingSpecialistId ? 'Editar Profesional' : 'Agregar Especialista'}
+              </h3>
               <button
                 type="button"
                 onClick={() => setShowSpecialistModal(false)}
-                className="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors"
+                className="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 space-y-3.5">
+              {/* Photo Upload & Preview Section */}
+              <div className="flex flex-col items-center justify-center gap-2 p-3.5 rounded-2xl bg-surface-container-low border border-surface-container-high/60">
+                <div className="relative group">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-surface-container ring-2 ring-primary/30 shadow-md">
+                    <img
+                      src={specAvatar}
+                      alt="Foto del profesional"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => specModalFileInputRef.current?.click()}
+                    className="absolute inset-0 bg-black/50 text-white rounded-2xl flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                    title="Cargar foto"
+                  >
+                    <Camera className="w-5 h-5 mb-0.5 text-[#d9f56a]" />
+                    <span className="text-[10px] font-bold">Cambiar</span>
+                  </button>
+                </div>
+
+                <input
+                  type="file"
+                  ref={specModalFileInputRef}
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleModalSpecImageUpload}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => specModalFileInputRef.current?.click()}
+                  className="px-3.5 py-1.5 rounded-full bg-surface-container-high hover:bg-primary-container hover:text-on-primary text-on-surface text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{editingSpecialistId ? 'Cambiar Foto' : 'Cargar Foto'}</span>
+                </button>
+                <span className="text-[10px] text-secondary">
+                  Subí una foto en formato JPG, PNG o WebP
+                </span>
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-on-surface mb-1">Nombre Completo *</label>
                 <input
@@ -1523,15 +1748,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <button
                 type="button"
                 onClick={() => setShowSpecialistModal(false)}
-                className="flex-1 py-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant text-xs font-semibold transition-colors"
+                className="flex-1 py-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant text-xs font-semibold transition-colors cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
-                className="flex-1 py-2.5 rounded-full bg-primary-container text-on-primary text-xs font-bold shadow-md hover:bg-primary transition-all"
+                className="flex-1 py-2.5 rounded-full bg-primary-container text-on-primary text-xs font-bold shadow-md hover:bg-primary transition-all cursor-pointer"
               >
-                Agregar
+                {editingSpecialistId ? 'Guardar Cambios' : 'Agregar'}
               </button>
             </div>
           </form>
