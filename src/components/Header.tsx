@@ -116,7 +116,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       {/* Main Stylized Topbar (Fidelity to user HTML & CSS) */}
-      <header className="sticky top-0 w-full z-40 bg-surface/90 backdrop-blur-xl border-b border-[#d8e2de]/80 shadow-[0_4px_20px_rgba(18,60,50,0.05)]">
+      <header className="sticky top-0 w-full z-40 bg-surface/90 backdrop-blur-xl border-b border-[#A8BDA3]/80 shadow-[0_4px_20px_rgba(18,60,50,0.05)]">
         <div className="max-w-[540px] mx-auto px-4 sm:px-5 py-3.5 flex items-center justify-between">
           {/* Brand + Business Switcher */}
           <div className="flex items-center gap-3">
@@ -126,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className="flex items-center gap-3 text-left group cursor-pointer"
               >
                 {/* Brand Avatar with 4px forest border and gradient */}
-                <div className="w-[52px] h-[52px] rounded-full flex items-center justify-center border-4 border-[#123c32] bg-gradient-to-br from-[#d8e7dd] to-[#b4cbbb] text-[#123c32] font-bold text-xl shadow-sm shrink-0 overflow-hidden">
+                <div className="w-[52px] h-[52px] rounded-full flex items-center justify-center border-4 border-[#2F3E3A] bg-gradient-to-br from-[#d8e7dd] to-[#b4cbbb] text-[#2F3E3A] font-bold text-xl shadow-sm shrink-0 overflow-hidden">
                   {currentBusiness.logo ? (
                     <img src={currentBusiness.logo} alt={currentBusiness.name} className="w-full h-full object-cover" />
                   ) : (
@@ -136,10 +136,10 @@ export const Header: React.FC<HeaderProps> = ({
 
                 <div className="flex flex-col">
                   <div className="flex items-center gap-1">
-                    <span className="font-bold text-xl sm:text-[23px] text-[#18211f] tracking-tight leading-none">
+                    <span className="font-bold text-xl sm:text-[23px] text-[#2F3E3A] tracking-tight leading-none">
                       {currentBusiness.name}
                     </span>
-                    <span className="text-xl text-[#18211f] font-light ml-0.5 group-hover:translate-y-0.5 transition-transform">⌄</span>
+                    <span className="text-xl text-[#2F3E3A] font-light ml-0.5 group-hover:translate-y-0.5 transition-transform">⌄</span>
                     
                     {/* Quick Edit Business Button (Visible in Admin Mode) */}
                     {isAdminMode && (
@@ -149,13 +149,13 @@ export const Header: React.FC<HeaderProps> = ({
                           openEditBusinessModal();
                         }}
                         title="Modificar nombre y título de la empresa"
-                        className="w-5 h-5 rounded-full bg-[#123c32]/10 hover:bg-[#123c32] hover:text-white text-[#123c32] flex items-center justify-center transition-all cursor-pointer shadow-sm ml-1"
+                        className="w-5 h-5 rounded-full bg-[#2F3E3A]/10 hover:bg-[#2F3E3A] hover:text-white text-[#2F3E3A] flex items-center justify-center transition-all cursor-pointer shadow-sm ml-1"
                       >
                         <Edit2 className="w-2.5 h-2.5" />
                       </span>
                     )}
                   </div>
-                  <span className="text-[11px] font-bold text-[#123c32] uppercase tracking-[1.2px] mt-1 leading-none">
+                  <span className="text-[11px] font-bold text-[#2F3E3A] uppercase tracking-[1.2px] mt-1 leading-none">
                     {getSubtitle()}
                   </span>
                 </div>
@@ -164,13 +164,13 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Business Switcher Dropdown */}
               {showBusinessMenu && (
                 <div 
-                  className="absolute left-0 top-16 w-72 bg-white rounded-3xl shadow-[0_16px_40px_rgba(18,60,50,0.16)] border border-[#d8e2de] p-2 z-50 animate-in fade-in zoom-in-95 duration-150"
+                  className="absolute left-0 top-16 w-72 bg-white rounded-3xl shadow-[0_16px_40px_rgba(18,60,50,0.16)] border border-[#A8BDA3] p-2 z-50 animate-in fade-in zoom-in-95 duration-150"
                   onClick={() => setShowBusinessMenu(false)}
                 >
-                  <div className="px-3 py-2 text-xs font-bold text-[#66716d] uppercase tracking-wider border-b border-[#edf2ef] flex items-center justify-between">
+                  <div className="px-3 py-2 text-xs font-bold text-[#6F8A78] uppercase tracking-wider border-b border-[#E8EFE5] flex items-center justify-between">
                     <span>Cambiar de Negocio Local</span>
                     {isAdminMode && (
-                      <span className="text-[10px] text-[#123c32] font-bold bg-[#d9f56a] px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] text-[#2F3E3A] font-bold bg-[#D9E6D3] px-2 py-0.5 rounded-full">
                         Admin
                       </span>
                     )}
@@ -182,27 +182,27 @@ export const Header: React.FC<HeaderProps> = ({
                         onClick={() => onSelectBusiness(b)}
                         className={`w-full flex items-center gap-3 p-2 rounded-2xl text-left transition-all ${
                           b.id === currentBusiness.id 
-                            ? 'bg-[#123c32]/10 text-[#123c32] font-semibold' 
-                            : 'hover:bg-[#f7faf7] text-[#18211f]'
+                            ? 'bg-[#2F3E3A]/10 text-[#2F3E3A] font-semibold' 
+                            : 'hover:bg-[#F6F0E6] text-[#2F3E3A]'
                         }`}
                       >
                         <img 
                           src={b.logo} 
                           alt={b.name} 
-                          className="w-9 h-9 rounded-full object-cover border border-[#d8e2de]" 
+                          className="w-9 h-9 rounded-full object-cover border border-[#A8BDA3]" 
                         />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold truncate leading-tight">{b.name}</p>
-                          <p className="text-xs text-[#66716d] truncate">{b.category}</p>
+                          <p className="text-xs text-[#6F8A78] truncate">{b.category}</p>
                         </div>
                         {b.id === currentBusiness.id && (
-                          <Check className="w-4 h-4 text-[#123c32] shrink-0" />
+                          <Check className="w-4 h-4 text-[#2F3E3A] shrink-0" />
                         )}
                       </button>
                     ))}
                   </div>
 
-                  <div className="mt-2 pt-2 border-t border-[#edf2ef] px-2 space-y-2">
+                  <div className="mt-2 pt-2 border-t border-[#E8EFE5] px-2 space-y-2">
                     {isAdminMode && (
                       <button
                         type="button"
@@ -211,13 +211,13 @@ export const Header: React.FC<HeaderProps> = ({
                           setShowBusinessMenu(false);
                           openEditBusinessModal();
                         }}
-                        className="w-full py-2 px-3 rounded-2xl bg-[#d9f56a] text-[#123c32] text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm hover:bg-[#c2e44e] transition-all cursor-pointer"
+                        className="w-full py-2 px-3 rounded-2xl bg-[#D9E6D3] text-[#2F3E3A] text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm hover:bg-[#c2e44e] transition-all cursor-pointer"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                         <span>Modificar Nombre & Título</span>
                       </button>
                     )}
-                    <p className="text-[11px] text-[#66716d]">
+                    <p className="text-[11px] text-[#6F8A78]">
                       💡 Cada negocio tiene su link personalizado (ej. tusturnos.app/{currentBusiness.slug}).
                     </p>
                   </div>
@@ -231,15 +231,15 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onOpenNotifications}
               aria-label="Notificaciones"
-              className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white text-[#123c32] flex items-center justify-center shadow-[0_8px_22px_rgba(18,60,50,0.09)] hover:scale-105 active:scale-95 transition-all cursor-pointer border border-[#d8e2de]/50"
+              className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white text-[#2F3E3A] flex items-center justify-center shadow-[0_8px_22px_rgba(18,60,50,0.09)] hover:scale-105 active:scale-95 transition-all cursor-pointer border border-[#A8BDA3]/50"
             >
               <span className="material-symbols-outlined text-[23px]">notifications</span>
-              <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#d9f56a] border-2 border-white shadow-xs"></span>
+              <span className="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-[#D9E6D3] border-2 border-white shadow-xs"></span>
             </button>
 
             <button
               onClick={() => onNavigateToTab('perfil-clinico')}
-              className="w-11 h-11 sm:w-12 sm:h-12 rounded-[16px] bg-gradient-to-br from-[#e4ece5] to-[#c1d3c6] text-[#123c32] font-bold text-sm border-2 border-white shadow-[0_6px_18px_rgba(18,60,50,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all overflow-hidden cursor-pointer"
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-[16px] bg-gradient-to-br from-[#e4ece5] to-[#c1d3c6] text-[#2F3E3A] font-bold text-sm border-2 border-white shadow-[0_6px_18px_rgba(18,60,50,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all overflow-hidden cursor-pointer"
               title="Mi Perfil Clínico"
             >
               {clientProfile.avatar ? (

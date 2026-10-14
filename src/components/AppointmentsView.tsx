@@ -99,9 +99,9 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
     <div className="flex flex-col w-full max-w-[520px] mx-auto px-3.5 sm:px-4 space-y-4 pb-36 animate-in fade-in duration-200">
       {/* Toast Alert Notification */}
       {cancellationNotice && (
-        <div className="p-3.5 rounded-[18px] bg-[#123c32] text-white text-xs flex items-center justify-between shadow-[0_10px_25px_rgba(18,60,50,0.2)] border border-[#d9f56a]/30 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="p-3.5 rounded-[18px] bg-[#2F3E3A] text-white text-xs flex items-center justify-between shadow-[0_10px_25px_rgba(18,60,50,0.2)] border border-[#D9E6D3]/30 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="flex items-center gap-2">
-            <span className="text-[#d9f56a] font-bold text-sm">✓</span>
+            <span className="text-[#D9E6D3] font-bold text-sm">✓</span>
             <span className="font-semibold">{cancellationNotice}</span>
           </div>
           <button 
@@ -116,31 +116,31 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
       {/* Page Header */}
       <div className="flex items-center justify-between pt-1 px-1">
         <div>
-          <div className="inline-flex px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#eaf2ed] text-[#123c32] mb-1">
+          <div className="inline-flex px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#D9E6D3] text-[#2F3E3A] mb-1">
             GESTIÓN DE CITAS
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#123c32] tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2F3E3A] tracking-tight leading-tight">
             Mis Turnos & Historial
           </h1>
         </div>
 
         <button
           onClick={onNewBookingClick}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#123c32] text-white text-xs font-bold shadow-[0_6px_16px_rgba(18,60,50,0.18)] hover:bg-[#195344] active:scale-95 transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#2F3E3A] text-white text-xs font-bold shadow-[0_6px_16px_rgba(18,60,50,0.18)] hover:bg-[#6F8A78] active:scale-95 transition-all cursor-pointer"
         >
-          <Plus className="w-3.5 h-3.5 text-[#d9f56a]" />
+          <Plus className="w-3.5 h-3.5 text-[#D9E6D3]" />
           <span>Nuevo Turno</span>
         </button>
       </div>
 
       {/* Filter Tabs */}
-      <div className="grid grid-cols-3 gap-1 p-1 rounded-full bg-white border border-[#d8e2de] shadow-xs">
+      <div className="grid grid-cols-3 gap-1 p-1 rounded-full bg-white border border-[#A8BDA3] shadow-xs">
         <button
           onClick={() => setFilter('upcoming')}
           className={`py-2 text-xs font-bold rounded-full transition-all cursor-pointer ${
             filter === 'upcoming'
-              ? 'bg-[#123c32] text-white shadow-sm'
-              : 'text-[#66716d] hover:text-[#123c32]'
+              ? 'bg-[#2F3E3A] text-white shadow-sm'
+              : 'text-[#6F8A78] hover:text-[#2F3E3A]'
           }`}
         >
           Próximos ({appointments.filter(a => a.status === 'confirmado' || a.status === 'pendiente_seña').length})
@@ -149,8 +149,8 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
           onClick={() => setFilter('completed')}
           className={`py-2 text-xs font-bold rounded-full transition-all cursor-pointer ${
             filter === 'completed'
-              ? 'bg-[#123c32] text-white shadow-sm'
-              : 'text-[#66716d] hover:text-[#123c32]'
+              ? 'bg-[#2F3E3A] text-white shadow-sm'
+              : 'text-[#6F8A78] hover:text-[#2F3E3A]'
           }`}
         >
           Historial ({appointments.filter(a => a.status === 'completado' || a.status === 'cancelado').length})
@@ -159,8 +159,8 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
           onClick={() => setFilter('all')}
           className={`py-2 text-xs font-bold rounded-full transition-all cursor-pointer ${
             filter === 'all'
-              ? 'bg-[#123c32] text-white shadow-sm'
-              : 'text-[#66716d] hover:text-[#123c32]'
+              ? 'bg-[#2F3E3A] text-white shadow-sm'
+              : 'text-[#6F8A78] hover:text-[#2F3E3A]'
           }`}
         >
           Todos ({appointments.length})
@@ -170,16 +170,16 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
       {/* Appointments List */}
       {filteredAppointments.length === 0 ? (
         <div className="card-aesthetic p-8 sm:p-10 text-center">
-          <div className="w-14 h-14 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center mx-auto mb-3.5 shadow-xs">
+          <div className="w-14 h-14 rounded-full bg-[#E8EFE5] text-[#2F3E3A] flex items-center justify-center mx-auto mb-3.5 shadow-xs">
             <Calendar className="w-7 h-7" />
           </div>
-          <h3 className="text-lg font-bold text-[#123c32]">No tenés turnos en esta sección</h3>
-          <p className="text-xs sm:text-sm text-[#66716d] mt-1 max-w-xs mx-auto">
+          <h3 className="text-lg font-bold text-[#2F3E3A]">No tenés turnos en esta sección</h3>
+          <p className="text-xs sm:text-sm text-[#6F8A78] mt-1 max-w-xs mx-auto">
             Explorá el catálogo de servicios de nuestras profesionales y reservá tu horario en simples pasos.
           </p>
           <button
             onClick={onNewBookingClick}
-            className="mt-5 py-3.5 px-6 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white text-xs sm:text-sm font-bold shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all active:scale-95 cursor-pointer inline-flex items-center gap-2"
+            className="mt-5 py-3.5 px-6 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white text-xs sm:text-sm font-bold shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all active:scale-95 cursor-pointer inline-flex items-center gap-2"
           >
             <span>Explorar Servicios</span>
             <span>→</span>
@@ -209,25 +209,25 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
             return (
               <article
                 key={appt.id}
-                className="card-aesthetic p-5 sm:p-6 transition-all hover:border-[#123c32]/30 relative overflow-hidden"
+                className="card-aesthetic p-5 sm:p-6 transition-all hover:border-[#2F3E3A]/30 relative overflow-hidden"
               >
                 {/* Header Status Bar */}
-                <div className="flex items-center justify-between pb-3.5 border-b border-[#d8e2de]">
+                <div className="flex items-center justify-between pb-3.5 border-b border-[#A8BDA3]">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="font-bold text-xs text-[#123c32] bg-[#efffc5] px-2.5 py-0.5 rounded-full border border-[#d9f56a]/40">
+                    <span className="font-bold text-xs text-[#2F3E3A] bg-[#D9E6D3] px-2.5 py-0.5 rounded-full border border-[#D9E6D3]/40">
                       #{appt.id}
                     </span>
-                    <span className="text-xs text-[#66716d] truncate">
-                      Profesional: <strong className="text-[#123c32]">{appt.specialistName}</strong>
+                    <span className="text-xs text-[#6F8A78] truncate">
+                      Profesional: <strong className="text-[#2F3E3A]">{appt.specialistName}</strong>
                     </span>
                   </div>
 
                   <div className="flex items-center gap-1.5 shrink-0">
                     <span className={`px-3 py-1 rounded-full text-[11px] font-bold shrink-0 ${
                       isUpcoming
-                        ? 'bg-[#efffc5] text-[#123c32] border border-[#d9f56a]/50'
+                        ? 'bg-[#D9E6D3] text-[#2F3E3A] border border-[#D9E6D3]/50'
                         : isCompleted
-                        ? 'bg-[#edf2ef] text-[#66716d]'
+                        ? 'bg-[#E8EFE5] text-[#6F8A78]'
                         : 'bg-red-50 text-red-700 border border-red-200'
                     }`}>
                       {isUpcoming ? '✓ Turno Confirmado' : isCompleted ? 'Finalizado' : 'Cancelado'}
@@ -235,7 +235,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
 
                     <button
                       onClick={() => setAppointmentToDelete(appt)}
-                      className="w-7 h-7 rounded-full bg-[#f7faf7] hover:bg-red-50 text-[#66716d] hover:text-red-600 flex items-center justify-center transition-colors border border-[#d8e2de] hover:border-red-200 cursor-pointer shrink-0 ml-0.5"
+                      className="w-7 h-7 rounded-full bg-[#F6F0E6] hover:bg-red-50 text-[#6F8A78] hover:text-red-600 flex items-center justify-center transition-colors border border-[#A8BDA3] hover:border-red-200 cursor-pointer shrink-0 ml-0.5"
                       title="Eliminar este registro del historial"
                       aria-label="Eliminar registro"
                     >
@@ -246,63 +246,63 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
 
                 {/* Treatment details */}
                 <div className="py-3.5">
-                  <h2 className="text-lg sm:text-xl font-bold text-[#123c32] tracking-tight leading-snug">
+                  <h2 className="text-lg sm:text-xl font-bold text-[#2F3E3A] tracking-tight leading-snug">
                     {appt.serviceTitle}
                   </h2>
 
-                  <div className="flex items-center gap-2 text-xs text-[#66716d] mt-1.5 flex-wrap">
-                    <span className="bg-[#edf2ef] text-[#123c32] px-2.5 py-0.5 rounded-full font-bold">
+                  <div className="flex items-center gap-2 text-xs text-[#6F8A78] mt-1.5 flex-wrap">
+                    <span className="bg-[#E8EFE5] text-[#2F3E3A] px-2.5 py-0.5 rounded-full font-bold">
                       ◷ {appt.durationMinutes} min
                     </span>
                     <span>•</span>
-                    <span className="text-[#66716d]">{biz.name}</span>
+                    <span className="text-[#6F8A78]">{biz.name}</span>
                   </div>
                 </div>
 
                 {/* Date, Time & Financial Panel */}
-                <div className="bg-[#f7faf7] border border-[#d8e2de] rounded-[22px] p-4 space-y-2.5 mb-3.5">
-                  <div className="grid grid-cols-2 gap-2 pb-2.5 border-b border-[#d8e2de]">
+                <div className="bg-[#F6F0E6] border border-[#A8BDA3] rounded-[22px] p-4 space-y-2.5 mb-3.5">
+                  <div className="grid grid-cols-2 gap-2 pb-2.5 border-b border-[#A8BDA3]">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#123c32] border border-[#d8e2de] shrink-0">
-                        <Calendar className="w-4 h-4 text-[#123c32]" />
+                      <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#2F3E3A] border border-[#A8BDA3] shrink-0">
+                        <Calendar className="w-4 h-4 text-[#2F3E3A]" />
                       </div>
                       <div>
-                        <span className="text-[10px] text-[#66716d] uppercase font-bold block">Fecha</span>
-                        <span className="text-xs font-bold text-[#123c32]">{appt.date}</span>
+                        <span className="text-[10px] text-[#6F8A78] uppercase font-bold block">Fecha</span>
+                        <span className="text-xs font-bold text-[#2F3E3A]">{appt.date}</span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#123c32] border border-[#d8e2de] shrink-0">
-                        <Clock className="w-4 h-4 text-[#123c32]" />
+                      <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#2F3E3A] border border-[#A8BDA3] shrink-0">
+                        <Clock className="w-4 h-4 text-[#2F3E3A]" />
                       </div>
                       <div>
-                        <span className="text-[10px] text-[#66716d] uppercase font-bold block">Horario</span>
-                        <span className="text-xs font-bold text-[#123c32]">{appt.time} hs</span>
+                        <span className="text-[10px] text-[#6F8A78] uppercase font-bold block">Horario</span>
+                        <span className="text-xs font-bold text-[#2F3E3A]">{appt.time} hs</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs text-[#66716d] truncate">
-                    <MapPin className="w-3.5 h-3.5 text-[#123c32] shrink-0" />
+                  <div className="flex items-center gap-2 text-xs text-[#6F8A78] truncate">
+                    <MapPin className="w-3.5 h-3.5 text-[#2F3E3A] shrink-0" />
                     <span className="truncate">{biz.address}</span>
                   </div>
 
-                  <div className="pt-2 border-t border-[#d8e2de] space-y-1 text-xs">
+                  <div className="pt-2 border-t border-[#A8BDA3] space-y-1 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-[#66716d]">Seña abonada (Mercado Pago):</span>
-                      <span className="font-bold text-[#195344]">{formatPrice(appt.depositPaid)} ✓</span>
+                      <span className="text-[#6F8A78]">Seña abonada (Mercado Pago):</span>
+                      <span className="font-bold text-[#6F8A78]">{formatPrice(appt.depositPaid)} ✓</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[#66716d]">Saldo pendiente en recepción:</span>
-                      <span className="font-bold text-[#123c32]">{formatPrice(appt.remainingBalance)}</span>
+                      <span className="text-[#6F8A78]">Saldo pendiente en recepción:</span>
+                      <span className="font-bold text-[#2F3E3A]">{formatPrice(appt.remainingBalance)}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Actions row for upcoming appointments */}
                 {isUpcoming && (
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#d8e2de] text-xs">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-[#A8BDA3] text-xs">
                     <a
                       href={whatsappUrl}
                       target="_blank"
@@ -315,15 +315,15 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
 
                     <button
                       onClick={() => handleGoogleCalendar(appt)}
-                      className="py-2.5 px-2 rounded-[14px] bg-[#edf2ef] hover:bg-[#d8e2de] text-[#123c32] font-bold flex items-center justify-center gap-1.5 text-center transition-all cursor-pointer"
+                      className="py-2.5 px-2 rounded-[14px] bg-[#E8EFE5] hover:bg-[#A8BDA3] text-[#2F3E3A] font-bold flex items-center justify-center gap-1.5 text-center transition-all cursor-pointer"
                     >
-                      <Calendar className="w-3.5 h-3.5 text-[#123c32]" />
+                      <Calendar className="w-3.5 h-3.5 text-[#2F3E3A]" />
                       <span>Calendario</span>
                     </button>
 
                     <button
                       onClick={() => onRescheduleAppointment(appt)}
-                      className="py-2.5 px-2 rounded-[14px] bg-[#efffc5] hover:bg-[#d9f56a] text-[#123c32] font-bold flex items-center justify-center gap-1.5 text-center transition-all border border-[#d9f56a]/40 cursor-pointer"
+                      className="py-2.5 px-2 rounded-[14px] bg-[#D9E6D3] hover:bg-[#D9E6D3] text-[#2F3E3A] font-bold flex items-center justify-center gap-1.5 text-center transition-all border border-[#D9E6D3]/40 cursor-pointer"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       <span>Reprogramar</span>
@@ -341,12 +341,12 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
 
                 {/* Re-book button & Delete individual history for completed/cancelled appointments */}
                 {!isUpcoming && (
-                  <div className="pt-2 border-t border-[#d8e2de] grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="pt-2 border-t border-[#A8BDA3] grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <button
                       onClick={onNewBookingClick}
-                      className="py-2.5 px-3.5 rounded-[16px] bg-[#edf2ef] hover:bg-[#d8e2de] text-[#123c32] font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      className="py-2.5 px-3.5 rounded-[16px] bg-[#E8EFE5] hover:bg-[#A8BDA3] text-[#2F3E3A] font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                     >
-                      <RotateCcw className="w-3.5 h-3.5 text-[#123c32]" />
+                      <RotateCcw className="w-3.5 h-3.5 text-[#2F3E3A]" />
                       <span>Volver a reservar</span>
                     </button>
 
@@ -373,7 +373,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
             {/* Close button */}
             <button
               onClick={() => setAppointmentToCancel(null)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#edf2ef] hover:bg-[#d8e2de] text-[#66716d] flex items-center justify-center transition-colors cursor-pointer"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#E8EFE5] hover:bg-[#A8BDA3] text-[#6F8A78] flex items-center justify-center transition-colors cursor-pointer"
               aria-label="Cerrar modal"
             >
               <X className="w-4 h-4" />
@@ -385,13 +385,13 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
             </div>
 
             <div className="text-center">
-              <h3 className="text-lg font-bold text-[#123c32]">
+              <h3 className="text-lg font-bold text-[#2F3E3A]">
                 ¿Deseás cancelar tu turno?
               </h3>
-              <p className="text-xs text-[#66716d] mt-1">
-                Reserva <strong className="text-[#123c32] font-semibold">#{appointmentToCancel.id}</strong> · {appointmentToCancel.serviceTitle}
+              <p className="text-xs text-[#6F8A78] mt-1">
+                Reserva <strong className="text-[#2F3E3A] font-semibold">#{appointmentToCancel.id}</strong> · {appointmentToCancel.serviceTitle}
               </p>
-              <p className="text-xs text-[#66716d] mt-0.5 font-medium">
+              <p className="text-xs text-[#6F8A78] mt-0.5 font-medium">
                 {appointmentToCancel.date} a las {appointmentToCancel.time} hs · Con {appointmentToCancel.specialistName}
               </p>
             </div>
@@ -415,8 +415,8 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
                     <span>Quedan menos de 24 hs: si cancelás ahora no habrá reembolso de la seña.</span>
                   </div>
                 ) : (
-                  <div className="p-2.5 rounded-xl bg-[#efffc5] border border-[#d9f56a]/60 flex items-center gap-2 text-[11px] text-[#123c32] font-semibold">
-                    <span className="material-symbols-outlined text-[16px] text-[#195344] shrink-0">check_circle</span>
+                  <div className="p-2.5 rounded-xl bg-[#D9E6D3] border border-[#D9E6D3]/60 flex items-center gap-2 text-[11px] text-[#2F3E3A] font-semibold">
+                    <span className="material-symbols-outlined text-[16px] text-[#6F8A78] shrink-0">check_circle</span>
                     <span>Quedan más de 24 hs: Podés reprogramar la fecha sin perder el dinero de tu seña.</span>
                   </div>
                 )}
@@ -431,9 +431,9 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
                   setAppointmentToCancel(null);
                   onRescheduleAppointment(appt);
                 }}
-                className="w-full py-3.5 px-4 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white font-bold text-xs sm:text-sm shadow-[0_8px_20px_rgba(18,60,50,0.18)] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 px-4 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white font-bold text-xs sm:text-sm shadow-[0_8px_20px_rgba(18,60,50,0.18)] transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <RotateCcw className="w-4 h-4 text-[#d9f56a]" />
+                <RotateCcw className="w-4 h-4 text-[#D9E6D3]" />
                 <span>Reprogramar Fecha (Sin Perder Seña)</span>
               </button>
 
@@ -447,7 +447,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
 
               <button
                 onClick={() => setAppointmentToCancel(null)}
-                className="w-full py-2.5 rounded-full text-[#66716d] hover:text-[#123c32] font-bold text-xs transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-full text-[#6F8A78] hover:text-[#2F3E3A] font-bold text-xs transition-colors cursor-pointer"
               >
                 No cancelar, conservar mi turno
               </button>
@@ -463,7 +463,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
             {/* Close button */}
             <button
               onClick={() => setAppointmentToDelete(null)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#edf2ef] hover:bg-[#d8e2de] text-[#66716d] flex items-center justify-center transition-colors cursor-pointer"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#E8EFE5] hover:bg-[#A8BDA3] text-[#6F8A78] flex items-center justify-center transition-colors cursor-pointer"
               aria-label="Cerrar modal"
             >
               <X className="w-4 h-4" />
@@ -475,24 +475,24 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
             </div>
 
             <div className="text-center">
-              <h3 className="text-lg font-bold text-[#123c32]">
+              <h3 className="text-lg font-bold text-[#2F3E3A]">
                 ¿Eliminar este registro del historial?
               </h3>
-              <p className="text-xs text-[#66716d] mt-1">
-                Turno <strong className="text-[#123c32] font-semibold">#{appointmentToDelete.id}</strong> · {appointmentToDelete.serviceTitle}
+              <p className="text-xs text-[#6F8A78] mt-1">
+                Turno <strong className="text-[#2F3E3A] font-semibold">#{appointmentToDelete.id}</strong> · {appointmentToDelete.serviceTitle}
               </p>
-              <p className="text-xs text-[#66716d] mt-0.5 font-medium">
+              <p className="text-xs text-[#6F8A78] mt-0.5 font-medium">
                 {appointmentToDelete.date} · {appointmentToDelete.time} hs · Con {appointmentToDelete.specialistName}
               </p>
             </div>
 
             {/* Clarification Box */}
-            <div className="mt-4 p-4 rounded-[20px] bg-[#f7faf7] border border-[#d8e2de] text-left space-y-1.5 text-xs">
-              <div className="flex items-center gap-1.5 text-[#123c32] font-bold">
+            <div className="mt-4 p-4 rounded-[20px] bg-[#F6F0E6] border border-[#A8BDA3] text-left space-y-1.5 text-xs">
+              <div className="flex items-center gap-1.5 text-[#2F3E3A] font-bold">
                 <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
                 <span>Eliminación individual</span>
               </div>
-              <p className="text-[#66716d] leading-relaxed">
+              <p className="text-[#6F8A78] leading-relaxed">
                 Esta acción eliminará de forma permanente esta historia/turno de tu lista personal de turnos e historial.
               </p>
             </div>
@@ -509,7 +509,7 @@ export const AppointmentsView: React.FC<AppointmentsViewProps> = ({
 
               <button
                 onClick={() => setAppointmentToDelete(null)}
-                className="w-full py-2.5 rounded-full text-[#66716d] hover:text-[#123c32] font-bold text-xs transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-full text-[#6F8A78] hover:text-[#2F3E3A] font-bold text-xs transition-colors cursor-pointer"
               >
                 Cancelar y conservar registro
               </button>

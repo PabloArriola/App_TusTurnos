@@ -219,7 +219,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#0a231d] via-[#123c32] to-[#0a231d] text-white">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-gradient-to-b from-[#1c2724] via-[#2F3E3A] to-[#1c2724] text-white">
       {/* Return to Client App button */}
       <div className="w-full max-w-md mb-3 flex items-center justify-between">
         <button
@@ -233,24 +233,24 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
       </div>
 
       {/* Main Admin Login Card */}
-      <div className="w-full max-w-md bg-white text-[#18211f] rounded-[28px] p-6 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.35)] border border-white/20 relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="w-full max-w-md bg-white text-[#2F3E3A] rounded-[28px] p-6 sm:p-8 shadow-[0_25px_60px_rgba(0,0,0,0.35)] border border-white/20 relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Glow Accent */}
-        <div className="absolute top-0 right-0 w-44 h-44 bg-[#d9f56a]/20 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10"></div>
+        <div className="absolute top-0 right-0 w-44 h-44 bg-[#D9E6D3]/20 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10"></div>
 
         {/* Brand Icon & Header */}
         <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-[22px] bg-[#123c32] text-[#d9f56a] flex items-center justify-center mx-auto mb-3.5 shadow-lg shadow-[#123c32]/30">
+          <div className="w-16 h-16 rounded-[22px] bg-[#2F3E3A] text-[#D9E6D3] flex items-center justify-center mx-auto mb-3.5 shadow-lg shadow-[#2F3E3A]/30">
             <ShieldCheck className="w-8 h-8 stroke-[2.2]" />
           </div>
 
-          <span className="inline-block px-3 py-1 rounded-full text-[10px] font-extrabold tracking-widest uppercase bg-[#eaf2ed] text-[#123c32] mb-2">
+          <span className="inline-block px-3 py-1 rounded-full text-[10px] font-extrabold tracking-widest uppercase bg-[#D9E6D3] text-[#2F3E3A] mb-2">
             Panel de Control · Acceso Exclusivo
           </span>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#123c32] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2F3E3A] tracking-tight">
             Acceso Administrativo
           </h1>
-          <p className="text-xs sm:text-sm text-[#66716d] mt-1.5 max-w-xs mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#6F8A78] mt-1.5 max-w-xs mx-auto leading-relaxed">
             Ingresá únicamente con una cuenta de administrador autorizada.
           </p>
         </div>
@@ -311,7 +311,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
         {/* 2. EMAIL & PASSWORD FORM */}
         <form onSubmit={handleEmailAuth} className="space-y-3.5">
           <div>
-            <label className="block text-xs font-bold text-[#18211f] mb-1.5">
+            <label className="block text-xs font-bold text-[#2F3E3A] mb-1.5">
               Correo de Administrador Autorizado
             </label>
             <div className="relative">
@@ -321,7 +321,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="arriolapablo.a@gmail.com"
-                className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white border border-[#d8e2de] text-xs sm:text-sm font-medium text-[#18211f] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#123c32] shadow-xs"
+                className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white border border-[#A8BDA3] text-xs sm:text-sm font-medium text-[#2F3E3A] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] shadow-xs"
               />
               <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             </div>
@@ -329,13 +329,13 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-bold text-[#18211f]">
+              <label className="block text-xs font-bold text-[#2F3E3A]">
                 Contraseña
               </label>
               <button
                 type="button"
                 onClick={handleForgotPassword}
-                className="text-[11px] font-semibold text-[#123c32] hover:underline cursor-pointer"
+                className="text-[11px] font-semibold text-[#2F3E3A] hover:underline cursor-pointer"
               >
                 ¿La olvidaste?
               </button>
@@ -347,7 +347,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-10 py-2.5 rounded-2xl bg-white border border-[#d8e2de] text-xs sm:text-sm font-medium text-[#18211f] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#123c32] shadow-xs"
+                className="w-full pl-10 pr-10 py-2.5 rounded-2xl bg-white border border-[#A8BDA3] text-xs sm:text-sm font-medium text-[#2F3E3A] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] shadow-xs"
               />
               <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <button
@@ -364,7 +364,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3.5 px-4 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white text-xs sm:text-sm font-bold shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all cursor-pointer mt-2 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
+            className="w-full py-3.5 px-4 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white text-xs sm:text-sm font-bold shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all cursor-pointer mt-2 flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60"
           >
             {isLoading ? (
               <span>Verificando...</span>
@@ -378,8 +378,8 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({
         </form>
 
         {/* Security badge and footnote */}
-        <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-center gap-2 text-[11px] text-[#66716d]">
-          <KeyRound className="w-3.5 h-3.5 text-[#123c32]" />
+        <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-center gap-2 text-[11px] text-[#6F8A78]">
+          <KeyRound className="w-3.5 h-3.5 text-[#2F3E3A]" />
           <span>Acceso restringido exclusivamente a cuentas autorizadas</span>
         </div>
       </div>

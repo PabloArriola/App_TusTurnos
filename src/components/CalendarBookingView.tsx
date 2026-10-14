@@ -218,16 +218,16 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
     return (
       <div className="flex flex-col w-full max-w-[520px] mx-auto px-3.5 sm:px-4 space-y-4 pb-36 text-center py-8 animate-in fade-in duration-200">
         <div className="card-aesthetic p-8 sm:p-10 text-center">
-          <div className="w-16 h-16 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center mx-auto mb-4 shadow-xs">
+          <div className="w-16 h-16 rounded-full bg-[#E8EFE5] text-[#2F3E3A] flex items-center justify-center mx-auto mb-4 shadow-xs">
             <span className="material-symbols-outlined text-[32px]">spa</span>
           </div>
-          <h2 className="text-xl font-bold text-[#123c32]">Seleccioná un servicio primero</h2>
-          <p className="text-xs sm:text-sm text-[#66716d] max-w-sm mx-auto leading-relaxed mt-1">
+          <h2 className="text-xl font-bold text-[#2F3E3A]">Seleccioná un servicio primero</h2>
+          <p className="text-xs sm:text-sm text-[#6F8A78] max-w-sm mx-auto leading-relaxed mt-1">
             Elegí un servicio en el catálogo para ver los días y horarios libres.
           </p>
           <button
             onClick={onBackToServices}
-            className="mt-6 py-4 px-6 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white font-bold text-xs sm:text-sm shadow-[0_10px_24px_rgba(18,60,50,0.18)] mx-auto active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+            className="mt-6 py-4 px-6 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white font-bold text-xs sm:text-sm shadow-[0_10px_24px_rgba(18,60,50,0.18)] mx-auto active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">arrow_back</span>
             <span>Ir al Catálogo de Servicios</span>
@@ -241,12 +241,12 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
     <div className="flex flex-col w-full max-w-[520px] mx-auto px-3.5 sm:px-4 space-y-4 pb-36 animate-in fade-in duration-200">
       {/* Rescheduling Top Banner */}
       {reschedulingAppointment && (
-        <div className="p-4 rounded-[22px] bg-[#123c32] text-white flex items-center gap-3 border border-[#d9f56a]/40 shadow-lg animate-in fade-in duration-200">
-          <div className="w-9 h-9 rounded-full bg-white/10 text-[#d9f56a] flex items-center justify-center shrink-0">
+        <div className="p-4 rounded-[22px] bg-[#2F3E3A] text-white flex items-center gap-3 border border-[#D9E6D3]/40 shadow-lg animate-in fade-in duration-200">
+          <div className="w-9 h-9 rounded-full bg-white/10 text-[#D9E6D3] flex items-center justify-center shrink-0">
             <RotateCcw className="w-4 h-4" />
           </div>
           <div>
-            <p className="font-bold text-xs text-[#d9f56a]">
+            <p className="font-bold text-xs text-[#D9E6D3]">
               Reprogramando Turno #{reschedulingAppointment.id}
             </p>
             <p className="text-[11px] text-white/80 mt-0.5">
@@ -266,17 +266,17 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
               onBackToServices();
             }
           }}
-          className="w-11 h-11 flex items-center justify-center rounded-full bg-white text-[#123c32] border border-[#d8e2de]/80 shadow-[0_8px_22px_rgba(18,60,50,0.08)] active:scale-95 transition-all cursor-pointer hover:scale-105"
+          className="w-11 h-11 flex items-center justify-center rounded-full bg-white text-[#2F3E3A] border border-[#A8BDA3]/80 shadow-[0_8px_22px_rgba(18,60,50,0.08)] active:scale-95 transition-all cursor-pointer hover:scale-105"
           aria-label="Volver"
         >
           <span className="material-symbols-outlined text-[20px]">arrow_back_ios_new</span>
         </button>
 
         <div className="text-center">
-          <span className="inline-flex px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#eaf2ed] text-[#123c32] mb-0.5">
+          <span className="inline-flex px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#D9E6D3] text-[#2F3E3A] mb-0.5">
             {bookingStep === 'select-day' ? 'PASO 1 DE 2: ELEGIR DÍA' : 'PASO 2 DE 2: ELEGIR HORARIO'}
           </span>
-          <h2 className="text-xl sm:text-2xl font-bold text-[#123c32] tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#2F3E3A] tracking-tight">
             {bookingStep === 'select-day' ? 'Seleccionar Día' : 'Seleccionar Horario'}
           </h2>
         </div>
@@ -288,31 +288,31 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
       <div className="card-aesthetic p-5 sm:p-6 flex flex-col gap-3 transition-transform duration-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-12 h-12 rounded-full bg-[#eaf2ed] flex items-center justify-center text-[#123c32] shrink-0 border border-[#d8e2de]">
+            <div className="w-12 h-12 rounded-full bg-[#D9E6D3] flex items-center justify-center text-[#2F3E3A] shrink-0 border border-[#A8BDA3]">
               <span className="material-symbols-outlined text-[24px]">
                 {currentService.iconName || 'spa'}
               </span>
             </div>
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-base sm:text-lg font-bold text-[#18211f] truncate">
+                <span className="text-base sm:text-lg font-bold text-[#2F3E3A] truncate">
                   {currentService.title}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#edf2ef] text-[#66716d] text-[11px] shrink-0 font-bold">
+                <span className="px-2.5 py-0.5 rounded-full bg-[#E8EFE5] text-[#6F8A78] text-[11px] shrink-0 font-bold">
                   ◷ {currentService.durationMinutes} min
                 </span>
               </div>
-              <p className="text-xs text-[#66716d] truncate mt-0.5">
-                Atiende: <strong className="text-[#123c32]">{selectedSpecialist.name}</strong> • {business.name}
+              <p className="text-xs text-[#6F8A78] truncate mt-0.5">
+                Atiende: <strong className="text-[#2F3E3A]">{selectedSpecialist.name}</strong> • {business.name}
               </p>
             </div>
           </div>
 
           <div className="flex flex-col items-end shrink-0 pl-2">
-            <span className="text-lg sm:text-xl font-bold text-[#123c32]">
+            <span className="text-lg sm:text-xl font-bold text-[#2F3E3A]">
               {formatPrice(currentService.price)}
             </span>
-            <span className="text-[10px] text-[#195344] font-bold bg-[#efffc5] px-2 py-0.5 rounded-full mt-0.5">
+            <span className="text-[10px] text-[#6F8A78] font-bold bg-[#D9E6D3] px-2 py-0.5 rounded-full mt-0.5">
               Seña: {formatPrice(depositAmount)}
             </span>
           </div>
@@ -320,11 +320,11 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
 
         {/* Existing booked items badge if adding second service */}
         {bookedItems.length > 0 && (
-          <div className="pt-2 border-t border-[#d8e2de] flex items-center justify-between text-xs text-[#195344]">
+          <div className="pt-2 border-t border-[#A8BDA3] flex items-center justify-between text-xs text-[#6F8A78]">
             <span className="font-semibold">
               Ya tenés {bookedItems.length} {bookedItems.length === 1 ? 'servicio' : 'servicios'} sumado(s) a tu reserva
             </span>
-            <span className="font-bold text-[#123c32]">
+            <span className="font-bold text-[#2F3E3A]">
               Servicio #{bookedItems.length + 1}
             </span>
           </div>
@@ -338,10 +338,10 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
             {/* Month Navigation Header */}
             <div className="flex items-center justify-between mb-4">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#66716d] block">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#6F8A78] block">
                   Calendario de Turnos
                 </span>
-                <h3 className="text-lg sm:text-xl font-bold text-[#123c32] tracking-tight">
+                <h3 className="text-lg sm:text-xl font-bold text-[#2F3E3A] tracking-tight">
                   {currentMonthName}
                 </h3>
               </div>
@@ -351,7 +351,7 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                   type="button"
                   onClick={handlePrevMonth}
                   aria-label="Mes anterior"
-                  className="w-9 h-9 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center hover:bg-[#d8e2de] active:scale-90 transition-all cursor-pointer shadow-xs"
+                  className="w-9 h-9 rounded-full bg-[#E8EFE5] text-[#2F3E3A] flex items-center justify-center hover:bg-[#A8BDA3] active:scale-90 transition-all cursor-pointer shadow-xs"
                 >
                   <ChevronLeft className="w-5 h-5 stroke-[2.2]" />
                 </button>
@@ -359,7 +359,7 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                   type="button"
                   onClick={handleNextMonth}
                   aria-label="Mes siguiente"
-                  className="w-9 h-9 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center hover:bg-[#d8e2de] active:scale-90 transition-all cursor-pointer shadow-xs"
+                  className="w-9 h-9 rounded-full bg-[#E8EFE5] text-[#2F3E3A] flex items-center justify-center hover:bg-[#A8BDA3] active:scale-90 transition-all cursor-pointer shadow-xs"
                 >
                   <ChevronRight className="w-5 h-5 stroke-[2.2]" />
                 </button>
@@ -446,15 +446,15 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                       key={dayNum}
                       type="button"
                       onClick={() => setSelectedDay(dayNum)}
-                      className="h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none bg-[#f2f4f3] hover:bg-[#e7eee9] active:scale-95 transition-all cursor-pointer group border border-transparent hover:border-[#123c32]/15"
+                      className="h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none bg-[#f2f4f3] hover:bg-[#e7eee9] active:scale-95 transition-all cursor-pointer group border border-transparent hover:border-[#2F3E3A]/15"
                     >
                       <div className="w-full flex items-center justify-between">
-                        <span className="text-xs sm:text-sm font-semibold text-[#18211f] group-hover:font-bold leading-none">
+                        <span className="text-xs sm:text-sm font-semibold text-[#2F3E3A] group-hover:font-bold leading-none">
                           {dayNum}
                         </span>
                       </div>
                       <div className="w-full">
-                        <span className="text-[8px] sm:text-[9px] font-semibold text-[#123c32]/50 group-hover:text-[#123c32] block truncate">
+                        <span className="text-[8px] sm:text-[9px] font-semibold text-[#2F3E3A]/50 group-hover:text-[#2F3E3A] block truncate">
                           Libre
                         </span>
                       </div>
@@ -497,14 +497,14 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
             </div>
 
             {/* Event / Status Capsule Pills inspired by user reference model */}
-            <div className="mt-3.5 pt-3.5 border-t border-[#d8e2de]/70 flex flex-wrap items-center gap-2">
+            <div className="mt-3.5 pt-3.5 border-t border-[#A8BDA3]/70 flex flex-wrap items-center gap-2">
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#fef9c3] border border-[#fde047] text-[#854d0e] text-[11px] sm:text-xs font-semibold shadow-xs">
                 <span className="w-2 h-2 rounded-full bg-[#eab308]"></span>
                 <span>Turno seleccionado: <strong>{formattedDate}</strong></span>
               </div>
 
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f4f7f5] border border-[#d8e2de] text-[#123c32] text-[11px] sm:text-xs font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#123c32]"></span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f4f7f5] border border-[#A8BDA3] text-[#2F3E3A] text-[11px] sm:text-xs font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#2F3E3A]"></span>
                 <span>Atención: {business.availableDays?.length ? 'Lunes a Sábados' : 'Lun a Sáb'} ({business.schedule || '09:00 - 20:30'})</span>
               </div>
             </div>
@@ -515,12 +515,12 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
             <button
               type="button"
               onClick={() => setBookingStep('select-time')}
-              className="w-full py-4 px-5 rounded-[18px] bg-[#123c32] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] hover:bg-[#195344] hover:-translate-y-0.5 transition-all active:scale-[0.98] cursor-pointer"
+              className="w-full py-4 px-5 rounded-[18px] bg-[#2F3E3A] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] hover:bg-[#6F8A78] hover:-translate-y-0.5 transition-all active:scale-[0.98] cursor-pointer"
             >
               <span>Continuar a Elegir Horario ({formattedDate})</span>
               <span className="text-lg">→</span>
             </button>
-            <p className="text-center text-xs text-[#66716d] mt-2 font-medium">
+            <p className="text-center text-xs text-[#6F8A78] mt-2 font-medium">
               Elegí el día y luego podrás ver los turnos disponibles por franja horaria
             </p>
           </div>
@@ -535,12 +535,12 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
             <button
               type="button"
               onClick={() => setBookingStep('select-day')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#d8e2de] text-xs font-bold text-[#123c32] hover:bg-[#edf2ef] transition-colors cursor-pointer shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#A8BDA3] text-xs font-bold text-[#2F3E3A] hover:bg-[#E8EFE5] transition-colors cursor-pointer shadow-xs"
             >
               <span>← Cambiar fecha</span>
             </button>
 
-            <span className="text-xs font-bold text-[#123c32] bg-[#efffc5] px-3 py-1 rounded-full border border-[#d9f56a]/40">
+            <span className="text-xs font-bold text-[#2F3E3A] bg-[#D9E6D3] px-3 py-1 rounded-full border border-[#D9E6D3]/40">
               Fecha elegida: {formattedDate}
             </span>
           </div>
@@ -548,20 +548,20 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
           {/* Shifts filter */}
           <div className="space-y-2">
             <div className="flex items-center justify-between px-1">
-              <span className="text-base font-bold text-[#123c32]">Franja Horaria</span>
-              <span className="text-xs font-bold text-[#66716d]">
+              <span className="text-base font-bold text-[#2F3E3A]">Franja Horaria</span>
+              <span className="text-xs font-bold text-[#6F8A78]">
                 {slotsByShift[activeShift].filter((s) => s.status === 'available').length} turnos libres
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-1.5 p-1 rounded-full bg-white shadow-xs border border-[#d8e2de]">
+            <div className="grid grid-cols-3 gap-1.5 p-1 rounded-full bg-white shadow-xs border border-[#A8BDA3]">
               <button
                 type="button"
                 onClick={() => setActiveShift('morning')}
                 className={`flex items-center justify-center gap-1.5 py-2.5 rounded-full transition-all duration-200 cursor-pointer ${
                   activeShift === 'morning'
-                    ? 'bg-[#123c32] text-white shadow-sm font-bold'
-                    : 'text-[#66716d] hover:text-[#18211f]'
+                    ? 'bg-[#2F3E3A] text-white shadow-sm font-bold'
+                    : 'text-[#6F8A78] hover:text-[#2F3E3A]'
                 }`}
               >
                 <span className="material-symbols-outlined text-[17px]">light_mode</span>
@@ -573,8 +573,8 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                 onClick={() => setActiveShift('afternoon')}
                 className={`flex items-center justify-center gap-1.5 py-2.5 rounded-full transition-all duration-200 cursor-pointer ${
                   activeShift === 'afternoon'
-                    ? 'bg-[#123c32] text-white shadow-sm font-bold'
-                    : 'text-[#66716d] hover:text-[#18211f]'
+                    ? 'bg-[#2F3E3A] text-white shadow-sm font-bold'
+                    : 'text-[#6F8A78] hover:text-[#2F3E3A]'
                 }`}
               >
                 <span className="material-symbols-outlined text-[17px]">wb_sunny</span>
@@ -586,8 +586,8 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                 onClick={() => setActiveShift('evening')}
                 className={`flex items-center justify-center gap-1.5 py-2.5 rounded-full transition-all duration-200 cursor-pointer ${
                   activeShift === 'evening'
-                    ? 'bg-[#123c32] text-white shadow-sm font-bold'
-                    : 'text-[#66716d] hover:text-[#18211f]'
+                    ? 'bg-[#2F3E3A] text-white shadow-sm font-bold'
+                    : 'text-[#6F8A78] hover:text-[#2F3E3A]'
                 }`}
               >
                 <span className="material-symbols-outlined text-[17px]">bedtime</span>
@@ -599,8 +599,8 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
           {/* Time Slots Card */}
           <div className="card-aesthetic p-5 sm:p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-base font-bold text-[#123c32]">Horarios Disponibles</span>
-              <span className="text-xs font-bold text-[#66716d] uppercase tracking-wider bg-[#edf2ef] px-2.5 py-0.5 rounded-full">
+              <span className="text-base font-bold text-[#2F3E3A]">Horarios Disponibles</span>
+              <span className="text-xs font-bold text-[#6F8A78] uppercase tracking-wider bg-[#E8EFE5] px-2.5 py-0.5 rounded-full">
                 {formattedDate}
               </span>
             </div>
@@ -615,7 +615,7 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                   return (
                     <div
                       key={slot.time}
-                      className="py-2.5 px-3 rounded-full bg-[#f7faf7] text-[#66716d]/50 text-xs font-semibold text-center cursor-not-allowed select-none border border-[#d8e2de]/50 flex items-center justify-center"
+                      className="py-2.5 px-3 rounded-full bg-[#F6F0E6] text-[#6F8A78]/50 text-xs font-semibold text-center cursor-not-allowed select-none border border-[#A8BDA3]/50 flex items-center justify-center"
                     >
                       Agotado
                     </div>
@@ -629,8 +629,8 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                     onClick={() => setSelectedTimeSlot(slot.time)}
                     className={`py-2.5 px-3 rounded-full transition-all active:scale-95 text-center font-bold text-xs sm:text-sm cursor-pointer ${
                       isSelected
-                        ? 'bg-[#123c32] text-white shadow-[0_6px_16px_rgba(18,60,50,0.25)] scale-[1.02]'
-                        : 'bg-[#edf2ef] text-[#18211f] hover:bg-[#d8e2de]'
+                        ? 'bg-[#2F3E3A] text-white shadow-[0_6px_16px_rgba(18,60,50,0.25)] scale-[1.02]'
+                        : 'bg-[#E8EFE5] text-[#2F3E3A] hover:bg-[#A8BDA3]'
                     }`}
                   >
                     {slot.time} hs
@@ -640,25 +640,25 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
             </div>
 
             {/* Range Indicator Box */}
-            <div className="pt-2 border-t border-[#edf2ef]">
+            <div className="pt-2 border-t border-[#E8EFE5]">
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="bg-[#f7faf7] border border-[#d8e2de] rounded-2xl p-3 flex flex-col">
-                  <span className="text-[11px] text-[#66716d] font-medium">Inicio seleccionado</span>
+                <div className="bg-[#F6F0E6] border border-[#A8BDA3] rounded-2xl p-3 flex flex-col">
+                  <span className="text-[11px] text-[#6F8A78] font-medium">Inicio seleccionado</span>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="text-base font-bold text-[#123c32]">
+                    <span className="text-base font-bold text-[#2F3E3A]">
                       {selectedTimeSlot} hs
                     </span>
-                    <span className="material-symbols-outlined text-[#123c32] text-[18px]">schedule</span>
+                    <span className="material-symbols-outlined text-[#2F3E3A] text-[18px]">schedule</span>
                   </div>
                 </div>
 
-                <div className="bg-[#f7faf7] border border-[#d8e2de] rounded-2xl p-3 flex flex-col">
-                  <span className="text-[11px] text-[#66716d] font-medium">Fin estimado</span>
+                <div className="bg-[#F6F0E6] border border-[#A8BDA3] rounded-2xl p-3 flex flex-col">
+                  <span className="text-[11px] text-[#6F8A78] font-medium">Fin estimado</span>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="text-base font-bold text-[#123c32]">
+                    <span className="text-base font-bold text-[#2F3E3A]">
                       {estimatedEndTime} hs
                     </span>
-                    <span className="material-symbols-outlined text-[#66716d] text-[18px]">update</span>
+                    <span className="material-symbols-outlined text-[#6F8A78] text-[18px]">update</span>
                   </div>
                 </div>
               </div>
@@ -670,13 +670,13 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
             <button
               type="button"
               onClick={handleConfirmTime}
-              className="w-full py-4 px-5 rounded-[18px] bg-[#123c32] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] hover:bg-[#195344] hover:-translate-y-0.5 transition-all active:scale-[0.98] cursor-pointer"
+              className="w-full py-4 px-5 rounded-[18px] bg-[#2F3E3A] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] hover:bg-[#6F8A78] hover:-translate-y-0.5 transition-all active:scale-[0.98] cursor-pointer"
             >
               <span>Confirmar Horario ({selectedTimeSlot} hs)</span>
               <span className="text-lg">→</span>
             </button>
-            <p className="text-center text-xs text-[#66716d] mt-2.5 flex items-center justify-center gap-1.5 font-medium">
-              <span className="material-symbols-outlined text-[15px] text-[#123c32]">verified_user</span>
+            <p className="text-center text-xs text-[#6F8A78] mt-2.5 flex items-center justify-center gap-1.5 font-medium">
+              <span className="material-symbols-outlined text-[15px] text-[#2F3E3A]">verified_user</span>
               Cancelación gratuita hasta 24 hs previas al turno
             </p>
           </div>
@@ -691,49 +691,49 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
             <button
               type="button"
               onClick={() => setShowAskAnotherModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#edf2ef] hover:bg-[#d8e2de] text-[#66716d] flex items-center justify-center transition-colors cursor-pointer"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#E8EFE5] hover:bg-[#A8BDA3] text-[#6F8A78] flex items-center justify-center transition-colors cursor-pointer"
               aria-label="Cerrar"
             >
               <X className="w-4 h-4" />
             </button>
 
             {/* Success icon */}
-            <div className="w-14 h-14 rounded-full bg-[#123c32] text-[#d9f56a] flex items-center justify-center mx-auto mb-3.5 shadow-lg shadow-[#123c32]/25">
+            <div className="w-14 h-14 rounded-full bg-[#2F3E3A] text-[#D9E6D3] flex items-center justify-center mx-auto mb-3.5 shadow-lg shadow-[#2F3E3A]/25">
               <Check className="w-8 h-8 stroke-[3]" />
             </div>
 
-            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#efffc5] text-[#123c32] border border-[#d9f56a]/40 mb-1.5">
+            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#D9E6D3] text-[#2F3E3A] border border-[#D9E6D3]/40 mb-1.5">
               ¡HORARIO ASIGNADO!
             </span>
 
-            <h3 className="text-xl sm:text-2xl font-bold text-[#123c32] tracking-tight">
+            <h3 className="text-xl sm:text-2xl font-bold text-[#2F3E3A] tracking-tight">
               ¿Deseás reservar otro servicio?
             </h3>
-            <p className="text-xs text-[#66716d] mt-1 leading-relaxed max-w-xs mx-auto">
+            <p className="text-xs text-[#6F8A78] mt-1 leading-relaxed max-w-xs mx-auto">
               Podés sumar otro tratamiento para el mismo día o en otra fecha antes de realizar el pago de la seña.
             </p>
 
             {/* Current Service Details Box */}
-            <div className="mt-4 p-4 rounded-[20px] bg-[#f7faf7] border border-[#d8e2de] text-left space-y-2">
+            <div className="mt-4 p-4 rounded-[20px] bg-[#F6F0E6] border border-[#A8BDA3] text-left space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#123c32] truncate max-w-[220px]">
+                <span className="text-xs font-bold text-[#2F3E3A] truncate max-w-[220px]">
                   {currentService.title}
                 </span>
-                <span className="text-xs font-bold text-[#123c32]">
+                <span className="text-xs font-bold text-[#2F3E3A]">
                   {formatPrice(currentService.price)}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2 text-xs text-[#66716d]">
-                <CalendarIcon className="w-3.5 h-3.5 text-[#123c32]" />
-                <span className="font-semibold text-[#18211f]">
+              <div className="flex items-center gap-2 text-xs text-[#6F8A78]">
+                <CalendarIcon className="w-3.5 h-3.5 text-[#2F3E3A]" />
+                <span className="font-semibold text-[#2F3E3A]">
                   {formattedDate} · {selectedTimeSlot} hs
                 </span>
                 <span>•</span>
                 <span>{selectedSpecialist.name}</span>
               </div>
 
-              <div className="pt-2 border-t border-[#d8e2de] flex justify-between text-xs font-bold text-[#195344]">
+              <div className="pt-2 border-t border-[#A8BDA3] flex justify-between text-xs font-bold text-[#6F8A78]">
                 <span>Seña correspondiente:</span>
                 <span>{formatPrice(depositAmount)}</span>
               </div>
@@ -752,9 +752,9 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                     onBackToServices();
                   }
                 }}
-                className="w-full py-4 px-4 rounded-[18px] bg-[#efffc5] hover:bg-[#d9f56a] text-[#123c32] font-bold text-xs sm:text-sm border border-[#d9f56a]/70 shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-4 px-4 rounded-[18px] bg-[#D9E6D3] hover:bg-[#D9E6D3] text-[#2F3E3A] font-bold text-xs sm:text-sm border border-[#D9E6D3]/70 shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
               >
-                <Plus className="w-4 h-4 text-[#123c32] stroke-[2.5]" />
+                <Plus className="w-4 h-4 text-[#2F3E3A] stroke-[2.5]" />
                 <span>Sí, quiero reservar otro servicio</span>
               </button>
 
@@ -765,7 +765,7 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                   setShowAskAnotherModal(false);
                   onProceedToCheckout(currentBookedItem);
                 }}
-                className="w-full py-4 px-4 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white font-bold text-xs sm:text-sm shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-4 px-4 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white font-bold text-xs sm:text-sm shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>No, continuar al pago de la reserva</span>
                 <span className="text-lg">→</span>

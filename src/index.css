@@ -2,48 +2,48 @@
 
 @layer base {
   :root {
-    --bg: #f7faf7;
+    --bg: #F6F0E6;
     --surface: #ffffff;
-    --forest: #123c32;
-    --forest-2: #195344;
-    --sage: #a8c5b5;
-    --sage-light: #eaf2ed;
-    --lime: #d9f56a;
-    --lime-light: #efffc5;
+    --forest: #2F3E3A;
+    --forest-2: #6F8A78;
+    --sage: #A8BDA3;
+    --sage-light: #D9E6D3;
+    --lime: #D9E6D3;
+    --lime-light: #D9E6D3;
     --gold: #d9a441;
-    --text: #18211f;
-    --muted: #66716d;
-    --border: #d8e2de;
-    --shadow: 0 16px 40px rgba(18, 60, 50, .08);
+    --text: #2F3E3A;
+    --muted: #6F8A78;
+    --border: #A8BDA3;
+    --shadow: 0 16px 40px rgba(47, 62, 58, .08);
 
-    --primary: #123c32;
-    --primary-container: #d9f56a;
-    --on-primary: #171e00;
-    --primary-fixed: #d9f56a;
-    --primary-fixed-dim: #b5d24e;
-    --on-primary-fixed: #171e00;
-    --on-primary-fixed-variant: #171e00;
+    --primary: #2F3E3A;
+    --primary-container: #D9E6D3;
+    --on-primary: #2F3E3A;
+    --primary-fixed: #D9E6D3;
+    --primary-fixed-dim: #A8BDA3;
+    --on-primary-fixed: #2F3E3A;
+    --on-primary-fixed-variant: #2F3E3A;
     
-    --on-surface: #18211f;
-    --on-surface-variant: #66716d;
+    --on-surface: #2F3E3A;
+    --on-surface-variant: #6F8A78;
     
     --surface-container-lowest: #ffffff;
-    --surface-container-low: #f7faf7;
-    --surface-container: #edf2ef;
-    --surface-container-high: #d8e2de;
+    --surface-container-low: #F6F0E6;
+    --surface-container: #E8EFE5;
+    --surface-container-high: #A8BDA3;
     --surface-container-highest: #c8d4cf;
     
-    --secondary: #66716d;
-    --secondary-container: #eaf2ed;
-    --on-secondary-container: #18211f;
+    --secondary: #6F8A78;
+    --secondary-container: #D9E6D3;
+    --on-secondary-container: #2F3E3A;
     
-    --tertiary: #195344;
-    --tertiary-fixed: #d9f56a;
-    --tertiary-container: #efffc5;
+    --tertiary: #6F8A78;
+    --tertiary-fixed: #D9E6D3;
+    --tertiary-container: #D9E6D3;
     --on-tertiary-fixed: #171e00;
     
-    --outline: #66716d;
-    --outline-variant: #d8e2de;
+    --outline: #6F8A78;
+    --outline-variant: #A8BDA3;
     --error: #ba1a1a;
     --error-container: #ffdad6;
   }
@@ -53,13 +53,13 @@
     margin: 0;
     padding: 0;
     font-family: 'DM Sans', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    background-color: #e9eeeb;
+    background-color: #F6F0E6;
     color: var(--text);
   }
 
   ::selection {
-    background-color: #d9f56a;
-    color: #123c32;
+    background-color: #D9E6D3;
+    color: #2F3E3A;
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
@@ -195,15 +195,15 @@
 /* User Design System Classes */
 .card-aesthetic {
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(216, 226, 222, 0.85);
+  border: 1px solid rgba(168, 189, 163, 0.65);
   border-radius: 28px;
-  box-shadow: 0 16px 40px rgba(18, 60, 50, 0.08);
+  box-shadow: 0 16px 40px rgba(47, 62, 58, 0.07);
 }
 
 .app-canvas {
   background:
-    radial-gradient(circle at 90% 5%, rgba(217, 245, 106, 0.20), transparent 28%),
-    linear-gradient(180deg, #f7faf7 0%, #f2f7f3 100%);
+    radial-gradient(circle at 90% 5%, rgba(217, 230, 211, 0.55), transparent 32%),
+    linear-gradient(180deg, #F6F0E6 0%, #edf3eb 100%);
 }
 
 /* Calendar Hatch Pattern Styles matching user reference */

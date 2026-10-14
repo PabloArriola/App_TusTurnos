@@ -993,7 +993,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <label
                     htmlFor={`spec-file-${spec.id}`}
                     title="Cambiar foto de este profesional"
-                    className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#123c32] hover:bg-[#195344] text-[#d9f56a] flex items-center justify-center shadow-md cursor-pointer transition-transform hover:scale-110 active:scale-95 border-2 border-white"
+                    className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#2F3E3A] hover:bg-[#6F8A78] text-[#D9E6D3] flex items-center justify-center shadow-md cursor-pointer transition-transform hover:scale-110 active:scale-95 border-2 border-white"
                   >
                     <Camera className="w-3.5 h-3.5" />
                     <input
@@ -1682,7 +1682,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className="absolute inset-0 bg-black/50 text-white rounded-2xl flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                     title="Cargar foto"
                   >
-                    <Camera className="w-5 h-5 mb-0.5 text-[#d9f56a]" />
+                    <Camera className="w-5 h-5 mb-0.5 text-[#D9E6D3]" />
                     <span className="text-[10px] font-bold">Cambiar</span>
                   </button>
                 </div>

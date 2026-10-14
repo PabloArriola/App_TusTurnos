@@ -48,14 +48,14 @@ export const BottomNav: React.FC<BottomNavProps> = ({
         aria-label="Navegación principal"
         className={`pointer-events-auto w-full ${
           isMobileFrame ? 'max-w-[480px]' : 'max-w-[520px]'
-        } min-h-[88px] sm:min-h-[92px] px-2 sm:px-3 pt-2 pb-[max(0.85rem,env(safe-area-inset-bottom,0.85rem))] grid grid-cols-4 items-end bg-white/95 backdrop-blur-[18px] border-t border-[#d8e2de]/80 shadow-[0_-10px_30px_rgba(18,60,50,0.08)] transition-all`}
+        } min-h-[88px] sm:min-h-[92px] px-2 sm:px-3 pt-2 pb-[max(0.85rem,env(safe-area-inset-bottom,0.85rem))] grid grid-cols-4 items-end bg-white/95 backdrop-blur-[18px] border-t border-[#A8BDA3]/80 shadow-[0_-10px_30px_rgba(18,60,50,0.08)] transition-all`}
       >
         {/* Tab 1: Explorar */}
         {isExplorarActive ? (
           <button
             onClick={() => onTabChange('servicios')}
             aria-label="Explorar servicios"
-            className="justify-self-center w-[84px] min-[360px]:w-[92px] min-[390px]:w-[102px] sm:w-[114px] h-[76px] sm:h-[82px] -mt-[38px] sm:-mt-[44px] rounded-[28px] sm:rounded-[32px] bg-[#123c32] text-white border-[5px] sm:border-[6px] border-white shadow-[0_13px_30px_rgba(18,60,50,0.28)] flex flex-col items-center justify-center gap-1 text-xs font-bold transition-all hover:scale-[1.02] active:scale-95 cursor-pointer relative z-20 group"
+            className="justify-self-center w-[84px] min-[360px]:w-[92px] min-[390px]:w-[102px] sm:w-[114px] h-[76px] sm:h-[82px] -mt-[38px] sm:-mt-[44px] rounded-[28px] sm:rounded-[32px] bg-[#2F3E3A] text-white border-[5px] sm:border-[6px] border-white shadow-[0_13px_30px_rgba(18,60,50,0.28)] flex flex-col items-center justify-center gap-1 text-xs font-bold transition-all hover:scale-[1.02] active:scale-95 cursor-pointer relative z-20 group"
           >
             <div className="w-6 h-6 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Compass className="w-5 h-5 text-white stroke-[2.2]" />
@@ -68,12 +68,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           <button
             onClick={() => onTabChange('servicios')}
             aria-label="Explorar servicios"
-            className="justify-self-center w-full flex flex-col items-center justify-center gap-1.5 py-2 px-1 text-[#66716d] hover:text-[#123c32] transition-all cursor-pointer relative z-10 group"
+            className="justify-self-center w-full flex flex-col items-center justify-center gap-1.5 py-2 px-1 text-[#6F8A78] hover:text-[#2F3E3A] transition-all cursor-pointer relative z-10 group"
           >
-            <div className="w-6 h-6 flex items-center justify-center text-[#66716d] group-hover:text-[#123c32] group-hover:scale-105 transition-all">
+            <div className="w-6 h-6 flex items-center justify-center text-[#6F8A78] group-hover:text-[#2F3E3A] group-hover:scale-105 transition-all">
               <Compass className="w-[19px] h-[19px] stroke-[1.8]" />
             </div>
-            <span className="text-[10.5px] sm:text-[11px] tracking-tight font-medium text-[#66716d] group-hover:text-[#123c32] transition-colors whitespace-nowrap">
+            <span className="text-[10.5px] sm:text-[11px] tracking-tight font-medium text-[#6F8A78] group-hover:text-[#2F3E3A] transition-colors whitespace-nowrap">
               Explorar
             </span>
           </button>
@@ -84,10 +84,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           <button
             onClick={handleReserveClick}
             aria-label="Reservar turno"
-            className="justify-self-center w-[84px] min-[360px]:w-[92px] min-[390px]:w-[102px] sm:w-[114px] h-[76px] sm:h-[82px] -mt-[38px] sm:-mt-[44px] rounded-[28px] sm:rounded-[32px] bg-[#123c32] text-white border-[5px] sm:border-[6px] border-white shadow-[0_13px_30px_rgba(18,60,50,0.28)] flex flex-col items-center justify-center gap-1 text-xs font-bold transition-all hover:scale-[1.02] active:scale-95 cursor-pointer relative z-20 group"
+            className="justify-self-center w-[84px] min-[360px]:w-[92px] min-[390px]:w-[102px] sm:w-[114px] h-[76px] sm:h-[82px] -mt-[38px] sm:-mt-[44px] rounded-[28px] sm:rounded-[32px] bg-[#2F3E3A] text-white border-[5px] sm:border-[6px] border-white shadow-[0_13px_30px_rgba(18,60,50,0.28)] flex flex-col items-center justify-center gap-1 text-xs font-bold transition-all hover:scale-[1.02] active:scale-95 cursor-pointer relative z-20 group"
           >
             {hasSelectedService && (
-              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#d9f56a] border-2 border-white shadow-sm flex items-center justify-center text-[9px] text-[#123c32] font-extrabold animate-pulse">
+              <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#D9E6D3] border-2 border-white shadow-sm flex items-center justify-center text-[9px] text-[#2F3E3A] font-extrabold animate-pulse">
                 ✓
               </span>
             )}
@@ -102,15 +102,15 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           <button
             onClick={handleReserveClick}
             aria-label="Reservar turno"
-            className="justify-self-center w-full flex flex-col items-center justify-center gap-1.5 py-2 px-1 text-[#66716d] hover:text-[#123c32] transition-all cursor-pointer relative z-10 group"
+            className="justify-self-center w-full flex flex-col items-center justify-center gap-1.5 py-2 px-1 text-[#6F8A78] hover:text-[#2F3E3A] transition-all cursor-pointer relative z-10 group"
           >
-            <div className="relative w-6 h-6 flex items-center justify-center text-[#66716d] group-hover:text-[#123c32] group-hover:scale-105 transition-all">
+            <div className="relative w-6 h-6 flex items-center justify-center text-[#6F8A78] group-hover:text-[#2F3E3A] group-hover:scale-105 transition-all">
               <Plus className="w-[19px] h-[19px] stroke-[1.8]" />
               {hasSelectedService && (
-                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#d9f56a] border-2 border-white shadow-xs animate-pulse"></span>
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#D9E6D3] border-2 border-white shadow-xs animate-pulse"></span>
               )}
             </div>
-            <span className="text-[10.5px] sm:text-[11px] tracking-tight font-medium text-[#66716d] group-hover:text-[#123c32] transition-colors whitespace-nowrap">
+            <span className="text-[10.5px] sm:text-[11px] tracking-tight font-medium text-[#6F8A78] group-hover:text-[#2F3E3A] transition-colors whitespace-nowrap">
               Reservar
             </span>
           </button>
@@ -121,10 +121,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           <button
             onClick={() => onTabChange('mis-turnos')}
             aria-label="Mis turnos"
-            className="justify-self-center w-[84px] min-[360px]:w-[92px] min-[390px]:w-[102px] sm:w-[114px] h-[76px] sm:h-[82px] -mt-[38px] sm:-mt-[44px] rounded-[28px] sm:rounded-[32px] bg-[#123c32] text-white border-[5px] sm:border-[6px] border-white shadow-[0_13px_30px_rgba(18,60,50,0.28)] flex flex-col items-center justify-center gap-1 text-xs font-bold transition-all hover:scale-[1.02] active:scale-95 cursor-pointer relative z-20 group"
+            className="justify-self-center w-[84px] min-[360px]:w-[92px] min-[390px]:w-[102px] sm:w-[114px] h-[76px] sm:h-[82px] -mt-[38px] sm:-mt-[44px] rounded-[28px] sm:rounded-[32px] bg-[#2F3E3A] text-white border-[5px] sm:border-[6px] border-white shadow-[0_13px_30px_rgba(18,60,50,0.28)] flex flex-col items-center justify-center gap-1 text-xs font-bold transition-all hover:scale-[1.02] active:scale-95 cursor-pointer relative z-20 group"
           >
             {pendingCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.2 rounded-full bg-[#d9f56a] text-[#123c32] text-[9px] font-extrabold border-2 border-white shadow-sm">
+              <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.2 rounded-full bg-[#D9E6D3] text-[#2F3E3A] text-[9px] font-extrabold border-2 border-white shadow-sm">
                 {pendingCount}
               </span>
             )}
@@ -139,15 +139,15 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           <button
             onClick={() => onTabChange('mis-turnos')}
             aria-label="Mis turnos"
-            className="justify-self-center w-full flex flex-col items-center justify-center gap-1.5 py-2 px-1 text-[#66716d] hover:text-[#123c32] transition-all cursor-pointer relative z-10 group"
+            className="justify-self-center w-full flex flex-col items-center justify-center gap-1.5 py-2 px-1 text-[#6F8A78] hover:text-[#2F3E3A] transition-all cursor-pointer relative z-10 group"
           >
-            <div className="relative w-6 h-6 flex items-center justify-center text-[#66716d] group-hover:text-[#123c32] group-hover:scale-105 transition-all">
+            <div className="relative w-6 h-6 flex items-center justify-center text-[#6F8A78] group-hover:text-[#2F3E3A] group-hover:scale-105 transition-all">
               <CalendarDays className="w-[19px] h-[19px] stroke-[1.8]" />
               {pendingCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#d9f56a] border-2 border-white"></span>
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#D9E6D3] border-2 border-white"></span>
               )}
             </div>
-            <span className="text-[10.5px] sm:text-[11px] tracking-tight font-medium text-[#66716d] group-hover:text-[#123c32] transition-colors whitespace-nowrap">
+            <span className="text-[10.5px] sm:text-[11px] tracking-tight font-medium text-[#6F8A78] group-hover:text-[#2F3E3A] transition-colors whitespace-nowrap">
               Mis turnos
             </span>
           </button>
@@ -158,7 +158,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           <button
             onClick={() => onTabChange('perfil-clinico')}
             aria-label="Perfil"
-            className="justify-self-center w-[84px] min-[360px]:w-[92px] min-[390px]:w-[102px] sm:w-[114px] h-[76px] sm:h-[82px] -mt-[38px] sm:-mt-[44px] rounded-[28px] sm:rounded-[32px] bg-[#123c32] text-white border-[5px] sm:border-[6px] border-white shadow-[0_13px_30px_rgba(18,60,50,0.28)] flex flex-col items-center justify-center gap-1 text-xs font-bold transition-all hover:scale-[1.02] active:scale-95 cursor-pointer relative z-20 group"
+            className="justify-self-center w-[84px] min-[360px]:w-[92px] min-[390px]:w-[102px] sm:w-[114px] h-[76px] sm:h-[82px] -mt-[38px] sm:-mt-[44px] rounded-[28px] sm:rounded-[32px] bg-[#2F3E3A] text-white border-[5px] sm:border-[6px] border-white shadow-[0_13px_30px_rgba(18,60,50,0.28)] flex flex-col items-center justify-center gap-1 text-xs font-bold transition-all hover:scale-[1.02] active:scale-95 cursor-pointer relative z-20 group"
           >
             <div className="w-6 h-6 flex items-center justify-center group-hover:scale-110 transition-transform">
               <User className="w-5 h-5 text-white stroke-[2.2]" />
@@ -171,12 +171,12 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           <button
             onClick={() => onTabChange('perfil-clinico')}
             aria-label="Perfil"
-            className="justify-self-center w-full flex flex-col items-center justify-center gap-1.5 py-2 px-1 text-[#66716d] hover:text-[#123c32] transition-all cursor-pointer relative z-10 group"
+            className="justify-self-center w-full flex flex-col items-center justify-center gap-1.5 py-2 px-1 text-[#6F8A78] hover:text-[#2F3E3A] transition-all cursor-pointer relative z-10 group"
           >
-            <div className="w-6 h-6 flex items-center justify-center text-[#66716d] group-hover:text-[#123c32] group-hover:scale-105 transition-all">
+            <div className="w-6 h-6 flex items-center justify-center text-[#6F8A78] group-hover:text-[#2F3E3A] group-hover:scale-105 transition-all">
               <User className="w-[19px] h-[19px] stroke-[1.8]" />
             </div>
-            <span className="text-[10.5px] sm:text-[11px] tracking-tight font-medium text-[#66716d] group-hover:text-[#123c32] transition-colors whitespace-nowrap">
+            <span className="text-[10.5px] sm:text-[11px] tracking-tight font-medium text-[#6F8A78] group-hover:text-[#2F3E3A] transition-colors whitespace-nowrap">
               Perfil
             </span>
           </button>

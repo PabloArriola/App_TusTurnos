@@ -144,18 +144,18 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       <div className="flex flex-col w-full max-w-[460px] mx-auto px-4 py-8 animate-in fade-in duration-200">
         <div className="card-aesthetic p-6 sm:p-8 text-center relative overflow-hidden shadow-[0_20px_50px_rgba(18,60,50,0.12)]">
           {/* Top Brand Avatar Icon */}
-          <div className="w-16 h-16 rounded-[22px] bg-[#123c32] text-[#d9f56a] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#123c32]/25">
+          <div className="w-16 h-16 rounded-[22px] bg-[#2F3E3A] text-[#D9E6D3] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#2F3E3A]/25">
             <span className="material-symbols-outlined text-[30px]">person</span>
           </div>
 
-          <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-[#eaf2ed] text-[#123c32] mb-2.5">
+          <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-[#D9E6D3] text-[#2F3E3A] mb-2.5">
             TusTurnos · Acceso
           </span>
 
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#123c32] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#2F3E3A] tracking-tight">
             Ingreso de Paciente
           </h2>
-          <p className="text-xs sm:text-sm text-[#66716d] mt-2 mb-6 max-w-xs mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#6F8A78] mt-2 mb-6 max-w-xs mx-auto leading-relaxed">
             Ingresá tu nombre y número de teléfono para comenzar a reservar tus turnos.
           </p>
 
@@ -175,7 +175,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             className="space-y-4 text-left"
           >
             <div>
-              <label className="block text-xs font-bold text-[#18211f] mb-1.5">
+              <label className="block text-xs font-bold text-[#2F3E3A] mb-1.5">
                 Nombre y Apellido <span className="text-red-500">*</span>
               </label>
               <input
@@ -184,12 +184,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 value={loginName}
                 onChange={(e) => setLoginName(e.target.value)}
                 placeholder="Ej. Juan Pérez"
-                className="w-full px-4 py-3 rounded-2xl bg-white border border-[#d8e2de] text-sm font-medium text-[#18211f] placeholder:text-[#66716d]/50 focus:outline-none focus:ring-2 focus:ring-[#123c32] transition-all shadow-xs"
+                className="w-full px-4 py-3 rounded-2xl bg-white border border-[#A8BDA3] text-sm font-medium text-[#2F3E3A] placeholder:text-[#6F8A78]/50 focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] transition-all shadow-xs"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#18211f] mb-1.5">
+              <label className="block text-xs font-bold text-[#2F3E3A] mb-1.5">
                 Teléfono / WhatsApp <span className="text-red-500">*</span>
               </label>
               <input
@@ -198,13 +198,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 value={loginPhone}
                 onChange={(e) => setLoginPhone(e.target.value)}
                 placeholder="Ej. 11 2345 6789"
-                className="w-full px-4 py-3 rounded-2xl bg-white border border-[#d8e2de] text-sm font-medium text-[#18211f] placeholder:text-[#66716d]/50 focus:outline-none focus:ring-2 focus:ring-[#123c32] transition-all shadow-xs"
+                className="w-full px-4 py-3 rounded-2xl bg-white border border-[#A8BDA3] text-sm font-medium text-[#2F3E3A] placeholder:text-[#6F8A78]/50 focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] transition-all shadow-xs"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-4 px-5 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white text-sm sm:text-base font-bold shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all cursor-pointer mt-2 flex items-center justify-center gap-2 active:scale-[0.98]"
+              className="w-full py-4 px-5 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white text-sm sm:text-base font-bold shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all cursor-pointer mt-2 flex items-center justify-center gap-2 active:scale-[0.98]"
             >
               <span>Ingresar y Ver Turnos</span>
               <span className="text-lg">→</span>
@@ -216,7 +216,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <button
                 type="button"
                 onClick={onNavigateToAdmin}
-                className="text-[11px] font-semibold text-[#66716d]/70 hover:text-[#123c32] hover:underline cursor-pointer transition-colors"
+                className="text-[11px] font-semibold text-[#6F8A78]/70 hover:text-[#2F3E3A] hover:underline cursor-pointer transition-colors"
               >
                 ¿Sos administrador del negocio? Ingresar al panel →
               </button>
@@ -251,7 +251,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           }}
           aria-label="Editar datos de perfil"
           title="Editar perfil y foto"
-          className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#edf2ef] hover:bg-[#d8e2de] text-[#123c32] flex items-center justify-center transition-colors cursor-pointer"
+          className="absolute top-5 right-5 w-9 h-9 rounded-full bg-[#E8EFE5] hover:bg-[#A8BDA3] text-[#2F3E3A] flex items-center justify-center transition-colors cursor-pointer"
           type="button"
         >
           <Edit3 className="w-4 h-4" />
@@ -260,22 +260,22 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0 pr-8">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <span className="inline-flex px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#eaf2ed] text-[#123c32]">
+              <span className="inline-flex px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#D9E6D3] text-[#2F3E3A]">
                 MI PERFIL
               </span>
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#efffc5] text-[#123c32] border border-[#d9f56a]/40">
+              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] border border-[#D9E6D3]/40">
                 {clientProfile.isVip ? '★ PACIENTE VIP' : 'CLIENTE FRECUENTE'}
               </span>
             </div>
 
-            <h1 className="mt-2 text-[#123c32] font-bold text-2xl sm:text-[32px] tracking-tight leading-none">
+            <h1 className="mt-2 text-[#2F3E3A] font-bold text-2xl sm:text-[32px] tracking-tight leading-none">
               {clientProfile.name}
             </h1>
-            <p className="mt-1 text-[#66716d] text-xs sm:text-sm font-medium truncate">
+            <p className="mt-1 text-[#6F8A78] text-xs sm:text-sm font-medium truncate">
               {clientProfile.email}
             </p>
-            <p className="text-[#66716d] text-xs font-semibold mt-0.5">
-              WhatsApp: <span className="text-[#123c32]">{clientProfile.phone}</span>
+            <p className="text-[#6F8A78] text-xs font-semibold mt-0.5">
+              WhatsApp: <span className="text-[#2F3E3A]">{clientProfile.phone}</span>
             </p>
           </div>
 
@@ -298,33 +298,33 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             </div>
 
             {/* Verified indicator badge */}
-            <div className="absolute -top-1.5 -left-1.5 w-6 h-6 rounded-lg bg-[#d9f56a] text-[#123c32] flex items-center justify-center shadow-sm font-bold text-xs pointer-events-none border-2 border-white">
+            <div className="absolute -top-1.5 -left-1.5 w-6 h-6 rounded-lg bg-[#D9E6D3] text-[#2F3E3A] flex items-center justify-center shadow-sm font-bold text-xs pointer-events-none border-2 border-white">
               ✓
             </div>
           </div>
         </div>
 
-        <div className="h-[1px] bg-[#d8e2de] my-4"></div>
+        <div className="h-[1px] bg-[#A8BDA3] my-4"></div>
 
         {/* Puntos de Fidelidad & Cashback Panel */}
         <div 
           onClick={onOpenLoyaltyModal}
-          className="bg-[#f7faf7] border border-[#d8e2de] rounded-[22px] p-4 flex items-center justify-between gap-3 cursor-pointer hover:border-[#123c32]/30 transition-all group"
+          className="bg-[#F6F0E6] border border-[#A8BDA3] rounded-[22px] p-4 flex items-center justify-between gap-3 cursor-pointer hover:border-[#2F3E3A]/30 transition-all group"
         >
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-[#efffc5] text-[#123c32] flex items-center justify-center shrink-0 border border-[#d9f56a]/40 shadow-xs">
-              <Gift className="w-5 h-5 text-[#123c32]" />
+            <div className="w-10 h-10 rounded-full bg-[#D9E6D3] text-[#2F3E3A] flex items-center justify-center shrink-0 border border-[#D9E6D3]/40 shadow-xs">
+              <Gift className="w-5 h-5 text-[#2F3E3A]" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs sm:text-sm font-bold text-[#123c32]">
+                <span className="text-xs sm:text-sm font-bold text-[#2F3E3A]">
                   Puntos & Cashback
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-[#d9f56a] text-[#123c32] text-[10px] font-bold">
+                <span className="px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] text-[10px] font-bold">
                   {clientProfile.loyaltyPoints} pts
                 </span>
               </div>
-              <p className="text-xs text-[#66716d] truncate mt-0.5">
+              <p className="text-xs text-[#6F8A78] truncate mt-0.5">
                 {formatCurrency(clientProfile.loyaltyCashBalance)} acumulado para señas
               </p>
             </div>
@@ -336,7 +336,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               e.stopPropagation();
               onOpenLoyaltyModal();
             }}
-            className="px-3.5 py-1.5 rounded-full bg-[#123c32] hover:bg-[#195344] text-white text-xs font-bold shadow-xs active:scale-95 transition-all shrink-0 cursor-pointer"
+            className="px-3.5 py-1.5 rounded-full bg-[#2F3E3A] hover:bg-[#6F8A78] text-white text-xs font-bold shadow-xs active:scale-95 transition-all shrink-0 cursor-pointer"
           >
             Canjear
           </button>
@@ -347,18 +347,18 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       <section className="card-aesthetic p-5 sm:p-6">
         <div className="flex items-center justify-between mb-3.5">
           <div className="flex items-center gap-2">
-            <h2 className="text-base sm:text-lg font-bold text-[#123c32]">
+            <h2 className="text-base sm:text-lg font-bold text-[#2F3E3A]">
               Próximo Turno Agendado
             </h2>
             {upcomingAppointment && (
-              <span className="px-2.5 py-0.5 rounded-full bg-[#efffc5] text-[#123c32] text-[10px] font-bold border border-[#d9f56a]/40">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] text-[10px] font-bold border border-[#D9E6D3]/40">
                 Confirmado
               </span>
             )}
           </div>
           <button 
             onClick={() => onNavigateToTab('mis-turnos')}
-            className="text-xs text-[#123c32] hover:underline font-bold"
+            className="text-xs text-[#2F3E3A] hover:underline font-bold"
           >
             Ver todos los turnos →
           </button>
@@ -367,37 +367,37 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         {upcomingAppointment ? (
           <div 
             onClick={() => onNavigateToTab('mis-turnos')}
-            className="bg-[#f7faf7] border border-[#d8e2de] rounded-[22px] p-4 cursor-pointer hover:border-[#123c32]/40 transition-all space-y-2.5"
+            className="bg-[#F6F0E6] border border-[#A8BDA3] rounded-[22px] p-4 cursor-pointer hover:border-[#2F3E3A]/40 transition-all space-y-2.5"
           >
             <div className="flex items-center justify-between gap-2">
-              <h3 className="font-bold text-sm sm:text-base text-[#123c32] truncate">
+              <h3 className="font-bold text-sm sm:text-base text-[#2F3E3A] truncate">
                 {upcomingAppointment.serviceTitle}
               </h3>
-              <span className="text-xs font-bold text-[#123c32] bg-[#efffc5] px-2.5 py-0.5 rounded-full border border-[#d9f56a]/30 shrink-0">
+              <span className="text-xs font-bold text-[#2F3E3A] bg-[#D9E6D3] px-2.5 py-0.5 rounded-full border border-[#D9E6D3]/30 shrink-0">
                 #{upcomingAppointment.id}
               </span>
             </div>
 
-            <div className="flex items-center gap-3 text-xs text-[#66716d] flex-wrap">
-              <div className="flex items-center gap-1 font-bold text-[#123c32]">
-                <Clock className="w-3.5 h-3.5 text-[#123c32]" />
+            <div className="flex items-center gap-3 text-xs text-[#6F8A78] flex-wrap">
+              <div className="flex items-center gap-1 font-bold text-[#2F3E3A]">
+                <Clock className="w-3.5 h-3.5 text-[#2F3E3A]" />
                 <span>{upcomingAppointment.date} · {upcomingAppointment.time} hs</span>
               </div>
               <span>•</span>
-              <span>Profesional: <strong className="text-[#123c32]">{upcomingAppointment.specialistName}</strong></span>
+              <span>Profesional: <strong className="text-[#2F3E3A]">{upcomingAppointment.specialistName}</strong></span>
             </div>
 
-            <div className="pt-2 border-t border-[#d8e2de] flex justify-between text-xs">
-              <span className="text-[#66716d]">Seña acreditada:</span>
-              <span className="font-bold text-[#195344]">{formatCurrency(upcomingAppointment.depositPaid)} ✓</span>
+            <div className="pt-2 border-t border-[#A8BDA3] flex justify-between text-xs">
+              <span className="text-[#6F8A78]">Seña acreditada:</span>
+              <span className="font-bold text-[#6F8A78]">{formatCurrency(upcomingAppointment.depositPaid)} ✓</span>
             </div>
           </div>
         ) : (
-          <div className="text-center py-6 bg-[#f7faf7] rounded-[22px] border border-[#d8e2de]">
-            <p className="text-xs text-[#66716d]">No tenés citas pendientes en este momento.</p>
+          <div className="text-center py-6 bg-[#F6F0E6] rounded-[22px] border border-[#A8BDA3]">
+            <p className="text-xs text-[#6F8A78]">No tenés citas pendientes en este momento.</p>
             <button 
               onClick={() => onNavigateToTab('servicios')}
-              className="mt-3 px-4 py-2 rounded-full bg-[#123c32] text-white text-xs font-bold shadow-sm"
+              className="mt-3 px-4 py-2 rounded-full bg-[#2F3E3A] text-white text-xs font-bold shadow-sm"
             >
               Reservar un Turno
             </button>
@@ -407,29 +407,29 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
       {/* Historial & Opciones Rápidas */}
       <section className="card-aesthetic p-5 sm:p-6 space-y-2">
-        <h2 className="text-base sm:text-lg font-bold text-[#123c32] mb-3">
+        <h2 className="text-base sm:text-lg font-bold text-[#2F3E3A] mb-3">
           Accesos & Preferencias
         </h2>
 
         {/* Item 1: Turnos Anteriores */}
         <button
           onClick={() => onNavigateToTab('mis-turnos')}
-          className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-[#f7faf7] transition-all group text-left w-full cursor-pointer border border-transparent hover:border-[#d8e2de]"
+          className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-[#F6F0E6] transition-all group text-left w-full cursor-pointer border border-transparent hover:border-[#A8BDA3]"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center group-hover:bg-[#123c32] group-hover:text-white transition-colors">
+            <div className="w-10 h-10 rounded-full bg-[#E8EFE5] text-[#2F3E3A] flex items-center justify-center group-hover:bg-[#2F3E3A] group-hover:text-white transition-colors">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-bold text-sm text-[#18211f]">
+              <p className="font-bold text-sm text-[#2F3E3A]">
                 Historial de Turnos & Citas
               </p>
-              <p className="text-xs text-[#66716d]">
+              <p className="text-xs text-[#6F8A78]">
                 Tratamientos anteriores, señas y estados
               </p>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-[#66716d] group-hover:text-[#123c32] group-hover:translate-x-0.5 transition-all" />
+          <ChevronRight className="w-5 h-5 text-[#6F8A78] group-hover:text-[#2F3E3A] group-hover:translate-x-0.5 transition-all" />
         </button>
 
         {/* Item 2: Historial de Pagos & Recibos */}
@@ -438,63 +438,63 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             const el = document.getElementById('historial-de-pagos-section');
             el?.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-[#f7faf7] transition-all group text-left w-full cursor-pointer border border-transparent hover:border-[#d8e2de]"
+          className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-[#F6F0E6] transition-all group text-left w-full cursor-pointer border border-transparent hover:border-[#A8BDA3]"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center group-hover:bg-[#123c32] group-hover:text-white transition-colors">
+            <div className="w-10 h-10 rounded-full bg-[#E8EFE5] text-[#2F3E3A] flex items-center justify-center group-hover:bg-[#2F3E3A] group-hover:text-white transition-colors">
               <Receipt className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <p className="font-bold text-sm text-[#18211f]">
+                <p className="font-bold text-sm text-[#2F3E3A]">
                   Historial de Pagos & Recibos
                 </p>
-                <span className="px-2 py-0.5 rounded-full bg-[#efffc5] text-[#123c32] text-[10px] font-bold border border-[#d9f56a]/30">
+                <span className="px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] text-[10px] font-bold border border-[#D9E6D3]/30">
                   {userTransactions.length}
                 </span>
               </div>
-              <p className="text-xs text-[#66716d]">
+              <p className="text-xs text-[#6F8A78]">
                 Comprobantes oficiales de Mercado Pago
               </p>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-[#66716d] group-hover:text-[#123c32] group-hover:translate-x-0.5 transition-all" />
+          <ChevronRight className="w-5 h-5 text-[#6F8A78] group-hover:text-[#2F3E3A] group-hover:translate-x-0.5 transition-all" />
         </button>
 
         {/* Item 3: Métodos de Pago */}
         <button
           onClick={onOpenPaymentMethodsModal}
-          className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-[#f7faf7] transition-all group text-left w-full cursor-pointer border border-transparent hover:border-[#d8e2de]"
+          className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-[#F6F0E6] transition-all group text-left w-full cursor-pointer border border-transparent hover:border-[#A8BDA3]"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#edf2ef] text-[#123c32] flex items-center justify-center group-hover:bg-[#123c32] group-hover:text-white transition-colors">
+            <div className="w-10 h-10 rounded-full bg-[#E8EFE5] text-[#2F3E3A] flex items-center justify-center group-hover:bg-[#2F3E3A] group-hover:text-white transition-colors">
               <CreditCard className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-bold text-sm text-[#18211f]">
+              <p className="font-bold text-sm text-[#2F3E3A]">
                 Métodos de Pago & Facturación
               </p>
-              <p className="text-xs text-[#66716d]">
+              <p className="text-xs text-[#6F8A78]">
                 {primaryCard
                   ? `${primaryCard.brand.toUpperCase()} **** ${primaryCard.last4} · Mercado Pago`
                   : 'Tarjetas vinculadas y CUIT'}
               </p>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-[#66716d] group-hover:text-[#123c32] group-hover:translate-x-0.5 transition-all" />
+          <ChevronRight className="w-5 h-5 text-[#6F8A78] group-hover:text-[#2F3E3A] group-hover:translate-x-0.5 transition-all" />
         </button>
 
         {/* Item 4: Recordatorios WhatsApp */}
-        <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#f7faf7] text-left w-full border border-[#d8e2de]">
+        <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[#F6F0E6] text-left w-full border border-[#A8BDA3]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white text-[#25D366] flex items-center justify-center border border-[#d8e2de]">
+            <div className="w-10 h-10 rounded-full bg-white text-[#25D366] flex items-center justify-center border border-[#A8BDA3]">
               <span className="font-bold text-lg">W</span>
             </div>
             <div>
-              <p className="font-bold text-sm text-[#18211f]">
+              <p className="font-bold text-sm text-[#2F3E3A]">
                 Recordatorios de Turno por WhatsApp
               </p>
-              <p className="text-xs text-[#66716d]">
+              <p className="text-xs text-[#6F8A78]">
                 Avisos 24h antes para confirmar asistencia
               </p>
             </div>
@@ -503,7 +503,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             type="checkbox"
             checked={notificationToggle}
             onChange={(e) => setNotificationToggle(e.target.checked)}
-            className="w-5 h-5 accent-[#123c32] rounded cursor-pointer"
+            className="w-5 h-5 accent-[#2F3E3A] rounded cursor-pointer"
           />
         </div>
       </section>
@@ -512,44 +512,44 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       <section id="historial-de-pagos-section" className="card-aesthetic p-5 sm:p-6 space-y-4 scroll-mt-24">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h2 className="text-base sm:text-lg font-bold text-[#123c32]">
+            <h2 className="text-base sm:text-lg font-bold text-[#2F3E3A]">
               Historial de Pagos & Señas
             </h2>
-            <span className="px-2.5 py-0.5 rounded-full bg-[#efffc5] text-[#123c32] text-[11px] font-bold border border-[#d9f56a]/40">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] text-[11px] font-bold border border-[#D9E6D3]/40">
               {filteredTransactions.length}
             </span>
           </div>
-          <span className="text-[11px] text-[#195344] font-bold flex items-center gap-1">
+          <span className="text-[11px] text-[#6F8A78] font-bold flex items-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Mercado Pago Oficial</span>
           </span>
         </div>
 
         {/* Financial Balance Summary Banner */}
-        <div className="bg-[#f7faf7] border border-[#d8e2de] rounded-[22px] p-4 flex items-center justify-between gap-3">
+        <div className="bg-[#F6F0E6] border border-[#A8BDA3] rounded-[22px] p-4 flex items-center justify-between gap-3">
           <div>
-            <span className="text-[11px] text-[#66716d] font-bold uppercase tracking-wider block">Total señas abonadas</span>
-            <span className="text-xl sm:text-2xl font-bold text-[#123c32] tracking-tight">
+            <span className="text-[11px] text-[#6F8A78] font-bold uppercase tracking-wider block">Total señas abonadas</span>
+            <span className="text-xl sm:text-2xl font-bold text-[#2F3E3A] tracking-tight">
               {formatCurrency(totalDepositsPaid)}
             </span>
           </div>
           <div className="text-right">
-            <span className="text-[10px] text-[#66716d] block font-semibold">Respaldo fiscal</span>
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#195344] bg-[#efffc5] px-2.5 py-0.5 rounded-full border border-[#d9f56a]/40 mt-0.5">
+            <span className="text-[10px] text-[#6F8A78] block font-semibold">Respaldo fiscal</span>
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#6F8A78] bg-[#D9E6D3] px-2.5 py-0.5 rounded-full border border-[#D9E6D3]/40 mt-0.5">
               ✓ Acreditado 100%
             </span>
           </div>
         </div>
 
         {/* Filter Chips */}
-        <div className="grid grid-cols-3 gap-1 p-1 rounded-full bg-white border border-[#d8e2de] shadow-xs">
+        <div className="grid grid-cols-3 gap-1 p-1 rounded-full bg-white border border-[#A8BDA3] shadow-xs">
           <button
             type="button"
             onClick={() => setPaymentFilter('all')}
             className={`py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer ${
               paymentFilter === 'all'
-                ? 'bg-[#123c32] text-white shadow-sm'
-                : 'text-[#66716d] hover:text-[#123c32]'
+                ? 'bg-[#2F3E3A] text-white shadow-sm'
+                : 'text-[#6F8A78] hover:text-[#2F3E3A]'
             }`}
           >
             Todos ({userTransactions.length})
@@ -559,8 +559,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             onClick={() => setPaymentFilter('deposit')}
             className={`py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer ${
               paymentFilter === 'deposit'
-                ? 'bg-[#123c32] text-white shadow-sm'
-                : 'text-[#66716d] hover:text-[#123c32]'
+                ? 'bg-[#2F3E3A] text-white shadow-sm'
+                : 'text-[#6F8A78] hover:text-[#2F3E3A]'
             }`}
           >
             Señas MP ({userTransactions.filter(t => t.concept.toLowerCase().includes('seña')).length})
@@ -570,8 +570,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
             onClick={() => setPaymentFilter('balance')}
             className={`py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer ${
               paymentFilter === 'balance'
-                ? 'bg-[#123c32] text-white shadow-sm'
-                : 'text-[#66716d] hover:text-[#123c32]'
+                ? 'bg-[#2F3E3A] text-white shadow-sm'
+                : 'text-[#6F8A78] hover:text-[#2F3E3A]'
             }`}
           >
             En Cabina ({userTransactions.filter(t => !t.concept.toLowerCase().includes('seña')).length})
@@ -587,25 +587,25 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 setSelectedReceiptTxn(txn);
                 setShowReceiptModal(true);
               }}
-              className="p-3.5 sm:p-4 rounded-[20px] bg-[#f7faf7] hover:bg-white border border-[#d8e2de] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group cursor-pointer"
+              className="p-3.5 sm:p-4 rounded-[20px] bg-[#F6F0E6] hover:bg-white border border-[#A8BDA3] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group cursor-pointer"
             >
               <div className="flex items-start gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-full bg-white border border-[#d8e2de] text-[#123c32] flex items-center justify-center shrink-0 mt-0.5 shadow-xs group-hover:scale-105 transition-transform">
-                  <Receipt className="w-5 h-5 text-[#123c32]" />
+                <div className="w-10 h-10 rounded-full bg-white border border-[#A8BDA3] text-[#2F3E3A] flex items-center justify-center shrink-0 mt-0.5 shadow-xs group-hover:scale-105 transition-transform">
+                  <Receipt className="w-5 h-5 text-[#2F3E3A]" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h4 className="font-bold text-xs sm:text-sm text-[#18211f] group-hover:text-[#123c32] transition-colors truncate">
+                    <h4 className="font-bold text-xs sm:text-sm text-[#2F3E3A] group-hover:text-[#2F3E3A] transition-colors truncate">
                       {txn.serviceTitle}
                     </h4>
-                    <span className="px-2 py-0.5 rounded-full bg-[#efffc5] text-[#123c32] text-[10px] font-bold border border-[#d9f56a]/30">
+                    <span className="px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] text-[10px] font-bold border border-[#D9E6D3]/30">
                       ✓ Aprobado
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#66716d] font-medium mt-0.5 truncate">
+                  <p className="text-[11px] text-[#6F8A78] font-medium mt-0.5 truncate">
                     {txn.concept}
                   </p>
-                  <div className="flex items-center gap-2 text-[10px] text-[#66716d] mt-1 flex-wrap font-medium">
+                  <div className="flex items-center gap-2 text-[10px] text-[#6F8A78] mt-1 flex-wrap font-medium">
                     <span>{txn.date} · {txn.time} hs</span>
                     <span>•</span>
                     <span>{txn.paymentMethod}</span>
@@ -615,12 +615,12 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#d8e2de] shrink-0">
+              <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#A8BDA3] shrink-0">
                 <div className="text-left sm:text-right">
-                  <span className="font-bold text-sm sm:text-base text-[#123c32] block leading-tight">
+                  <span className="font-bold text-sm sm:text-base text-[#2F3E3A] block leading-tight">
                     {formatCurrency(txn.amount)}
                   </span>
-                  <span className="text-[10px] text-[#66716d]">
+                  <span className="text-[10px] text-[#6F8A78]">
                     Op. #{txn.mpOperationNumber.slice(-4)}
                   </span>
                 </div>
@@ -633,9 +633,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     setShowReceiptModal(true);
                   }}
                   title="Ver o descargar comprobante visual"
-                  className="px-3 py-1.5 rounded-full bg-[#123c32] hover:bg-[#195344] text-white text-[11px] font-bold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer"
+                  className="px-3 py-1.5 rounded-full bg-[#2F3E3A] hover:bg-[#6F8A78] text-white text-[11px] font-bold flex items-center gap-1.5 shadow-xs transition-all active:scale-95 cursor-pointer"
                 >
-                  <Download className="w-3.5 h-3.5 text-[#d9f56a]" />
+                  <Download className="w-3.5 h-3.5 text-[#D9E6D3]" />
                   <span>Recibo</span>
                 </button>
               </div>
@@ -643,7 +643,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
           ))}
 
           {filteredTransactions.length === 0 && (
-            <div className="text-center py-8 text-[#66716d] text-xs">
+            <div className="text-center py-8 text-[#6F8A78] text-xs">
               No hay transacciones registradas en este filtro.
             </div>
           )}
@@ -653,51 +653,51 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       {/* Ficha Médica & Consentimiento Digital */}
       <section className="card-aesthetic p-5 sm:p-6">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base sm:text-lg font-bold text-[#123c32]">
+          <h2 className="text-base sm:text-lg font-bold text-[#2F3E3A]">
             Ficha Médica & Consentimiento
           </h2>
-          <span className="text-xs font-bold text-[#123c32] bg-[#efffc5] px-2.5 py-0.5 rounded-full border border-[#d9f56a]/40">
+          <span className="text-xs font-bold text-[#2F3E3A] bg-[#D9E6D3] px-2.5 py-0.5 rounded-full border border-[#D9E6D3]/40">
             {clientProfile.medicalSheetCompleted}% completado
           </span>
         </div>
 
         <div
           onClick={onOpenMedicalSheet}
-          className="bg-[#f7faf7] border border-[#d8e2de] rounded-[22px] p-4 cursor-pointer group hover:border-[#123c32]/40 transition-all"
+          className="bg-[#F6F0E6] border border-[#A8BDA3] rounded-[22px] p-4 cursor-pointer group hover:border-[#2F3E3A]/40 transition-all"
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white border border-[#d8e2de] text-[#123c32] flex items-center justify-center shrink-0">
-                <FileText className="w-5 h-5 text-[#123c32]" />
+              <div className="w-10 h-10 rounded-full bg-white border border-[#A8BDA3] text-[#2F3E3A] flex items-center justify-center shrink-0">
+                <FileText className="w-5 h-5 text-[#2F3E3A]" />
               </div>
               <div>
-                <p className="font-bold text-xs sm:text-sm text-[#18211f]">
+                <p className="font-bold text-xs sm:text-sm text-[#2F3E3A]">
                   Ficha Médica Digital & Alergias
                 </p>
-                <p className="text-[11px] text-[#66716d]">
+                <p className="text-[11px] text-[#6F8A78]">
                   Consentimiento informado y preferencias de cabina
                 </p>
               </div>
             </div>
-            <span className="text-xs font-bold text-[#123c32] flex items-center gap-1">
+            <span className="text-xs font-bold text-[#2F3E3A] flex items-center gap-1">
               <span>Editar</span>
               <span>→</span>
             </span>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full h-2 rounded-full bg-[#d8e2de] overflow-hidden mt-3">
+          <div className="w-full h-2 rounded-full bg-[#A8BDA3] overflow-hidden mt-3">
             <div
-              className="h-full bg-[#123c32] rounded-full transition-all duration-700 ease-out"
+              className="h-full bg-[#2F3E3A] rounded-full transition-all duration-700 ease-out"
               style={{ width: `${clientProfile.medicalSheetCompleted}%` }}
             ></div>
           </div>
 
-          <div className="mt-2.5 flex items-center justify-between text-xs text-[#66716d] flex-wrap gap-1">
+          <div className="mt-2.5 flex items-center justify-between text-xs text-[#6F8A78] flex-wrap gap-1">
             <span className="text-[11px]">
               Alergias a cianoacrilato, retinol y tipo de piel
             </span>
-            <span className="text-[#195344] font-bold text-[11px] shrink-0">
+            <span className="text-[#6F8A78] font-bold text-[11px] shrink-0">
               {clientProfile.consentSigned ? 'Firmado digitalmente ✓' : 'Firma pendiente'}
             </span>
           </div>
@@ -708,7 +708,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       <div className="pt-2">
         <button
           onClick={() => setShowLogoutConfirmModal(true)}
-          className="w-full py-4 rounded-[18px] bg-white hover:bg-red-50 text-red-700 hover:border-red-300 border border-[#d8e2de] transition-colors text-xs sm:text-sm flex items-center justify-center gap-2 font-bold cursor-pointer active:scale-95 shadow-xs"
+          className="w-full py-4 rounded-[18px] bg-white hover:bg-red-50 text-red-700 hover:border-red-300 border border-[#A8BDA3] transition-colors text-xs sm:text-sm flex items-center justify-center gap-2 font-bold cursor-pointer active:scale-95 shadow-xs"
           type="button"
         >
           <span>Cerrar Sesión Segura</span>
@@ -719,8 +719,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       {showLogoutConfirmModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="card-aesthetic max-w-xs w-full p-6 text-center animate-in zoom-in-95 duration-200">
-            <h3 className="font-bold text-lg text-[#123c32]">¿Cerrar sesión?</h3>
-            <p className="text-xs text-[#66716d] mt-1.5 leading-relaxed">
+            <h3 className="font-bold text-lg text-[#2F3E3A]">¿Cerrar sesión?</h3>
+            <p className="text-xs text-[#6F8A78] mt-1.5 leading-relaxed">
               Se cerrará tu sesión activa de <strong>{clientProfile.name}</strong>. Podrás volver a ingresar en cualquier momento para ver tus turnos.
             </p>
 
@@ -740,7 +740,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               <button
                 type="button"
                 onClick={() => setShowLogoutConfirmModal(false)}
-                className="w-full py-2.5 rounded-full text-[#66716d] hover:text-[#123c32] font-semibold text-xs transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-full text-[#6F8A78] hover:text-[#2F3E3A] font-semibold text-xs transition-colors cursor-pointer"
               >
                 Permanecer Conectada
               </button>
@@ -753,17 +753,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       {isEditProfileModalOpen && (
         <div className="fixed inset-0 z-[100] bg-black/65 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="card-aesthetic max-w-sm w-full max-h-[90vh] overflow-y-auto p-6 relative animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-[#d8e2de]">
+            <div className="flex items-center justify-between pb-3 border-b border-[#A8BDA3]">
               <div className="flex items-center gap-2">
-                <Edit3 className="w-4 h-4 text-[#123c32]" />
-                <h3 className="text-base font-bold text-[#123c32]">
+                <Edit3 className="w-4 h-4 text-[#2F3E3A]" />
+                <h3 className="text-base font-bold text-[#2F3E3A]">
                   Editar Datos & Foto
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsEditProfileModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-[#edf2ef] hover:bg-[#d8e2de] flex items-center justify-center text-[#66716d] transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full bg-[#E8EFE5] hover:bg-[#A8BDA3] flex items-center justify-center text-[#6F8A78] transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -773,7 +773,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               {/* Photo preview & upload action */}
               <div className="flex flex-col items-center">
                 <div className="relative group">
-                  <div className="w-20 h-20 rounded-[22px] overflow-hidden border-2 border-white ring-4 ring-[#123c32]/20 shadow-md">
+                  <div className="w-20 h-20 rounded-[22px] overflow-hidden border-2 border-white ring-4 ring-[#2F3E3A]/20 shadow-md">
                     <img
                       src={editAvatar}
                       alt="Avatar Preview"
@@ -783,17 +783,17 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#123c32] text-white flex items-center justify-center shadow-md hover:bg-[#195344] transition-all cursor-pointer"
+                    className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#2F3E3A] text-white flex items-center justify-center shadow-md hover:bg-[#6F8A78] transition-all cursor-pointer"
                     title="Subir foto desde archivo"
                   >
-                    <Upload className="w-3.5 h-3.5 text-[#d9f56a]" />
+                    <Upload className="w-3.5 h-3.5 text-[#D9E6D3]" />
                   </button>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="mt-2 text-xs font-semibold text-[#123c32] hover:underline flex items-center gap-1 cursor-pointer"
+                  className="mt-2 text-xs font-semibold text-[#2F3E3A] hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <Camera className="w-3.5 h-3.5" />
                   <span>Subir foto desde tu dispositivo</span>
@@ -801,14 +801,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
                 {/* Preset Avatars */}
                 <div className="mt-3 flex items-center gap-2">
-                  <span className="text-[10px] text-[#66716d] font-medium mr-1">O elegir:</span>
+                  <span className="text-[10px] text-[#6F8A78] font-medium mr-1">O elegir:</span>
                   {presetAvatars.map((url, idx) => (
                     <button
                       key={idx}
                       type="button"
                       onClick={() => setEditAvatar(url)}
                       className={`w-7 h-7 rounded-full overflow-hidden border-2 transition-all cursor-pointer ${
-                        editAvatar === url ? 'border-[#123c32] ring-2 ring-[#123c32]/30 scale-110' : 'border-transparent opacity-70 hover:opacity-100'
+                        editAvatar === url ? 'border-[#2F3E3A] ring-2 ring-[#2F3E3A]/30 scale-110' : 'border-transparent opacity-70 hover:opacity-100'
                       }`}
                     >
                       <img src={url} alt={`Preset ${idx}`} className="w-full h-full object-cover" />
@@ -819,7 +819,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
 
               {/* Name */}
               <div>
-                <label className="block text-xs font-semibold text-[#66716d] mb-1">
+                <label className="block text-xs font-semibold text-[#6F8A78] mb-1">
                   Nombre y Apellido *
                 </label>
                 <input
@@ -827,14 +827,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   placeholder="Tu nombre completo"
-                  className="w-full px-4 py-2.5 rounded-2xl bg-white border border-[#d8e2de] focus:outline-none focus:ring-2 focus:ring-[#123c32] text-xs font-medium text-[#18211f]"
+                  className="w-full px-4 py-2.5 rounded-2xl bg-white border border-[#A8BDA3] focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] text-xs font-medium text-[#2F3E3A]"
                   required
                 />
               </div>
 
               {/* Phone */}
               <div>
-                <label className="block text-xs font-semibold text-[#66716d] mb-1">
+                <label className="block text-xs font-semibold text-[#6F8A78] mb-1">
                   Teléfono WhatsApp *
                 </label>
                 <input
@@ -842,13 +842,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   value={editPhone}
                   onChange={(e) => setEditPhone(e.target.value)}
                   placeholder="+54 9 11 ..."
-                  className="w-full px-4 py-2.5 rounded-2xl bg-white border border-[#d8e2de] focus:outline-none focus:ring-2 focus:ring-[#123c32] text-xs font-medium text-[#18211f]"
+                  className="w-full px-4 py-2.5 rounded-2xl bg-white border border-[#A8BDA3] focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] text-xs font-medium text-[#2F3E3A]"
                 />
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-xs font-semibold text-[#66716d] mb-1">
+                <label className="block text-xs font-semibold text-[#6F8A78] mb-1">
                   Correo Electrónico
                 </label>
                 <input
@@ -856,7 +856,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
                   placeholder="tuemail@ejemplo.com"
-                  className="w-full px-4 py-2.5 rounded-2xl bg-white border border-[#d8e2de] focus:outline-none focus:ring-2 focus:ring-[#123c32] text-xs font-medium text-[#18211f]"
+                  className="w-full px-4 py-2.5 rounded-2xl bg-white border border-[#A8BDA3] focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] text-xs font-medium text-[#2F3E3A]"
                 />
               </div>
 
@@ -864,13 +864,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsEditProfileModalOpen(false)}
-                  className="flex-1 py-3 rounded-full bg-[#edf2ef] hover:bg-[#d8e2de] text-[#123c32] font-semibold text-xs transition-colors cursor-pointer"
+                  className="flex-1 py-3 rounded-full bg-[#E8EFE5] hover:bg-[#A8BDA3] text-[#2F3E3A] font-semibold text-xs transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3 rounded-full bg-[#123c32] hover:bg-[#195344] text-white font-bold text-xs shadow-md transition-all cursor-pointer"
+                  className="flex-1 py-3 rounded-full bg-[#2F3E3A] hover:bg-[#6F8A78] text-white font-bold text-xs shadow-md transition-all cursor-pointer"
                 >
                   Guardar Cambios
                 </button>

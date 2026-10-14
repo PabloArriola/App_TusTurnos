@@ -664,7 +664,7 @@ export default function App() {
   const isLoginPage = !isAdminMode && !isLoggedIn;
 
   return (
-    <div className={`min-h-screen bg-[#e9eeeb] text-[#18211f] flex flex-col items-center antialiased selection:bg-[#d9f56a] selection:text-[#123c32] ${
+    <div className={`min-h-screen bg-[#F6F0E6] text-[#2F3E3A] flex flex-col items-center antialiased selection:bg-[#D9E6D3] selection:text-[#2F3E3A] ${
       isMobileFrame ? 'h-screen overflow-hidden justify-center p-2 sm:p-4' : 'justify-start'
     }`}>
       {/* Container wrapper: mobile-first boutique aesthetic (min(100%, 520px) matching user code) */}
@@ -673,7 +673,7 @@ export default function App() {
           isMobileFrame 
             ? 'max-w-[480px] h-full max-h-[880px] rounded-[44px] shadow-2xl ring-8 ring-slate-800 overflow-hidden app-canvas flex flex-col relative' 
             : isAdminMode
-              ? 'max-w-7xl bg-[#f7faf7] min-h-screen flex flex-col relative'
+              ? 'max-w-7xl bg-[#F6F0E6] min-h-screen flex flex-col relative'
               : 'max-w-[520px] app-canvas min-h-screen flex flex-col relative shadow-[0_16px_40px_rgba(18,60,50,0.08)]'
         }`}
       >
@@ -697,9 +697,9 @@ export default function App() {
 
         {/* Toast Alert Notice (Fidelity to user CSS .toast) */}
         {toastNotice && (
-          <div className={`${isMobileFrame ? 'absolute' : 'fixed'} z-50 left-1/2 bottom-[104px] -translate-x-1/2 w-[calc(100%-40px)] max-w-[440px] py-3.5 px-4 rounded-[15px] bg-[#123c32] text-white text-center text-xs sm:text-[13px] font-semibold shadow-[0_12px_30px_rgba(18,60,50,0.22)] flex items-center justify-between animate-in fade-in slide-in-from-bottom-3 duration-200`}>
+          <div className={`${isMobileFrame ? 'absolute' : 'fixed'} z-50 left-1/2 bottom-[104px] -translate-x-1/2 w-[calc(100%-40px)] max-w-[440px] py-3.5 px-4 rounded-[15px] bg-[#2F3E3A] text-white text-center text-xs sm:text-[13px] font-semibold shadow-[0_12px_30px_rgba(18,60,50,0.22)] flex items-center justify-between animate-in fade-in slide-in-from-bottom-3 duration-200`}>
             <div className="flex items-center gap-2 text-left">
-              <span className="text-[#d9f56a] font-bold text-sm">✓</span>
+              <span className="text-[#D9E6D3] font-bold text-sm">✓</span>
               <span>{toastNotice}</span>
             </div>
             <button 

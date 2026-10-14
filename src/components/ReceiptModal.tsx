@@ -222,7 +222,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
     <div className="fixed inset-0 z-[100] bg-black/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
       <div className="card-aesthetic max-w-sm sm:max-w-md w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 p-0">
         {/* Header Bar */}
-        <div className="bg-[#123c32] p-4 sm:p-5 text-white relative shrink-0">
+        <div className="bg-[#2F3E3A] p-4 sm:p-5 text-white relative shrink-0">
           <button
             type="button"
             onClick={onClose}
@@ -233,11 +233,11 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
           </button>
 
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-[#d9f56a] shadow-inner shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-[#D9E6D3] shadow-inner shrink-0">
               <Receipt className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-bold text-[#d9f56a] uppercase tracking-wider block">
+              <span className="text-[10px] font-bold text-[#D9E6D3] uppercase tracking-wider block">
                 Comprobante Digital
               </span>
               <h3 className="font-bold text-sm sm:text-base text-white leading-tight">
@@ -248,86 +248,86 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
         </div>
 
         {/* Printable/Visual Receipt Ticket Area (Scrollable so it never cuts off) */}
-        <div id="printable-receipt-card" className="p-4 sm:p-5 space-y-3 bg-white text-[#18211f] flex-1 overflow-y-auto overscroll-contain">
+        <div id="printable-receipt-card" className="p-4 sm:p-5 space-y-3 bg-white text-[#2F3E3A] flex-1 overflow-y-auto overscroll-contain">
           {/* Business Meta */}
-          <div className="text-center pb-2.5 border-b border-dashed border-[#d8e2de]">
-            <h4 className="font-bold text-sm sm:text-base text-[#123c32] tracking-tight">
+          <div className="text-center pb-2.5 border-b border-dashed border-[#A8BDA3]">
+            <h4 className="font-bold text-sm sm:text-base text-[#2F3E3A] tracking-tight">
               {transaction.businessName}
             </h4>
-            <p className="text-[11px] sm:text-xs text-[#66716d] mt-0.5">{transaction.businessAddress}</p>
+            <p className="text-[11px] sm:text-xs text-[#6F8A78] mt-0.5">{transaction.businessAddress}</p>
             {transaction.businessCuit && (
-              <p className="text-[10px] sm:text-[11px] text-[#66716d]">CUIT: {transaction.businessCuit}</p>
+              <p className="text-[10px] sm:text-[11px] text-[#6F8A78]">CUIT: {transaction.businessCuit}</p>
             )}
           </div>
 
           {/* Amount & Status Badge */}
           <div className="text-center py-0.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#efffc5] text-[#123c32] text-[11px] sm:text-xs font-bold border border-[#d9f56a]/40 mb-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#195344]" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D9E6D3] text-[#2F3E3A] text-[11px] sm:text-xs font-bold border border-[#D9E6D3]/40 mb-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#6F8A78]" />
               <span>Pago Acreditado en Mercado Pago</span>
             </div>
 
-            <div className="text-2xl sm:text-3xl font-extrabold text-[#123c32] tracking-tight">
+            <div className="text-2xl sm:text-3xl font-extrabold text-[#2F3E3A] tracking-tight">
               {formatPrice(transaction.amount)}
             </div>
-            <p className="text-[11px] sm:text-xs font-bold text-[#195344] mt-0.5">
+            <p className="text-[11px] sm:text-xs font-bold text-[#6F8A78] mt-0.5">
               {transaction.concept}
             </p>
           </div>
 
           {/* Metadata Grid */}
-          <div className="bg-[#f7faf7] rounded-[18px] p-3.5 text-xs space-y-2 border border-[#d8e2de]">
+          <div className="bg-[#F6F0E6] rounded-[18px] p-3.5 text-xs space-y-2 border border-[#A8BDA3]">
             <div className="flex items-center justify-between">
-              <span className="text-[#66716d]">Nº de Operación MP</span>
-              <span className="font-mono font-bold text-[#123c32]">#{transaction.mpOperationNumber}</span>
+              <span className="text-[#6F8A78]">Nº de Operación MP</span>
+              <span className="font-mono font-bold text-[#2F3E3A]">#{transaction.mpOperationNumber}</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-[#66716d]">Fecha y Hora</span>
-              <span className="font-bold text-[#18211f]">{transaction.date} · {transaction.time} hs</span>
+              <span className="text-[#6F8A78]">Fecha y Hora</span>
+              <span className="font-bold text-[#2F3E3A]">{transaction.date} · {transaction.time} hs</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-[#66716d]">Medio de Pago</span>
-              <span className="font-semibold text-[#18211f] text-right ml-2">{transaction.paymentMethod}</span>
+              <span className="text-[#6F8A78]">Medio de Pago</span>
+              <span className="font-semibold text-[#2F3E3A] text-right ml-2">{transaction.paymentMethod}</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-[#66716d]">Titular / Cliente</span>
-              <span className="font-semibold text-[#18211f]">{transaction.clientName}</span>
+              <span className="text-[#6F8A78]">Titular / Cliente</span>
+              <span className="font-semibold text-[#2F3E3A]">{transaction.clientName}</span>
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-[#66716d]">DNI / CUIT</span>
-              <span className="font-mono text-[#18211f]">{transaction.clientDni || '27-38834190-4'}</span>
+              <span className="text-[#6F8A78]">DNI / CUIT</span>
+              <span className="font-mono text-[#2F3E3A]">{transaction.clientDni || '27-38834190-4'}</span>
             </div>
 
-            <div className="h-px bg-[#d8e2de] my-1"></div>
+            <div className="h-px bg-[#A8BDA3] my-1"></div>
 
             <div className="flex items-center justify-between">
-              <span className="text-[#66716d]">Valor Total Tratamiento</span>
-              <span className="font-bold text-[#123c32]">
+              <span className="text-[#6F8A78]">Valor Total Tratamiento</span>
+              <span className="font-bold text-[#2F3E3A]">
                 {formatPrice(transaction.totalServicePrice || transaction.amount)}
               </span>
             </div>
 
-            <div className="flex items-center justify-between text-[#195344] font-bold">
+            <div className="flex items-center justify-between text-[#6F8A78] font-bold">
               <span>Seña Abonada Online</span>
               <span>- {formatPrice(transaction.amount)}</span>
             </div>
 
             {transaction.remainingBalance !== undefined && transaction.remainingBalance > 0 && (
-              <div className="flex items-center justify-between text-[#18211f] font-medium">
+              <div className="flex items-center justify-between text-[#2F3E3A] font-medium">
                 <span>Saldo a cancelar en cabina</span>
-                <span className="font-bold text-[#123c32]">{formatPrice(transaction.remainingBalance)}</span>
+                <span className="font-bold text-[#2F3E3A]">{formatPrice(transaction.remainingBalance)}</span>
               </div>
             )}
           </div>
 
           {/* Security & Verification Stamp */}
-          <div className="pt-1.5 flex items-center justify-between text-[11px] text-[#66716d] border-t border-dashed border-[#d8e2de]">
-            <div className="flex items-center gap-1.5 text-[#123c32] font-semibold">
-              <ShieldCheck className="w-4 h-4 text-[#123c32]" />
+          <div className="pt-1.5 flex items-center justify-between text-[11px] text-[#6F8A78] border-t border-dashed border-[#A8BDA3]">
+            <div className="flex items-center gap-1.5 text-[#2F3E3A] font-semibold">
+              <ShieldCheck className="w-4 h-4 text-[#2F3E3A]" />
               <span>Verificado por TusTurnos & MP</span>
             </div>
             <span className="font-mono text-[10px]">ID: {transaction.id}</span>
@@ -335,13 +335,13 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
         </div>
 
         {/* Action Buttons (Fixed at bottom of modal card) */}
-        <div className="p-3.5 sm:p-4 bg-[#f7faf7] border-t border-[#d8e2de] space-y-2 shrink-0">
+        <div className="p-3.5 sm:p-4 bg-[#F6F0E6] border-t border-[#A8BDA3] space-y-2 shrink-0">
           {/* Main Download Button */}
           <button
             type="button"
             onClick={handleDownloadImage}
             disabled={downloading}
-            className="w-full py-2.5 sm:py-3 px-4 rounded-[16px] bg-[#123c32] hover:bg-[#195344] text-white font-bold text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-2.5 sm:py-3 px-4 rounded-[16px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white font-bold text-xs shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
           >
             {downloading ? (
               <>
@@ -350,7 +350,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
               </>
             ) : (
               <>
-                <Download className="w-4 h-4 text-[#d9f56a]" />
+                <Download className="w-4 h-4 text-[#D9E6D3]" />
                 <span>Descargar Recibo Visual (PNG)</span>
               </>
             )}
@@ -370,7 +370,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
             <button
               type="button"
               onClick={handlePrint}
-              className="flex-1 py-2.5 px-3 rounded-full bg-white hover:bg-[#edf2ef] text-[#123c32] border border-[#d8e2de] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              className="flex-1 py-2.5 px-3 rounded-full bg-white hover:bg-[#E8EFE5] text-[#2F3E3A] border border-[#A8BDA3] font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Imprimir / PDF</span>

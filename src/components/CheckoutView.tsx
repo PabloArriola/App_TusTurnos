@@ -279,44 +279,44 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
     return (
       <div className="flex flex-col w-full max-w-[520px] mx-auto px-3.5 sm:px-4 space-y-4 pb-36 animate-in fade-in duration-300">
         <div className="card-aesthetic p-6 sm:p-7 text-center relative overflow-hidden mt-4">
-          <div className="w-16 h-16 rounded-full bg-[#123c32] text-[#d9f56a] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#123c32]/25">
+          <div className="w-16 h-16 rounded-full bg-[#2F3E3A] text-[#D9E6D3] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#2F3E3A]/25">
             <CheckCircle2 className="w-9 h-9" />
           </div>
 
-          <span className="inline-block px-3 py-1.5 rounded-full text-xs font-bold tracking-wide bg-[#efffc5] text-[#123c32] border border-[#d9f56a]/50 mb-2">
+          <span className="inline-block px-3 py-1.5 rounded-full text-xs font-bold tracking-wide bg-[#D9E6D3] text-[#2F3E3A] border border-[#D9E6D3]/50 mb-2">
             {isRescheduling ? '¡Turno Reprogramado con Éxito!' : '¡Reserva Confirmada con Éxito!'}
           </span>
 
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#123c32] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#2F3E3A] tracking-tight">
             Reserva #{confirmedAppointment.id}
           </h2>
 
-          <p className="text-xs sm:text-sm text-[#66716d] mt-1.5 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#6F8A78] mt-1.5 leading-relaxed">
             {isRescheduling ? (
               <>
-                Tu turno fue actualizado para el <strong className="text-[#18211f] font-semibold">{effectiveFormattedDate} a las {effectiveTime} hs</strong>. Tu seña previa de <strong className="text-[#123c32] font-semibold">{formatPrice(alreadyPaidDeposit)}</strong> se transfirió sin cargo adicional.
+                Tu turno fue actualizado para el <strong className="text-[#2F3E3A] font-semibold">{effectiveFormattedDate} a las {effectiveTime} hs</strong>. Tu seña previa de <strong className="text-[#2F3E3A] font-semibold">{formatPrice(alreadyPaidDeposit)}</strong> se transfirió sin cargo adicional.
               </>
             ) : (
               <>
-                Se ha acreditado tu seña de <strong className="text-[#18211f] font-semibold">{formatPrice(calculatedDeposit)}</strong>. Te esperamos en <strong className="text-[#18211f] font-semibold">{business.name}</strong>.
+                Se ha acreditado tu seña de <strong className="text-[#2F3E3A] font-semibold">{formatPrice(calculatedDeposit)}</strong>. Te esperamos en <strong className="text-[#2F3E3A] font-semibold">{business.name}</strong>.
               </>
             )}
           </p>
 
           {/* Details summary */}
-          <div className="mt-5 p-4 rounded-2xl bg-[#f7faf7] text-left space-y-2.5 border border-[#d8e2de]">
+          <div className="mt-5 p-4 rounded-2xl bg-[#F6F0E6] text-left space-y-2.5 border border-[#A8BDA3]">
             {actualBookedItems.length > 1 ? (
-              <div className="space-y-2 pb-2 border-b border-[#d8e2de]">
-                <span className="text-[11px] font-bold text-[#66716d] uppercase tracking-wider block">
+              <div className="space-y-2 pb-2 border-b border-[#A8BDA3]">
+                <span className="text-[11px] font-bold text-[#6F8A78] uppercase tracking-wider block">
                   Servicios Confirmados ({actualBookedItems.length}):
                 </span>
                 {actualBookedItems.map((item, idx) => (
-                  <div key={idx} className="p-2.5 rounded-xl bg-white border border-[#d8e2de] text-xs">
-                    <div className="flex justify-between font-bold text-[#123c32]">
+                  <div key={idx} className="p-2.5 rounded-xl bg-white border border-[#A8BDA3] text-xs">
+                    <div className="flex justify-between font-bold text-[#2F3E3A]">
                       <span>#{idx + 1} {item.service.title}</span>
                       <span>{formatPrice(item.service.price)}</span>
                     </div>
-                    <div className="text-[#66716d] text-[11px] flex items-center justify-between mt-0.5">
+                    <div className="text-[#6F8A78] text-[11px] flex items-center justify-between mt-0.5">
                       <span>{item.formattedDate} · {item.time} hs</span>
                       <span>Atiende: {item.specialist.name}</span>
                     </div>
@@ -326,31 +326,31 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             ) : (
               <>
                 <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-[#66716d]">Tratamiento:</span>
-                  <span className="font-semibold text-[#18211f] text-right truncate max-w-[200px]">{combinedTitle}</span>
+                  <span className="text-[#6F8A78]">Tratamiento:</span>
+                  <span className="font-semibold text-[#2F3E3A] text-right truncate max-w-[200px]">{combinedTitle}</span>
                 </div>
                 <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-[#66716d]">Especialista:</span>
-                  <span className="font-semibold text-[#18211f]">{effectiveSpecialist.name}</span>
+                  <span className="text-[#6F8A78]">Especialista:</span>
+                  <span className="font-semibold text-[#2F3E3A]">{effectiveSpecialist.name}</span>
                 </div>
                 <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-[#66716d]">Fecha y Horario:</span>
-                  <span className="font-bold text-[#123c32]">{effectiveFormattedDate} · {effectiveTime} hs</span>
+                  <span className="text-[#6F8A78]">Fecha y Horario:</span>
+                  <span className="font-bold text-[#2F3E3A]">{effectiveFormattedDate} · {effectiveTime} hs</span>
                 </div>
               </>
             )}
 
             <div className="flex justify-between text-xs sm:text-sm pt-1">
-              <span className="text-[#66716d]">Seña Total Acreditada:</span>
+              <span className="text-[#6F8A78]">Seña Total Acreditada:</span>
               <span className="font-bold text-emerald-700">{formatPrice(isRescheduling ? alreadyPaidDeposit : calculatedDeposit)} ✓</span>
             </div>
             <div className="flex justify-between text-xs sm:text-sm">
-              <span className="text-[#66716d]">Dirección:</span>
-              <span className="font-semibold text-[#18211f] text-right truncate max-w-[200px]">{business.address}</span>
+              <span className="text-[#6F8A78]">Dirección:</span>
+              <span className="font-semibold text-[#2F3E3A] text-right truncate max-w-[200px]">{business.address}</span>
             </div>
-            <div className="pt-2 border-t border-[#d8e2de] flex justify-between text-xs sm:text-sm font-bold">
-              <span className="text-[#66716d]">Saldo a abonar en el local:</span>
-              <span className="text-[#123c32]">{formatPrice(remainingBalance)}</span>
+            <div className="pt-2 border-t border-[#A8BDA3] flex justify-between text-xs sm:text-sm font-bold">
+              <span className="text-[#6F8A78]">Saldo a abonar en el local:</span>
+              <span className="text-[#2F3E3A]">{formatPrice(remainingBalance)}</span>
             </div>
           </div>
 
@@ -368,9 +368,9 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
             <button
               onClick={onViewAppointments}
-              className="w-full py-4 px-5 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all active:scale-95 cursor-pointer"
+              className="w-full py-4 px-5 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all active:scale-95 cursor-pointer"
             >
-              <Calendar className="w-4 h-4 text-[#d9f56a]" />
+              <Calendar className="w-4 h-4 text-[#D9E6D3]" />
               <span>Ver en Mis Turnos</span>
             </button>
           </div>
@@ -385,16 +385,16 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       <div className="flex items-center justify-between pt-1">
         <button
           onClick={onBack}
-          className="w-11 h-11 flex items-center justify-center rounded-full bg-white text-[#123c32] border border-[#d8e2de]/80 shadow-[0_8px_22px_rgba(18,60,50,0.08)] active:scale-95 transition-all cursor-pointer hover:scale-105"
+          className="w-11 h-11 flex items-center justify-center rounded-full bg-white text-[#2F3E3A] border border-[#A8BDA3]/80 shadow-[0_8px_22px_rgba(18,60,50,0.08)] active:scale-95 transition-all cursor-pointer hover:scale-105"
           aria-label="Volver al calendario"
         >
           <span className="material-symbols-outlined text-[20px]">arrow_back_ios_new</span>
         </button>
         <div className="text-center">
-          <span className="inline-flex px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#eaf2ed] text-[#123c32] mb-0.5">
+          <span className="inline-flex px-3 py-1 rounded-full text-[11px] font-bold tracking-wide bg-[#D9E6D3] text-[#2F3E3A] mb-0.5">
             PASO 3 DE 3
           </span>
-          <h2 className="text-xl sm:text-2xl font-bold text-[#123c32] tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#2F3E3A] tracking-tight">
             {isRescheduling ? 'Reprogramar Turno' : 'Confirmar Reserva'}
           </h2>
         </div>
@@ -420,50 +420,50 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       <section className="card-aesthetic p-5 sm:p-6 relative overflow-hidden">
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className="text-[11px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#efffc5] text-[#123c32] font-bold truncate border border-[#d9f56a]/40">
+            <span className="text-[11px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] font-bold truncate border border-[#D9E6D3]/40">
               {actualBookedItems.length > 1
                 ? `${actualBookedItems.length} Servicios Agendados`
                 : (effectiveServices[0]?.category || 'Servicio Individual')}
             </span>
             {actualBookedItems.length <= 1 && (
-              <span className="text-[#66716d] text-xs font-semibold">
-                · Profesional: <strong className="text-[#123c32]">{effectiveSpecialist.name}</strong>
+              <span className="text-[#6F8A78] text-xs font-semibold">
+                · Profesional: <strong className="text-[#2F3E3A]">{effectiveSpecialist.name}</strong>
               </span>
             )}
           </div>
-          <h2 className="text-lg sm:text-xl font-bold text-[#18211f] leading-snug">
+          <h2 className="text-lg sm:text-xl font-bold text-[#2F3E3A] leading-snug">
             {combinedTitle}
           </h2>
-          <p className="text-xs text-[#66716d] truncate mt-0.5">
+          <p className="text-xs text-[#6F8A78] truncate mt-0.5">
             {business.name} · {business.address}
           </p>
         </div>
 
         {/* Date & Time Chips or Multi-Service breakdown */}
         {actualBookedItems.length > 1 ? (
-          <div className="mt-4 pt-3.5 space-y-2 border-t border-[#d8e2de]">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#66716d] block">
+          <div className="mt-4 pt-3.5 space-y-2 border-t border-[#A8BDA3]">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#6F8A78] block">
               Detalle de cada servicio y horario:
             </span>
             {actualBookedItems.map((item, idx) => (
               <div
                 key={item.id || idx}
-                className="p-3 rounded-2xl bg-[#f7faf7] border border-[#d8e2de] flex items-center justify-between text-xs"
+                className="p-3 rounded-2xl bg-[#F6F0E6] border border-[#A8BDA3] flex items-center justify-between text-xs"
               >
                 <div className="flex flex-col min-w-0 pr-2">
-                  <span className="font-bold text-[#123c32] truncate">
+                  <span className="font-bold text-[#2F3E3A] truncate">
                     #{idx + 1} {item.service.title}
                   </span>
-                  <span className="text-[#66716d] text-[11px] flex items-center gap-1 mt-0.5">
-                    <Calendar className="w-3 h-3 text-[#123c32]" />
+                  <span className="text-[#6F8A78] text-[11px] flex items-center gap-1 mt-0.5">
+                    <Calendar className="w-3 h-3 text-[#2F3E3A]" />
                     {item.formattedDate} · {item.time} hs ({item.specialist.name})
                   </span>
                 </div>
                 <div className="text-right shrink-0">
-                  <span className="font-bold text-[#123c32] block">
+                  <span className="font-bold text-[#2F3E3A] block">
                     {formatPrice(item.service.price)}
                   </span>
-                  <span className="text-[10px] text-[#195344] font-semibold">
+                  <span className="text-[10px] text-[#6F8A78] font-semibold">
                     Seña: {formatPrice(Math.round((item.service.price * (item.service.depositPercentage || business.defaultDepositPercentage || 30)) / 100))}
                   </span>
                 </div>
@@ -471,20 +471,20 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             ))}
           </div>
         ) : (
-          <div className="mt-4 pt-3.5 bg-[#f7faf7] rounded-2xl p-3 grid grid-cols-3 gap-2 border border-[#d8e2de] text-center">
+          <div className="mt-4 pt-3.5 bg-[#F6F0E6] rounded-2xl p-3 grid grid-cols-3 gap-2 border border-[#A8BDA3] text-center">
             <div className="flex flex-col items-center">
-              <span className="text-[10px] text-[#66716d] uppercase font-bold">Fecha</span>
-              <p className="text-xs sm:text-sm font-bold text-[#123c32] mt-0.5">{effectiveFormattedDate}</p>
+              <span className="text-[10px] text-[#6F8A78] uppercase font-bold">Fecha</span>
+              <p className="text-xs sm:text-sm font-bold text-[#2F3E3A] mt-0.5">{effectiveFormattedDate}</p>
             </div>
 
-            <div className="flex flex-col items-center border-x border-[#d8e2de]">
-              <span className="text-[10px] text-[#66716d] uppercase font-bold">Horario</span>
-              <p className="text-xs sm:text-sm font-bold text-[#123c32] mt-0.5">{effectiveTime} hs</p>
+            <div className="flex flex-col items-center border-x border-[#A8BDA3]">
+              <span className="text-[10px] text-[#6F8A78] uppercase font-bold">Horario</span>
+              <p className="text-xs sm:text-sm font-bold text-[#2F3E3A] mt-0.5">{effectiveTime} hs</p>
             </div>
 
             <div className="flex flex-col items-center">
-              <span className="text-[10px] text-[#66716d] uppercase font-bold">Duración</span>
-              <p className="text-xs sm:text-sm font-bold text-[#123c32] mt-0.5">{totalDurationMinutes} min</p>
+              <span className="text-[10px] text-[#6F8A78] uppercase font-bold">Duración</span>
+              <p className="text-xs sm:text-sm font-bold text-[#2F3E3A] mt-0.5">{totalDurationMinutes} min</p>
             </div>
           </div>
         )}
@@ -492,52 +492,52 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
 
       {/* Client Information Form */}
       <section className="card-aesthetic p-5 sm:p-6">
-        <span className="text-xs font-bold uppercase tracking-wider text-[#123c32] block mb-3.5">
+        <span className="text-xs font-bold uppercase tracking-wider text-[#2F3E3A] block mb-3.5">
           Tus Datos de Contacto
         </span>
         <div className="space-y-3">
           <div>
-            <label className="block text-xs font-semibold text-[#66716d] mb-1">Nombre Completo *</label>
+            <label className="block text-xs font-semibold text-[#6F8A78] mb-1">Nombre Completo *</label>
             <input
               type="text"
               value={clientName}
               onChange={(e) => setClientName(e.target.value)}
               placeholder="Ej. Valentina Rossi"
-              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-2xl bg-white border border-[#d8e2de] focus:outline-none focus:ring-2 focus:ring-[#123c32] text-[#18211f] font-medium"
+              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-2xl bg-white border border-[#A8BDA3] focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] text-[#2F3E3A] font-medium"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="block text-xs font-semibold text-[#66716d] mb-1">WhatsApp (Avisos) *</label>
+              <label className="block text-xs font-semibold text-[#6F8A78] mb-1">WhatsApp (Avisos) *</label>
               <input
                 type="tel"
                 value={clientPhone}
                 onChange={(e) => setClientPhone(e.target.value)}
                 placeholder="+54 9 11 2345-6789"
-                className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-2xl bg-white border border-[#d8e2de] focus:outline-none focus:ring-2 focus:ring-[#123c32] text-[#18211f] font-medium"
+                className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-2xl bg-white border border-[#A8BDA3] focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] text-[#2F3E3A] font-medium"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#66716d] mb-1">Email</label>
+              <label className="block text-xs font-semibold text-[#6F8A78] mb-1">Email</label>
               <input
                 type="email"
                 value={clientEmail}
                 onChange={(e) => setClientEmail(e.target.value)}
                 placeholder="valentina@email.com"
-                className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-2xl bg-white border border-[#d8e2de] focus:outline-none focus:ring-2 focus:ring-[#123c32] text-[#18211f] font-medium"
+                className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-2xl bg-white border border-[#A8BDA3] focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] text-[#2F3E3A] font-medium"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#66716d] mb-1">Notas o Aclaraciones (Opcional)</label>
+            <label className="block text-xs font-semibold text-[#6F8A78] mb-1">Notas o Aclaraciones (Opcional)</label>
             <input
               type="text"
               value={clientNotes}
               onChange={(e) => setClientNotes(e.target.value)}
               placeholder="Ej. Uso lentes de contacto / piel sensible"
-              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-2xl bg-white border border-[#d8e2de] focus:outline-none focus:ring-2 focus:ring-[#123c32] text-[#18211f]"
+              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-2xl bg-white border border-[#A8BDA3] focus:outline-none focus:ring-2 focus:ring-[#2F3E3A] text-[#2F3E3A]"
             />
           </div>
         </div>
@@ -546,10 +546,10 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       {/* Price Breakdown Card */}
       <section className="card-aesthetic p-5 sm:p-6">
         <div className="flex items-center justify-between mb-3.5">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#123c32]">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#2F3E3A]">
             Desglose de Pago
           </span>
-          <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#efffc5] text-[#123c32]">
+          <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A]">
             {isRescheduling ? 'Seña Transferida' : 'Sin recargo'}
           </span>
         </div>
@@ -557,16 +557,16 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
         <div className="flex flex-col gap-2.5">
           {/* Itemized lines */}
           {services.map((srv) => (
-            <div key={srv.id} className="flex items-center justify-between text-xs sm:text-sm text-[#66716d]">
+            <div key={srv.id} className="flex items-center justify-between text-xs sm:text-sm text-[#6F8A78]">
               <span className="truncate max-w-[260px]">• {srv.title} ({srv.durationMinutes}m)</span>
-              <span className="font-semibold text-[#18211f]">{formatPrice(srv.price)}</span>
+              <span className="font-semibold text-[#2F3E3A]">{formatPrice(srv.price)}</span>
             </div>
           ))}
 
           {/* Subtotal / Total Treatment */}
-          <div className="flex items-center justify-between text-sm sm:text-base text-[#18211f] pt-2.5 border-t border-[#edf2ef]">
+          <div className="flex items-center justify-between text-sm sm:text-base text-[#2F3E3A] pt-2.5 border-t border-[#E8EFE5]">
             <span className="font-semibold">Total del tratamiento</span>
-            <span className="font-bold text-[#123c32] text-lg">{formatPrice(totalPrice)}</span>
+            <span className="font-bold text-[#2F3E3A] text-lg">{formatPrice(totalPrice)}</span>
           </div>
 
           {/* Deposit Box: Rescheduling ($0) vs New Booking */}
@@ -591,31 +591,31 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               </span>
             </div>
           ) : (
-            <div className="bg-[#efffc5] rounded-2xl p-4 flex items-center justify-between relative overflow-hidden border border-[#d9f56a]/70 mt-1">
+            <div className="bg-[#D9E6D3] rounded-2xl p-4 flex items-center justify-between relative overflow-hidden border border-[#D9E6D3]/70 mt-1">
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-bold text-[#123c32]">Seña hoy para confirmar turno</span>
-                  <span className="px-2 py-0.5 rounded-full bg-[#123c32] text-white text-[10px] font-bold">
+                  <span className="text-xs font-bold text-[#2F3E3A]">Seña hoy para confirmar turno</span>
+                  <span className="px-2 py-0.5 rounded-full bg-[#2F3E3A] text-white text-[10px] font-bold">
                     30%
                   </span>
                 </div>
-                <span className="text-xs text-[#195344] mt-0.5">
+                <span className="text-xs text-[#6F8A78] mt-0.5">
                   Se descuenta del total en recepción
                 </span>
               </div>
-              <span className="text-xl sm:text-2xl font-bold text-[#123c32] tracking-tight">
+              <span className="text-xl sm:text-2xl font-bold text-[#2F3E3A] tracking-tight">
                 {formatPrice(calculatedDeposit)}
               </span>
             </div>
           )}
 
           {/* Remaining Balance in Clinic */}
-          <div className="flex items-center justify-between text-xs sm:text-sm text-[#66716d] pt-1">
+          <div className="flex items-center justify-between text-xs sm:text-sm text-[#6F8A78] pt-1">
             <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[18px] text-[#66716d]">storefront</span>
+              <span className="material-symbols-outlined text-[18px] text-[#6F8A78]">storefront</span>
               <span>Saldo restante a pagar en el local</span>
             </div>
-            <span className="font-bold text-[#18211f]">{formatPrice(remainingBalance)}</span>
+            <span className="font-bold text-[#2F3E3A]">{formatPrice(remainingBalance)}</span>
           </div>
         </div>
       </section>
@@ -623,7 +623,7 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       {/* Payment Methods Selector (Only shown if NOT rescheduling) */}
       {!isRescheduling ? (
         <section className="space-y-2.5">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-[#123c32] px-1">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#2F3E3A] px-1">
             Método para Abonar la Seña
           </h3>
 
@@ -633,34 +633,34 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               onClick={() => setPaymentMethod('mercadopago')}
               className={`relative flex items-center justify-between p-4 rounded-2xl shadow-sm cursor-pointer transition-all duration-200 border ${
                 paymentMethod === 'mercadopago'
-                  ? 'bg-white border-[#123c32] ring-2 ring-[#123c32]/20'
-                  : 'bg-white/80 border-[#d8e2de] hover:bg-white'
+                  ? 'bg-white border-[#2F3E3A] ring-2 ring-[#2F3E3A]/20'
+                  : 'bg-white/80 border-[#A8BDA3] hover:bg-white'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
                   paymentMethod === 'mercadopago'
-                    ? 'bg-[#123c32] text-[#d9f56a] shadow-sm'
-                    : 'bg-[#edf2ef] text-[#123c32]'
+                    ? 'bg-[#2F3E3A] text-[#D9E6D3] shadow-sm'
+                    : 'bg-[#E8EFE5] text-[#2F3E3A]'
                 }`}>
                   <Zap className="w-5 h-5 fill-current" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm sm:text-base text-[#18211f]">Mercado Pago</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#d9f56a] text-[#123c32] font-bold">
+                    <span className="font-bold text-sm sm:text-base text-[#2F3E3A]">Mercado Pago</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] font-bold">
                       Instantáneo
                     </span>
                   </div>
-                  <p className="text-xs text-[#66716d] mt-0.5">
+                  <p className="text-xs text-[#6F8A78] mt-0.5">
                     Débito, crédito o dinero en cuenta
                   </p>
                 </div>
               </div>
               <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
                 paymentMethod === 'mercadopago'
-                  ? 'bg-[#123c32] text-white'
-                  : 'bg-[#edf2ef] text-transparent'
+                  ? 'bg-[#2F3E3A] text-white'
+                  : 'bg-[#E8EFE5] text-transparent'
               }`}>
                 <span className="material-symbols-outlined text-[16px]">check</span>
               </div>
@@ -671,31 +671,31 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               onClick={() => setPaymentMethod('card')}
               className={`relative flex items-center justify-between p-4 rounded-2xl shadow-sm cursor-pointer transition-all duration-200 border ${
                 paymentMethod === 'card'
-                  ? 'bg-white border-[#123c32] ring-2 ring-[#123c32]/20'
-                  : 'bg-white/80 border-[#d8e2de] hover:bg-white'
+                  ? 'bg-white border-[#2F3E3A] ring-2 ring-[#2F3E3A]/20'
+                  : 'bg-white/80 border-[#A8BDA3] hover:bg-white'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
                   paymentMethod === 'card'
-                    ? 'bg-[#123c32] text-[#d9f56a] shadow-sm'
-                    : 'bg-[#edf2ef] text-[#123c32]'
+                    ? 'bg-[#2F3E3A] text-[#D9E6D3] shadow-sm'
+                    : 'bg-[#E8EFE5] text-[#2F3E3A]'
                 }`}>
                   <CreditCard className="w-5 h-5" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm sm:text-base text-[#18211f]">Tarjeta Débito / Crédito</span>
+                    <span className="font-bold text-sm sm:text-base text-[#2F3E3A]">Tarjeta Débito / Crédito</span>
                   </div>
-                  <p className="text-xs text-[#66716d] mt-0.5">
+                  <p className="text-xs text-[#6F8A78] mt-0.5">
                     Visa, Mastercard, Cabal o AMEX
                   </p>
                 </div>
               </div>
               <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
                 paymentMethod === 'card'
-                  ? 'bg-[#123c32] text-white'
-                  : 'bg-[#edf2ef] text-transparent'
+                  ? 'bg-[#2F3E3A] text-white'
+                  : 'bg-[#E8EFE5] text-transparent'
               }`}>
                 <span className="material-symbols-outlined text-[16px]">check</span>
               </div>
@@ -706,31 +706,31 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
               onClick={() => setPaymentMethod('transfer')}
               className={`relative flex items-center justify-between p-4 rounded-2xl shadow-sm cursor-pointer transition-all duration-200 border ${
                 paymentMethod === 'transfer'
-                  ? 'bg-white border-[#123c32] ring-2 ring-[#123c32]/20'
-                  : 'bg-white/80 border-[#d8e2de] hover:bg-white'
+                  ? 'bg-white border-[#2F3E3A] ring-2 ring-[#2F3E3A]/20'
+                  : 'bg-white/80 border-[#A8BDA3] hover:bg-white'
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
                   paymentMethod === 'transfer'
-                    ? 'bg-[#123c32] text-[#d9f56a] shadow-sm'
-                    : 'bg-[#edf2ef] text-[#123c32]'
+                    ? 'bg-[#2F3E3A] text-[#D9E6D3] shadow-sm'
+                    : 'bg-[#E8EFE5] text-[#2F3E3A]'
                 }`}>
                   <Building className="w-5 h-5" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm sm:text-base text-[#18211f]">Transferencia Bancaria</span>
+                    <span className="font-bold text-sm sm:text-base text-[#2F3E3A]">Transferencia Bancaria</span>
                   </div>
-                  <p className="text-xs text-[#66716d] mt-0.5">
+                  <p className="text-xs text-[#6F8A78] mt-0.5">
                     Alias: {business.aliasCbu} · Envío de comprobante
                   </p>
                 </div>
               </div>
               <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
                 paymentMethod === 'transfer'
-                  ? 'bg-[#123c32] text-white'
-                  : 'bg-[#edf2ef] text-transparent'
+                  ? 'bg-[#2F3E3A] text-white'
+                  : 'bg-[#E8EFE5] text-transparent'
               }`}>
                 <span className="material-symbols-outlined text-[16px]">check</span>
               </div>
@@ -744,13 +744,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
         <button
           onClick={handlePayClick}
           disabled={isProcessing}
-          className="w-full py-4 px-5 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-70"
+          className="w-full py-4 px-5 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-70"
         >
           {isProcessing ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           ) : isRescheduling ? (
             <>
-              <CheckCircle2 className="w-5 h-5 text-[#d9f56a]" />
+              <CheckCircle2 className="w-5 h-5 text-[#D9E6D3]" />
               <span>Confirmar Reprogramación ($0 Hoy)</span>
             </>
           ) : paymentMethod === 'transfer' ? (
@@ -760,13 +760,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             </>
           ) : (
             <>
-              <Lock className="w-4 h-4 text-[#d9f56a]" />
+              <Lock className="w-4 h-4 text-[#D9E6D3]" />
               <span>Pagar Seña {formatPrice(calculatedDeposit)} y Confirmar</span>
             </>
           )}
         </button>
-        <p className="text-center text-xs text-[#66716d] mt-2 flex items-center justify-center gap-1 font-medium">
-          <span className="material-symbols-outlined text-[14px] text-[#123c32]">shield</span>
+        <p className="text-center text-xs text-[#6F8A78] mt-2 flex items-center justify-center gap-1 font-medium">
+          <span className="material-symbols-outlined text-[14px] text-[#2F3E3A]">shield</span>
           Transacción encriptada y protegida de extremo a extremo
         </p>
       </div>
@@ -846,51 +846,51 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       {/* Simulated Transfer Instructions Modal */}
       {showTransferModal && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="card-aesthetic max-w-sm w-full p-6 text-[#18211f] shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-[#d8e2de]">
+          <div className="card-aesthetic max-w-sm w-full p-6 text-[#2F3E3A] shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-[#A8BDA3]">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#efffc5] text-[#123c32] flex items-center justify-center border border-[#d9f56a]/40">
-                  <Building className="w-4 h-4 text-[#123c32]" />
+                <div className="w-8 h-8 rounded-full bg-[#D9E6D3] text-[#2F3E3A] flex items-center justify-center border border-[#D9E6D3]/40">
+                  <Building className="w-4 h-4 text-[#2F3E3A]" />
                 </div>
-                <h3 className="font-bold text-base text-[#123c32]">Datos para Transferencia</h3>
+                <h3 className="font-bold text-base text-[#2F3E3A]">Datos para Transferencia</h3>
               </div>
               <button 
                 onClick={() => setShowTransferModal(false)}
-                className="w-7 h-7 rounded-full bg-[#edf2ef] hover:bg-[#d8e2de] text-[#66716d] flex items-center justify-center font-bold text-xs cursor-pointer"
+                className="w-7 h-7 rounded-full bg-[#E8EFE5] hover:bg-[#A8BDA3] text-[#6F8A78] flex items-center justify-center font-bold text-xs cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             <div className="py-4 space-y-3">
-              <div className="p-3.5 rounded-[18px] bg-[#efffc5] border border-[#d9f56a]/50">
-                <p className="text-xs text-[#195344] font-medium">Monto Exacto de la Seña:</p>
-                <p className="text-2xl font-extrabold text-[#123c32] tracking-tight">{formatPrice(depositAmount)}</p>
+              <div className="p-3.5 rounded-[18px] bg-[#D9E6D3] border border-[#D9E6D3]/50">
+                <p className="text-xs text-[#6F8A78] font-medium">Monto Exacto de la Seña:</p>
+                <p className="text-2xl font-extrabold text-[#2F3E3A] tracking-tight">{formatPrice(depositAmount)}</p>
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between p-3 rounded-[16px] bg-[#f7faf7] border border-[#d8e2de]">
+                <div className="flex items-center justify-between p-3 rounded-[16px] bg-[#F6F0E6] border border-[#A8BDA3]">
                   <div>
-                    <span className="text-[#66716d] block text-[10px] uppercase font-bold">Alias CBU / CVU:</span>
-                    <span className="font-bold text-sm text-[#123c32]">{business.aliasCbu}</span>
+                    <span className="text-[#6F8A78] block text-[10px] uppercase font-bold">Alias CBU / CVU:</span>
+                    <span className="font-bold text-sm text-[#2F3E3A]">{business.aliasCbu}</span>
                   </div>
                   <button 
                     onClick={copyAliasToClipboard}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#123c32] hover:bg-[#195344] text-white text-xs font-bold transition-all cursor-pointer"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#2F3E3A] hover:bg-[#6F8A78] text-white text-xs font-bold transition-all cursor-pointer"
                   >
-                    {copiedAlias ? <Check className="w-3.5 h-3.5 text-[#d9f56a]" /> : <Copy className="w-3.5 h-3.5 text-[#d9f56a]" />}
+                    {copiedAlias ? <Check className="w-3.5 h-3.5 text-[#D9E6D3]" /> : <Copy className="w-3.5 h-3.5 text-[#D9E6D3]" />}
                     <span>{copiedAlias ? 'Copiado' : 'Copiar'}</span>
                   </button>
                 </div>
 
-                <div className="p-2.5 rounded-[16px] bg-[#f7faf7] border border-[#d8e2de]">
-                  <span className="text-[#66716d] block text-[10px] uppercase font-bold">Entidad Bancaria:</span>
-                  <span className="font-bold text-[#18211f]">{business.bankName}</span>
+                <div className="p-2.5 rounded-[16px] bg-[#F6F0E6] border border-[#A8BDA3]">
+                  <span className="text-[#6F8A78] block text-[10px] uppercase font-bold">Entidad Bancaria:</span>
+                  <span className="font-bold text-[#2F3E3A]">{business.bankName}</span>
                 </div>
 
-                <div className="p-2.5 rounded-[16px] bg-[#f7faf7] border border-[#d8e2de]">
-                  <span className="text-[#66716d] block text-[10px] uppercase font-bold">Titular de la cuenta:</span>
-                  <span className="font-bold text-[#18211f]">{business.name}</span>
+                <div className="p-2.5 rounded-[16px] bg-[#F6F0E6] border border-[#A8BDA3]">
+                  <span className="text-[#6F8A78] block text-[10px] uppercase font-bold">Titular de la cuenta:</span>
+                  <span className="font-bold text-[#2F3E3A]">{business.name}</span>
                 </div>
               </div>
 
@@ -902,13 +902,13 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
             <div className="space-y-2 pt-1">
               <button
                 onClick={() => processPaymentDirectly('transfer', 'pendiente_verificacion')}
-                className="w-full py-3.5 px-4 rounded-[18px] bg-[#123c32] hover:bg-[#195344] text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 transition-all cursor-pointer"
+                className="w-full py-3.5 px-4 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white font-bold text-xs sm:text-sm shadow-md active:scale-95 transition-all cursor-pointer"
               >
                 Ya transferí, notificar al negocio
               </button>
               <button
                 onClick={() => setShowTransferModal(false)}
-                className="w-full py-2 text-xs text-[#66716d] hover:text-[#123c32] font-semibold text-center cursor-pointer"
+                className="w-full py-2 text-xs text-[#6F8A78] hover:text-[#2F3E3A] font-semibold text-center cursor-pointer"
               >
                 Volver atrás
               </button>
