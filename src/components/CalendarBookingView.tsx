@@ -54,30 +54,89 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
     setShowAskAnotherModal(false);
   }, [currentService?.id]);
 
-  // Calendar date state
+  // Real current date reference
+  const now = new Date();
+  const currentRealYear = now.getFullYear();
+  const currentRealMonth = now.getMonth();
+  const currentRealDay = now.getDate();
+
+  // Helper: check if a date (year, month, day) is in the past compared to real today
+  const isPastDay = (year: number, month: number, day: number) => {
+    const d = new Date(year, month, day);
+    d.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return d < today;
+  };
+
+  // Helper: check if a date string YYYY-MM-DD is in the past
+  const isDateStrInPast = (dateStr?: string) => {
+    if (!dateStr) return true;
+    const parts = dateStr.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return true;
+    return isPastDay(parts[0], parts[1] - 1, parts[2]);
+  };
+
+  // Helper: check if study is open on that day of week
+  const isOpenDay = (day: number, year = currentRealYear, month = currentRealMonth) => {
+    const dow = new Date(year, month, day).getDay();
+    const openDays = business.availableDays && business.availableDays.length > 0
+      ? business.availableDays
+      : [1, 2, 3, 4, 5, 6];
+    return openDays.includes(dow);
+  };
+
+  const getFirstAvailableDay = (year: number, month: number, preferredDay?: number): number => {
+    const daysInM = new Date(year, month + 1, 0).getDate();
+
+    // If preferredDay is valid (not past and is open)
+    if (preferredDay && preferredDay >= 1 && preferredDay <= daysInM) {
+      if (!isPastDay(year, month, preferredDay) && isOpenDay(preferredDay, year, month)) {
+        return preferredDay;
+      }
+    }
+
+    // Otherwise find earliest day starting from today (if current month) or day 1 (if future month)
+    const startDay = (year === currentRealYear && month === currentRealMonth) ? currentRealDay : 1;
+    for (let d = startDay; d <= daysInM; d++) {
+      if (!isPastDay(year, month, d) && isOpenDay(d, year, month)) {
+        return d;
+      }
+    }
+    return Math.min(daysInM, Math.max(1, startDay));
+  };
+
+  // Calendar date state: always default to today or a valid non-past initialDate
   const [currentYear, setCurrentYear] = useState<number>(() => {
-    if (initialDate) {
+    if (initialDate && !isDateStrInPast(initialDate)) {
       const [y] = initialDate.split('-');
       if (!isNaN(Number(y))) return Number(y);
     }
-    return 2026;
+    return currentRealYear;
   });
 
   const [currentMonth, setCurrentMonth] = useState<number>(() => {
-    if (initialDate) {
+    if (initialDate && !isDateStrInPast(initialDate)) {
       const [, m] = initialDate.split('-');
       if (!isNaN(Number(m))) return Math.max(0, Math.min(11, Number(m) - 1));
     }
-    return 9; // Octubre (0-indexed: 9)
+    return currentRealMonth;
   });
 
   const [selectedDay, setSelectedDay] = useState<number>(() => {
-    if (initialDate) {
-      const [, , d] = initialDate.split('-');
-      if (!isNaN(Number(d))) return Number(d);
-    }
-    return 23;
+    const y = (initialDate && !isDateStrInPast(initialDate)) ? Number(initialDate.split('-')[0]) : currentRealYear;
+    const m = (initialDate && !isDateStrInPast(initialDate)) ? Math.max(0, Math.min(11, Number(initialDate.split('-')[1]) - 1)) : currentRealMonth;
+    const d = (initialDate && !isDateStrInPast(initialDate)) ? Number(initialDate.split('-')[2]) : currentRealDay;
+    return getFirstAvailableDay(y, m, d);
   });
+
+  // Whenever year or month changes, ensure selectedDay is in a valid non-past day
+  useEffect(() => {
+    const valid = getFirstAvailableDay(currentYear, currentMonth, selectedDay);
+    if (valid !== selectedDay) {
+      setSelectedDay(valid);
+    }
+  }, [currentYear, currentMonth]);
 
   const [activeShift, setActiveShift] = useState<'morning' | 'afternoon' | 'evening'>('afternoon');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>(initialTime || '15:30');
@@ -96,7 +155,15 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
 
   const currentMonthName = `${MONTH_NAMES[currentMonth]} ${currentYear}`;
 
+  const isAtCurrentMonth = () => {
+    return (
+      currentYear < currentRealYear ||
+      (currentYear === currentRealYear && currentMonth <= currentRealMonth)
+    );
+  };
+
   const handlePrevMonth = () => {
+    if (isAtCurrentMonth()) return; // Never allow navigating to past months
     if (currentMonth === 0) {
       setCurrentMonth(11);
       setCurrentYear((prev) => prev - 1);
@@ -139,22 +206,35 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
   const fullDate = `${currentYear}-${pad(currentMonth + 1)}-${pad(activeDay)}`;
 
   const isPastDate = (day: number) => {
-    const d = new Date(currentYear, currentMonth, day);
-    const today = new Date(2026, 9, 1);
-    return d < today;
-  };
-
-  const isOpenDay = (day: number) => {
-    const dow = new Date(currentYear, currentMonth, day).getDay();
-    const openDays = business.availableDays && business.availableDays.length > 0
-      ? business.availableDays
-      : [1, 2, 3, 4, 5, 6];
-    return openDays.includes(dow);
+    return isPastDay(currentYear, currentMonth, day);
   };
 
   const isDayAvailable = (day: number) => {
     if (isPastDate(day)) return false;
-    return isOpenDay(day);
+    return isOpenDay(day, currentYear, currentMonth);
+  };
+
+  const isTimeSlotInPast = (slotTimeStr: string, day: number) => {
+    const d = new Date(currentYear, currentMonth, day);
+    d.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (d < today) return true;
+    if (d > today) return false;
+
+    // d is today: compare against current time with a small 10-minute margin
+    const [slotHours, slotMinutes] = slotTimeStr.split(':').map(Number);
+    const slotDate = new Date();
+    slotDate.setHours(slotHours, slotMinutes, 0, 0);
+    const rightNow = new Date();
+    return slotDate <= rightNow;
+  };
+
+  const handleSelectDay = (dayNum: number) => {
+    if (isPastDate(dayNum) || !isOpenDay(dayNum, currentYear, currentMonth)) {
+      return;
+    }
+    setSelectedDay(dayNum);
   };
 
   // Slots according to shift
@@ -188,6 +268,21 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
     return `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
   };
 
+  // If selectedTimeSlot is past for current activeDay, auto-select first available valid future slot
+  useEffect(() => {
+    if (isTimeSlotInPast(selectedTimeSlot, activeDay)) {
+      const allShifts: Array<'morning' | 'afternoon' | 'evening'> = [activeShift, 'morning', 'afternoon', 'evening'];
+      for (const shift of allShifts) {
+        const found = slotsByShift[shift].find((s) => s.status === 'available' && !isTimeSlotInPast(s.time, activeDay));
+        if (found) {
+          setActiveShift(shift);
+          setSelectedTimeSlot(found.time);
+          break;
+        }
+      }
+    }
+  }, [activeDay, currentMonth, currentYear]);
+
   const estimatedEndTime = calculateEndTime(selectedTimeSlot, currentService.durationMinutes);
 
   const formatPrice = (val: number) => {
@@ -206,7 +301,27 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
     endTime: estimatedEndTime,
   };
 
+  const handleProceedToTime = () => {
+    if (isPastDate(activeDay)) {
+      alert('No podés programar o reprogramar un turno para un día que ya pasó. Por favor elegí una fecha a partir de hoy.');
+      return;
+    }
+    if (!isOpenDay(activeDay, currentYear, currentMonth)) {
+      alert('El estudio se encuentra cerrado el día seleccionado. Por favor elegí otro día de atención.');
+      return;
+    }
+    setBookingStep('select-time');
+  };
+
   const handleConfirmTime = () => {
+    if (isPastDate(activeDay)) {
+      alert('No podés programar o reprogramar un turno para un día que ya pasó. Por favor elegí una fecha vigente.');
+      return;
+    }
+    if (isTimeSlotInPast(selectedTimeSlot, activeDay)) {
+      alert('El horario seleccionado ya pasó. Por favor elegí un horario disponible.');
+      return;
+    }
     if (reschedulingAppointment) {
       onProceedToCheckout(currentBookedItem);
     } else {
@@ -350,8 +465,13 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                 <button
                   type="button"
                   onClick={handlePrevMonth}
+                  disabled={isAtCurrentMonth()}
                   aria-label="Mes anterior"
-                  className="w-9 h-9 rounded-full bg-[#E8EFE5] text-[#2F3E3A] flex items-center justify-center hover:bg-[#A8BDA3] active:scale-90 transition-all cursor-pointer shadow-xs"
+                  className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-xs ${
+                    isAtCurrentMonth()
+                      ? 'bg-stone-200 text-stone-400 cursor-not-allowed opacity-40'
+                      : 'bg-[#E8EFE5] text-[#2F3E3A] hover:bg-[#A8BDA3] active:scale-90 cursor-pointer'
+                  }`}
                 >
                   <ChevronLeft className="w-5 h-5 stroke-[2.2]" />
                 </button>
@@ -396,11 +516,11 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                 return (
                   <div
                     key={`prev-${prevDay}`}
-                    className={`h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none opacity-60 ${
+                    className={`h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none opacity-40 ${
                       isWeekend ? 'cal-cell-striped-warm' : 'cal-cell-striped-gray'
                     }`}
                   >
-                    <span className="text-[11px] sm:text-xs font-medium text-gray-400 leading-none">
+                    <span className="text-[11px] sm:text-xs font-medium text-stone-400 leading-none">
                       {prevDay}
                     </span>
                   </div>
@@ -411,16 +531,56 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
               {daysInMonth.map((dayNum) => {
                 const colIdx = (leadingBlanks + dayNum - 1) % 7;
                 const isWeekend = colIdx === 5 || colIdx === 6;
-                const isSelected = activeDay === dayNum;
-                const available = isDayAvailable(dayNum);
                 const isPast = isPastDate(dayNum);
+                const isAvailable = isDayAvailable(dayNum);
+                const isSelected = activeDay === dayNum && !isPast && isAvailable;
 
+                // Priority 1: Past days are strictly disabled and cannot be selected
+                if (isPast) {
+                  return (
+                    <div
+                      key={dayNum}
+                      title="Este día ya pasó y no se puede reservar"
+                      className={`h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none cursor-not-allowed opacity-40 bg-stone-100 ${
+                        isWeekend ? 'cal-cell-striped-warm' : 'cal-cell-striped-gray'
+                      }`}
+                    >
+                      <span className="text-[11px] sm:text-xs font-semibold text-stone-400 leading-none">
+                        {dayNum}
+                      </span>
+                      <span className="text-[8px] sm:text-[9px] font-medium text-stone-400 block truncate">
+                        Pasado
+                      </span>
+                    </div>
+                  );
+                }
+
+                // Priority 2: Closed days
+                if (!isAvailable) {
+                  return (
+                    <div
+                      key={dayNum}
+                      title="Día sin atención / cerrado"
+                      className={`h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none cursor-not-allowed opacity-50 ${
+                        isWeekend ? 'cal-cell-striped-warm' : 'cal-cell-striped-gray'
+                      }`}
+                    >
+                      <span className="text-[11px] sm:text-xs font-medium text-stone-400 leading-none">
+                        {dayNum}
+                      </span>
+                      <span className="text-[8px] sm:text-[9px] font-semibold text-stone-500 block truncate">
+                        Cerrado
+                      </span>
+                    </div>
+                  );
+                }
+
+                // Priority 3: Selected active day
                 if (isSelected) {
                   return (
                     <button
                       key={dayNum}
                       type="button"
-                      onClick={() => setSelectedDay(dayNum)}
                       className="h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none bg-[#f6c344] text-[#1c1917] shadow-[0_6px_18px_rgba(246,195,68,0.45)] ring-2 ring-[#eab308]/70 cursor-pointer active:scale-95 transition-all scale-[1.02]"
                     >
                       <div className="w-full flex items-center justify-between">
@@ -440,40 +600,25 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
                   );
                 }
 
-                if (available) {
-                  return (
-                    <button
-                      key={dayNum}
-                      type="button"
-                      onClick={() => setSelectedDay(dayNum)}
-                      className="h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none bg-[#f2f4f3] hover:bg-[#e7eee9] active:scale-95 transition-all cursor-pointer group border border-transparent hover:border-[#2F3E3A]/15"
-                    >
-                      <div className="w-full flex items-center justify-between">
-                        <span className="text-xs sm:text-sm font-semibold text-[#2F3E3A] group-hover:font-bold leading-none">
-                          {dayNum}
-                        </span>
-                      </div>
-                      <div className="w-full">
-                        <span className="text-[8px] sm:text-[9px] font-semibold text-[#2F3E3A]/50 group-hover:text-[#2F3E3A] block truncate">
-                          Libre
-                        </span>
-                      </div>
-                    </button>
-                  );
-                }
-
+                // Priority 4: Available future open day
                 return (
-                  <div
+                  <button
                     key={dayNum}
-                    title={isPast ? 'Fecha anterior' : 'Día cerrado'}
-                    className={`h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none cursor-not-allowed opacity-75 ${
-                      isWeekend ? 'cal-cell-striped-warm' : 'cal-cell-striped-gray'
-                    }`}
+                    type="button"
+                    onClick={() => handleSelectDay(dayNum)}
+                    className="h-12 sm:h-16 rounded-[12px] sm:rounded-[16px] p-1.5 sm:p-2 flex flex-col justify-between items-start text-left relative overflow-hidden select-none bg-[#f2f4f3] hover:bg-[#e7eee9] active:scale-95 transition-all cursor-pointer group border border-transparent hover:border-[#2F3E3A]/15"
                   >
-                    <span className="text-[11px] sm:text-xs font-medium text-gray-400 leading-none">
-                      {dayNum}
-                    </span>
-                  </div>
+                    <div className="w-full flex items-center justify-between">
+                      <span className="text-xs sm:text-sm font-semibold text-[#2F3E3A] group-hover:font-bold leading-none">
+                        {dayNum}
+                      </span>
+                    </div>
+                    <div className="w-full">
+                      <span className="text-[8px] sm:text-[9px] font-semibold text-[#2F3E3A]/50 group-hover:text-[#2F3E3A] block truncate">
+                        Libre
+                      </span>
+                    </div>
+                  </button>
                 );
               })}
 
@@ -514,7 +659,7 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
           <div className="w-full pt-1">
             <button
               type="button"
-              onClick={() => setBookingStep('select-time')}
+              onClick={handleProceedToTime}
               className="w-full py-4 px-5 rounded-[18px] bg-[#2F3E3A] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] hover:bg-[#6F8A78] hover:-translate-y-0.5 transition-all active:scale-[0.98] cursor-pointer"
             >
               <span>Continuar a Elegir Horario ({formattedDate})</span>
@@ -550,7 +695,7 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
             <div className="flex items-center justify-between px-1">
               <span className="text-base font-bold text-[#2F3E3A]">Franja Horaria</span>
               <span className="text-xs font-bold text-[#6F8A78]">
-                {slotsByShift[activeShift].filter((s) => s.status === 'available').length} turnos libres
+                {slotsByShift[activeShift].filter((s) => s.status === 'available' && !isTimeSlotInPast(s.time, activeDay)).length} turnos libres
               </span>
             </div>
 
@@ -609,15 +754,18 @@ export const CalendarBookingView: React.FC<CalendarBookingViewProps> = ({
             <div className="grid grid-cols-3 gap-2">
               {slotsByShift[activeShift].map((slot) => {
                 const isSelected = selectedTimeSlot === slot.time;
+                const isPast = isTimeSlotInPast(slot.time, activeDay);
                 const isBooked = slot.status === 'booked';
+                const isUnavailable = isBooked || isPast;
 
-                if (isBooked) {
+                if (isUnavailable) {
                   return (
                     <div
                       key={slot.time}
+                      title={isPast ? 'Este horario ya pasó' : 'Turno ocupado'}
                       className="py-2.5 px-3 rounded-full bg-[#F6F0E6] text-[#6F8A78]/50 text-xs font-semibold text-center cursor-not-allowed select-none border border-[#A8BDA3]/50 flex items-center justify-center"
                     >
-                      Agotado
+                      {isPast ? 'Pasado' : 'Agotado'}
                     </div>
                   );
                 }

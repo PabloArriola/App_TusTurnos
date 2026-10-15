@@ -58,12 +58,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [selectedDayFilter, setSelectedDayFilter] = useState<'today' | 'tomorrow' | 'all'>('all');
   const [copiedLink, setCopiedLink] = useState(false);
 
+  const todayDateStr = (() => {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  })();
+
   // Manual booking modal state
   const [showAddModal, setShowAddModal] = useState(false);
   const [manualClientName, setManualClientName] = useState('');
   const [manualClientPhone, setManualClientPhone] = useState('');
   const [manualServiceId, setManualServiceId] = useState(business.services[0]?.id || '');
-  const [manualDate, setManualDate] = useState('2026-10-31');
+  const [manualDate, setManualDate] = useState(todayDateStr);
   const [manualTime, setManualTime] = useState('16:00');
 
   // Service Edit / Create Modal state
@@ -249,6 +257,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const handleCreateManual = (e: React.FormEvent) => {
     e.preventDefault();
     if (!manualClientName.trim() || !manualClientPhone.trim()) return;
+
+    const [y, m, d] = manualDate.split('-').map(Number);
+    const [h, min] = (manualTime || '23:59').split(':').map(Number);
+    const targetManualDate = new Date(y, m - 1, d, h, min);
+    if (targetManualDate < new Date()) {
+      alert('No podés crear un turno manual para un día u horario que ya pasó. Por favor seleccioná una fecha y hora vigente.');
+      return;
+    }
 
     const chosenService = business.services.find((s) => s.id === manualServiceId) || business.services[0];
     const deposit = Math.round((chosenService.price * chosenService.depositPercentage) / 100);
@@ -1600,6 +1616,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <label className="block font-semibold mb-1">Fecha</label>
                   <input
                     type="date"
+                    min={todayDateStr}
                     value={manualDate}
                     onChange={(e) => setManualDate(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container-high text-xs font-semibold"

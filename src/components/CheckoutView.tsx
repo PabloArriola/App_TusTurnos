@@ -117,7 +117,26 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
     return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(val);
   };
 
+  // Helper: check if date and time have already passed
+  const isDateInPast = (date: string, time?: string): boolean => {
+    try {
+      const [y, m, d] = date.split('-').map(Number);
+      const [h, min] = (time || '23:59').split(':').map(Number);
+      const target = new Date(y, m - 1, d, h || 0, min || 0);
+      return target < new Date();
+    } catch {
+      return false;
+    }
+  };
+
+  const hasExpiredSchedule = isDateInPast(effectiveDateStr, effectiveTime);
+
   const handlePayClick = () => {
+    if (hasExpiredSchedule) {
+      alert('No es posible programar o reprogramar un turno para una fecha u horario que ya pasó. Por favor volvé atrás y seleccioná una fecha vigente.');
+      return;
+    }
+
     if (!clientName.trim() || !clientPhone.trim()) {
       alert('Por favor completa tu nombre y teléfono de WhatsApp.');
       return;
@@ -139,6 +158,11 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
   };
 
   const handleConfirmReschedule = () => {
+    if (hasExpiredSchedule) {
+      alert('No es posible reprogramar un turno para una fecha u horario que ya pasó. Por favor volvé atrás y seleccioná una fecha vigente.');
+      return;
+    }
+
     if (!clientName.trim() || !clientPhone.trim()) {
       alert('Por favor completa tu nombre y teléfono de WhatsApp.');
       return;
@@ -490,6 +514,26 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
         )}
       </section>
 
+      {/* Warning Alert if date/time has already passed */}
+      {hasExpiredSchedule && (
+        <section className="p-4 sm:p-5 rounded-[22px] bg-red-50 border border-red-200 text-red-900 flex items-start gap-3 shadow-xs animate-in fade-in duration-200">
+          <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1.5 flex-1">
+            <p className="font-bold text-sm text-red-950">Día u horario caducado</p>
+            <p className="leading-relaxed text-red-800">
+              La fecha elegida (<strong>{effectiveFormattedDate} a las {effectiveTime} hs</strong>) ya pasó. No se puede agendar o reprogramar un turno para una fecha anterior a hoy.
+            </p>
+            <button
+              type="button"
+              onClick={onBack}
+              className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-700 hover:bg-red-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 cursor-pointer"
+            >
+              <span>← Volver y elegir fecha vigente</span>
+            </button>
+          </div>
+        </section>
+      )}
+
       {/* Client Information Form */}
       <section className="card-aesthetic p-5 sm:p-6">
         <span className="text-xs font-bold uppercase tracking-wider text-[#2F3E3A] block mb-3.5">
@@ -743,8 +787,12 @@ export const CheckoutView: React.FC<CheckoutViewProps> = ({
       <div className="pt-2">
         <button
           onClick={handlePayClick}
-          disabled={isProcessing}
-          className="w-full py-4 px-5 rounded-[18px] bg-[#2F3E3A] hover:bg-[#6F8A78] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-70"
+          disabled={isProcessing || hasExpiredSchedule}
+          className={`w-full py-4 px-5 rounded-[18px] text-white font-bold text-base flex items-center justify-center gap-2 shadow-[0_10px_24px_rgba(18,60,50,0.18)] transition-all ${
+            hasExpiredSchedule
+              ? 'bg-stone-300 text-stone-500 cursor-not-allowed opacity-60 shadow-none'
+              : 'bg-[#2F3E3A] hover:bg-[#6F8A78] hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer disabled:opacity-70'
+          }`}
         >
           {isProcessing ? (
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
