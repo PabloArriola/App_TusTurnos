@@ -105,10 +105,10 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
 
   // Count active upcoming vs historical attended across business
   const totalActiveUpcoming = businessAppointments.filter(
-    (a) => getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina'
+    (a) => a.status !== 'cancelado' && (getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina')
   ).length;
   const totalAttendedPast = businessAppointments.filter(
-    (a) => getAppointmentCategory(a) === 'atendido'
+    (a) => a.status !== 'cancelado' && getAppointmentCategory(a) === 'atendido'
   ).length;
 
   const filteredAppointments = businessAppointments.filter((a) => {
@@ -117,9 +117,9 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
 
     const cat = getAppointmentCategory(a);
     if (scopeFilter === 'upcoming_only') {
-      if (cat !== 'proximo' && cat !== 'en_cabina') return false;
+      if (a.status === 'cancelado' || (cat !== 'proximo' && cat !== 'en_cabina')) return false;
     } else if (scopeFilter === 'past_only') {
-      if (cat !== 'atendido') return false;
+      if (a.status === 'cancelado' || cat !== 'atendido') return false;
     }
 
     if (searchQuery.trim()) {
@@ -244,7 +244,15 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
   };
 
   const getStatusBadge = (status: Appointment['status'], category: AppointmentCategory) => {
-    if (category === 'atendido') {
+    if (status === 'cancelado') {
+      return { 
+        label: 'Cancelado', 
+        bg: 'bg-red-50', 
+        text: 'text-red-700', 
+        border: 'border-red-300' 
+      };
+    }
+    if (category === 'atendido' || status === 'completado') {
       return { 
         label: 'Ya Atendido', 
         bg: 'bg-slate-100/90', 
@@ -254,13 +262,9 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
     }
     switch (status) {
       case 'confirmado':
-        return { label: 'Confirmado MP', bg: 'bg-[#edf9f5]', text: 'text-[#062217]', border: 'border-[#dde4e0]' };
+        return { label: 'Confirmado MP', bg: 'bg-[#d0ef68]/20', text: 'text-[#171e00]', border: 'border-[#b5d24e]' };
       case 'en_cabina':
-        return { label: 'En Cabina Ahora', bg: 'bg-[#d0ef68]/25', text: 'text-[#171e00]', border: 'border-[#d0ef68]' };
-      case 'completado':
-        return { label: 'Completado', bg: 'bg-slate-100', text: 'text-slate-500', border: 'border-slate-200' };
-      case 'cancelado':
-        return { label: 'Cancelado', bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' };
+        return { label: 'En Cabina Ahora', bg: 'bg-[#2F3E3A]/10', text: 'text-[#2F3E3A]', border: 'border-[#2F3E3A]/40' };
       default:
         return { label: status, bg: 'bg-surface-container', text: 'text-on-surface', border: 'border-surface-container-high' };
     }
@@ -278,8 +282,8 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
               Agenda de Pacientes & Turnos
             </h2>
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="px-2.5 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] text-xs font-bold border border-[#A8BDA3]/60 flex items-center gap-1 shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-[#2F3E3A]"></span>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#d0ef68] text-[#171e00] text-xs font-extrabold border border-[#b5d24e] flex items-center gap-1 shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#171e00]"></span>
                 {totalActiveUpcoming} {totalActiveUpcoming === 1 ? 'próximo por atender' : 'próximos por atender'}
               </span>
               {totalAttendedPast > 0 && (
@@ -291,7 +295,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
             </div>
           </div>
           <p className="text-xs text-secondary mt-0.5">
-            Los turnos próximos se destacan en verde prioritario. Los turnos ya atendidos o de fechas pasadas se muestran en gris neutro para no distraer.
+            Turnos confirmados en verde lima destacado, cancelados en rojo claro, y turnos atendidos o pasados en gris neutro.
           </p>
         </div>
 
@@ -373,11 +377,11 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
             onClick={() => setScopeFilter('upcoming_only')}
             className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
               scopeFilter === 'upcoming_only'
-                ? 'bg-[#2F3E3A] text-white shadow-xs'
+                ? 'bg-[#d0ef68] text-[#171e00] shadow-xs'
                 : 'text-secondary hover:text-on-surface'
             }`}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D9E6D3]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#171e00]"></span>
             <span>Solo Próximos ({totalActiveUpcoming})</span>
           </button>
           <button
@@ -472,10 +476,10 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
               {business.specialists.map((spec) => {
                 const specAppointments = businessAppointments.filter((a) => a.specialistId === spec.id);
                 const specUpcoming = specAppointments.filter(
-                  (a) => getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina'
+                  (a) => a.status !== 'cancelado' && (getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina')
                 ).length;
                 const specAttended = specAppointments.filter(
-                  (a) => getAppointmentCategory(a) === 'atendido'
+                  (a) => a.status !== 'cancelado' && getAppointmentCategory(a) === 'atendido'
                 ).length;
 
                 const isSelected = specialistFilter === spec.id;
@@ -514,10 +518,10 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                         <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold ${
                             specUpcoming > 0
-                              ? 'bg-[#D9E6D3] text-[#2F3E3A] border border-[#A8BDA3]/60'
+                              ? 'bg-[#d0ef68] text-[#171e00] border border-[#b5d24e]'
                               : 'bg-slate-100 text-slate-500 border border-slate-200'
                           }`}>
-                            {specUpcoming > 0 && <span className="w-1.5 h-1.5 rounded-full bg-[#2F3E3A]"></span>}
+                            {specUpcoming > 0 && <span className="w-1.5 h-1.5 rounded-full bg-[#171e00]"></span>}
                             <span>{specUpcoming} {specUpcoming === 1 ? 'activo por atender' : 'activos por atender'}</span>
                           </span>
                           
@@ -578,19 +582,23 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                     Hoy
                   </button>
 
-                  {/* Legend distinguishing Active vs In Cabin vs Attended */}
+                  {/* Legend with confirmed in lime green and cancelled in red */}
                   <div className="hidden sm:flex items-center gap-2.5 text-[11px] text-secondary ml-2 flex-wrap">
-                    <span className="flex items-center gap-1 font-medium">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#2F3E3A]"></span>
-                      Por Atender
-                    </span>
-                    <span className="flex items-center gap-1 font-medium">
+                    <span className="flex items-center gap-1 font-bold text-[#171e00]">
                       <span className="w-2.5 h-2.5 rounded-full bg-[#d0ef68] border border-[#b5d24e]"></span>
+                      Confirmado
+                    </span>
+                    <span className="flex items-center gap-1 font-medium text-[#2F3E3A]">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#2F3E3A]"></span>
                       En Cabina
+                    </span>
+                    <span className="flex items-center gap-1 font-medium text-red-600">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                      Cancelado
                     </span>
                     <span className="flex items-center gap-1 font-medium text-slate-500">
                       <span className="w-2.5 h-2.5 rounded-md bg-slate-200 border border-slate-300 flex items-center justify-center text-[8px] font-bold">✓</span>
-                      Ya Atendido (Neutro)
+                      Ya Atendido
                     </span>
                   </div>
                 </div>
@@ -617,7 +625,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
 
                   // Determine if day has upcoming appointments vs only past appointments
                   const hasUpcoming = dayAppts.some(
-                    (a) => getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina'
+                    (a) => a.status !== 'cancelado' && (getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina')
                   );
                   const hasOnlyAttended = dayAppts.length > 0 && !hasUpcoming;
 
@@ -663,7 +671,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
 
                         {/* Status dot indicator for the day */}
                         {hasUpcoming && (
-                          <span className="w-2 h-2 rounded-full bg-[#2F3E3A]" title="Tiene turnos próximos por atender"></span>
+                          <span className="w-2 h-2 rounded-full bg-[#171e00]" title="Tiene turnos próximos por atender"></span>
                         )}
                         {hasOnlyAttended && (
                           <span className="w-2 h-2 rounded-full bg-slate-300" title="Turnos ya atendidos en historial"></span>
@@ -674,9 +682,10 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                       <div className="mt-1 space-y-1">
                         {dayAppts.slice(0, 2).map((appt) => {
                           const cat = getAppointmentCategory(appt);
-                          const isEnCabina = cat === 'en_cabina';
-                          const isAtendido = cat === 'atendido';
-                          const isCancelado = cat === 'cancelado';
+                          const isEnCabina = appt.status === 'en_cabina';
+                          const isCancelado = appt.status === 'cancelado';
+                          const isConfirmado = appt.status === 'confirmado';
+                          const isAtendido = cat === 'atendido' && !isCancelado && !isConfirmado && !isEnCabina;
 
                           return (
                             <div
@@ -685,25 +694,29 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                                 e.stopPropagation();
                                 setActiveAppointmentDetail(appt);
                               }}
-                              title={`${appt.time} - ${appt.clientName}: ${appt.serviceTitle} (${isAtendido ? 'Ya Atendido' : isEnCabina ? 'En Cabina' : 'Próximo'})`}
+                              title={`${appt.time} - ${appt.clientName}: ${appt.serviceTitle} (${isCancelado ? 'Cancelado' : isConfirmado ? 'Confirmado' : isEnCabina ? 'En Cabina' : 'Atendido'})`}
                               className={`px-1.5 py-0.5 rounded-lg text-[10px] truncate flex items-center gap-1 shadow-xs transition-all active:scale-95 ${
-                                isEnCabina
+                                isCancelado
+                                  ? 'bg-red-100 text-red-700 font-bold border border-red-300 line-through'
+                                  : isConfirmado
                                   ? 'bg-[#d0ef68] text-[#171e00] font-extrabold border border-[#b5d24e]'
+                                  : isEnCabina
+                                  ? 'bg-[#2F3E3A] text-[#D9E6D3] font-bold border border-[#2F3E3A]'
                                   : isAtendido
-                                  ? 'bg-slate-100/90 text-slate-500 border border-slate-200/90 font-medium opacity-80 hover:opacity-100 hover:bg-slate-200/70'
-                                  : isCancelado
-                                  ? 'bg-stone-100 text-stone-400 line-through opacity-50 border border-stone-200'
+                                  ? 'bg-slate-100/90 text-slate-500 border border-slate-200/90 font-medium opacity-80 hover:opacity-100'
                                   : 'bg-[#2F3E3A] text-white font-bold hover:bg-[#3d4f4a]'
                               }`}
                             >
                               {/* Icon indicator */}
-                              {isAtendido && (
+                              {isCancelado ? (
+                                <span className="text-[9px] font-bold text-red-600 shrink-0">✕</span>
+                              ) : isConfirmado ? (
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#171e00] shrink-0"></span>
+                              ) : isEnCabina ? (
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#D9E6D3] animate-pulse shrink-0"></span>
+                              ) : isAtendido ? (
                                 <span className="text-[9px] font-bold text-slate-400 shrink-0">✓</span>
-                              )}
-                              {isEnCabina && (
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#171e00] animate-pulse shrink-0"></span>
-                              )}
-                              {!isAtendido && !isEnCabina && !isCancelado && (
+                              ) : (
                                 <span className="w-1.5 h-1.5 rounded-full bg-[#D9E6D3] shrink-0"></span>
                               )}
 
@@ -723,7 +736,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                             }}
                             className={`w-full py-0.5 text-[9px] font-extrabold rounded-md transition-colors cursor-pointer text-center block shadow-xs active:scale-95 ${
                               hasUpcoming
-                                ? 'text-[#2F3E3A] bg-[#D9E6D3] hover:bg-[#A8BDA3]'
+                                ? 'text-[#171e00] bg-[#d0ef68] hover:bg-[#b5d24e]'
                                 : 'text-slate-600 bg-slate-200/80 hover:bg-slate-300'
                             }`}
                           >
@@ -756,7 +769,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                           Día {selectedDayDate}
                         </span>
                         {count > 0 && (
-                          <span className="px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] font-bold text-[10px] border border-[#A8BDA3]/60">
+                          <span className="px-2 py-0.5 rounded-full bg-[#d0ef68] text-[#171e00] font-extrabold text-[10px] border border-[#b5d24e]">
                             {count} {count === 1 ? 'turno' : 'turnos'}
                           </span>
                         )}
@@ -795,7 +808,10 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredAppointments.map((appt) => {
               const cat = getAppointmentCategory(appt);
-              const isAtendido = cat === 'atendido';
+              const isCancelado = appt.status === 'cancelado';
+              const isConfirmado = appt.status === 'confirmado';
+              const isEnCabina = appt.status === 'en_cabina';
+              const isAtendido = cat === 'atendido' && !isCancelado && !isConfirmado && !isEnCabina;
               const segments = getStatusSegments(appt.status);
               const badge = getStatusBadge(appt.status, cat);
               const isMenuOpen = openMenuApptId === appt.id;
@@ -805,7 +821,13 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                   key={appt.id}
                   onClick={() => setActiveAppointmentDetail(appt)}
                   className={`rounded-3xl p-4 sm:p-5 transition-all cursor-pointer flex flex-col justify-between relative group border ${
-                    isAtendido 
+                    isCancelado
+                      ? 'bg-red-50/70 border-red-300 shadow-xs'
+                      : isConfirmado
+                      ? 'bg-[#d0ef68]/15 border-[#b5d24e] shadow-sm hover:shadow-md'
+                      : isEnCabina
+                      ? 'bg-[#2F3E3A]/10 border-[#2F3E3A]/30 shadow-sm'
+                      : isAtendido 
                       ? 'bg-slate-50/80 border-slate-200 opacity-80 hover:opacity-100 hover:shadow-sm' 
                       : `${badge.bg} ${badge.border} shadow-sm hover:shadow-md`
                   }`}
@@ -815,19 +837,23 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold mb-1.5 ${
-                          isAtendido
-                            ? 'bg-slate-200 text-slate-600'
-                            : cat === 'en_cabina'
-                            ? 'bg-[#d0ef68] text-[#171e00]'
-                            : 'bg-[#D9E6D3] text-[#2F3E3A]'
+                          isCancelado
+                            ? 'bg-red-600 text-white'
+                            : isConfirmado
+                            ? 'bg-[#d0ef68] text-[#171e00] border border-[#b5d24e]'
+                            : isEnCabina
+                            ? 'bg-[#2F3E3A] text-[#D9E6D3]'
+                            : 'bg-slate-200 text-slate-600'
                         }`}>
+                          {isCancelado && <span>✕ Cancelado</span>}
+                          {isConfirmado && <span>✓ Confirmado</span>}
+                          {isEnCabina && <span>⚡ En Cabina</span>}
                           {isAtendido && <span>✓ Ya Atendido</span>}
-                          {cat === 'en_cabina' && <span>⚡ En Cabina</span>}
-                          {cat === 'proximo' && <span>⏳ Por Atender</span>}
-                          {cat === 'cancelado' && <span>✕ Cancelado</span>}
                         </span>
 
-                        <h4 className="font-bold text-sm text-slate-900 leading-snug line-clamp-2">
+                        <h4 className={`font-bold text-sm leading-snug line-clamp-2 ${
+                          isCancelado ? 'text-red-900 line-through' : 'text-slate-900'
+                        }`}>
                           {appt.serviceTitle}
                         </h4>
                       </div>
@@ -862,6 +888,16 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                             </button>
                             <button
                               onClick={() => {
+                                onUpdateAppointmentStatus(appt.id, 'confirmado');
+                                setOpenMenuApptId(null);
+                              }}
+                              className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-2"
+                            >
+                              <Check className="w-3.5 h-3.5 text-emerald-600" />
+                              <span>Marcar: Confirmado</span>
+                            </button>
+                            <button
+                              onClick={() => {
                                 onUpdateAppointmentStatus(appt.id, 'en_cabina');
                                 setOpenMenuApptId(null);
                               }}
@@ -877,7 +913,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                               }}
                               className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 flex items-center gap-2"
                             >
-                              <Check className="w-3.5 h-3.5 text-emerald-600" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-slate-600" />
                               <span>Marcar: Completado</span>
                             </button>
                             <div className="h-px bg-slate-100 my-1"></div>
@@ -903,7 +939,11 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                           <div
                             key={idx}
                             className={`h-1.5 flex-1 rounded-full transition-all ${
-                              filled ? (isAtendido ? 'bg-slate-400' : 'bg-slate-900') : 'bg-slate-200'
+                              isCancelado 
+                                ? 'bg-red-400' 
+                                : filled 
+                                ? (isConfirmado ? 'bg-[#171e00]' : isAtendido ? 'bg-slate-400' : 'bg-slate-900') 
+                                : 'bg-slate-200'
                             }`}
                           ></div>
                         ))}
@@ -918,12 +958,14 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                   {/* Card Bottom: Client Avatar + Name + Date/Time + WhatsApp Button */}
                   <div className="pt-2 border-t border-slate-900/10 flex items-center justify-between gap-2 mt-2">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-9 h-9 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0 ring-2 ring-white">
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ring-2 ring-white ${
+                        isCancelado ? 'bg-red-200 text-red-800' : 'bg-slate-200 text-slate-700'
+                      }`}>
                         {appt.clientName.charAt(0)}
                       </div>
 
                       <div className="min-w-0">
-                        <p className="font-bold text-xs text-slate-900 truncate">
+                        <p className={`font-bold text-xs truncate ${isCancelado ? 'text-red-900' : 'text-slate-900'}`}>
                           {appt.clientName}
                         </p>
                         <p className="text-[11px] text-slate-500 truncate">
@@ -970,13 +1012,22 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
           ) : (
             filteredAppointments.map((appt) => {
               const cat = getAppointmentCategory(appt);
-              const isAtendido = cat === 'atendido';
+              const isCancelado = appt.status === 'cancelado';
+              const isConfirmado = appt.status === 'confirmado';
+              const isEnCabina = appt.status === 'en_cabina';
+              const isAtendido = cat === 'atendido' && !isCancelado && !isConfirmado && !isEnCabina;
 
               return (
                 <div
                   key={appt.id}
                   className={`p-3.5 rounded-2xl transition-all border flex flex-col md:flex-row md:items-center justify-between gap-3 ${
-                    isAtendido
+                    isCancelado
+                      ? 'bg-red-50/70 border-red-300'
+                      : isConfirmado
+                      ? 'bg-[#d0ef68]/15 border-[#b5d24e]'
+                      : isEnCabina
+                      ? 'bg-[#2F3E3A]/10 border-[#2F3E3A]/40'
+                      : isAtendido
                       ? 'bg-slate-50/70 border-slate-200 opacity-80 hover:opacity-100'
                       : 'bg-surface-container-low hover:bg-surface-container border-surface-container-high/40'
                   }`}
@@ -984,29 +1035,39 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                   {/* Time & Client */}
                   <div className="flex items-start gap-3 min-w-0">
                     <div className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm border shrink-0 ${
-                      isAtendido
-                        ? 'bg-slate-100 text-slate-500 border-slate-200'
-                        : 'bg-surface-container-lowest text-primary border-surface-container-high/40'
+                      isCancelado
+                        ? 'bg-red-100 text-red-700 border-red-200'
+                        : isConfirmado
+                        ? 'bg-[#062217] text-[#d0ef68] border-[#062217]'
+                        : isEnCabina
+                        ? 'bg-[#2F3E3A] text-[#D9E6D3] border-[#2F3E3A]'
+                        : 'bg-slate-100 text-slate-500 border-slate-200'
                     }`}>
                       <span className="text-sm leading-none">{appt.time}</span>
-                      <span className="text-[10px] text-secondary mt-0.5">{appt.durationMinutes}m</span>
+                      <span className="text-[10px] opacity-80 mt-0.5">{appt.durationMinutes}m</span>
                     </div>
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-bold text-sm text-on-surface truncate">{appt.clientName}</h4>
-                        {isAtendido ? (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-600 flex items-center gap-1">
-                            <CheckCheck className="w-3 h-3 text-slate-500" />
-                            <span>Ya Atendido</span>
+                        <h4 className={`font-bold text-sm truncate ${isCancelado ? 'line-through text-red-900' : 'text-on-surface'}`}>
+                          {appt.clientName}
+                        </h4>
+                        {isCancelado ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-600 text-white flex items-center gap-1">
+                            ✕ Cancelado
                           </span>
-                        ) : cat === 'en_cabina' ? (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#d0ef68] text-[#171e00]">
+                        ) : isConfirmado ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#d0ef68] text-[#171e00] border border-[#b5d24e]">
+                            ✓ Confirmado MP
+                          </span>
+                        ) : isEnCabina ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#2F3E3A] text-[#D9E6D3]">
                             ⚡ En Cabina
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D9E6D3] text-[#2F3E3A]">
-                            ⏳ Por Atender
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-600 flex items-center gap-1">
+                            <CheckCheck className="w-3 h-3 text-slate-500" />
+                            <span>Ya Atendido</span>
                           </span>
                         )}
                       </div>
@@ -1039,7 +1100,15 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                     <select
                       value={appt.status}
                       onChange={(e) => onUpdateAppointmentStatus(appt.id, e.target.value as Appointment['status'])}
-                      className="text-xs font-semibold py-2 px-3 rounded-full bg-surface-container-lowest border border-surface-container-high focus:outline-none focus:ring-1 focus:ring-primary text-on-surface cursor-pointer"
+                      className={`text-xs font-bold py-2 px-3 rounded-full cursor-pointer border ${
+                        appt.status === 'cancelado'
+                          ? 'bg-red-600 text-white border-red-700'
+                          : appt.status === 'confirmado'
+                          ? 'bg-[#d0ef68] text-[#171e00] border-[#b5d24e]'
+                          : appt.status === 'en_cabina'
+                          ? 'bg-[#2F3E3A] text-[#D9E6D3] border-[#2F3E3A]'
+                          : 'bg-surface-container-lowest border-surface-container-high text-on-surface'
+                      }`}
                     >
                       <option value="confirmado">Confirmado</option>
                       <option value="en_cabina">En Cabina</option>
@@ -1079,31 +1148,30 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                     </span>
                     <span className="text-[10px] text-[#A8BDA3]">·</span>
                     {(() => {
-                      const cat = getAppointmentCategory(activeAppointmentDetail);
-                      if (cat === 'atendido') {
+                      if (activeAppointmentDetail.status === 'cancelado') {
                         return (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
-                            ✓ Ya Atendido
-                          </span>
-                        );
-                      }
-                      if (cat === 'en_cabina') {
-                        return (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#d0ef68] text-[#171e00] border border-[#b5d24e]">
-                            ⚡ En Cabina
-                          </span>
-                        );
-                      }
-                      if (cat === 'cancelado') {
-                        return (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-600 text-white">
                             ✕ Cancelado
                           </span>
                         );
                       }
+                      if (activeAppointmentDetail.status === 'confirmado') {
+                        return (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#d0ef68] text-[#171e00] border border-[#b5d24e]">
+                            ✓ Confirmado
+                          </span>
+                        );
+                      }
+                      if (activeAppointmentDetail.status === 'en_cabina') {
+                        return (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#2F3E3A] text-[#D9E6D3]">
+                            ⚡ En Cabina
+                          </span>
+                        );
+                      }
                       return (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D9E6D3] text-[#2F3E3A] border border-[#A8BDA3]/50">
-                          ⏳ Próximo a Atender
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                          ✓ Ya Atendido
                         </span>
                       );
                     })()}
@@ -1231,10 +1299,10 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 {[
-                  { value: 'confirmado', label: 'Confirmado', icon: Check },
-                  { value: 'en_cabina', label: 'En Cabina', icon: Sparkles },
-                  { value: 'completado', label: 'Completado', icon: CheckCircle2 },
-                  { value: 'cancelado', label: 'Cancelado', icon: X },
+                  { value: 'confirmado', label: 'Confirmado', icon: Check, activeClass: 'bg-[#d0ef68] text-[#171e00] border border-[#b5d24e] shadow-xs scale-[1.02]' },
+                  { value: 'en_cabina', label: 'En Cabina', icon: Sparkles, activeClass: 'bg-[#2F3E3A] text-[#D9E6D3] shadow-xs scale-[1.02]' },
+                  { value: 'completado', label: 'Completado', icon: CheckCircle2, activeClass: 'bg-slate-200 text-slate-800 shadow-xs scale-[1.02]' },
+                  { value: 'cancelado', label: 'Cancelado', icon: X, activeClass: 'bg-red-600 text-white shadow-xs scale-[1.02]' },
                 ].map((st) => {
                   const isSelected = activeAppointmentDetail.status === st.value;
                   const Icon = st.icon;
@@ -1249,9 +1317,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                       }}
                       className={`py-2 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
                         isSelected
-                          ? st.value === 'cancelado'
-                            ? 'bg-red-600 text-white shadow-xs scale-[1.02]'
-                            : 'bg-[#2F3E3A] text-[#D9E6D3] shadow-xs scale-[1.02]'
+                          ? st.activeClass
                           : 'bg-[#F6F0E6] hover:bg-[#D9E6D3]/60 text-[#6F8A78]'
                       }`}
                     >
@@ -1303,7 +1369,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                     <h3 className="font-bold text-base sm:text-lg text-on-surface font-display leading-tight">
                       Agenda del {selectedDayModalDate}
                     </h3>
-                    <span className="px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] font-bold text-[10px] border border-[#A8BDA3]/60">
+                    <span className="px-2 py-0.5 rounded-full bg-[#d0ef68] text-[#171e00] font-extrabold text-[10px] border border-[#b5d24e]">
                       {getAppointmentsForDay(selectedDayModalDate).length} {getAppointmentsForDay(selectedDayModalDate).length === 1 ? 'turno' : 'turnos'}
                     </span>
                   </div>
@@ -1334,7 +1400,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                   <span className="text-[10px] text-secondary block font-medium">Señas MP</span>
                   <strong className="text-xs text-emerald-700 font-mono font-bold">
                     {formatPrice(
-                      getAppointmentsForDay(selectedDayModalDate).reduce((sum, a) => sum + a.depositPaid, 0)
+                      getAppointmentsForDay(selectedDayModalDate).reduce((sum, a) => sum + (a.status !== 'cancelado' ? a.depositPaid : 0), 0)
                     )}
                   </strong>
                 </div>
@@ -1342,7 +1408,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                   <span className="text-[10px] text-secondary block font-medium">Saldo en Local</span>
                   <strong className="text-xs text-on-surface font-mono font-bold">
                     {formatPrice(
-                      getAppointmentsForDay(selectedDayModalDate).reduce((sum, a) => sum + a.remainingBalance, 0)
+                      getAppointmentsForDay(selectedDayModalDate).reduce((sum, a) => sum + (a.status !== 'cancelado' ? a.remainingBalance : 0), 0)
                     )}
                   </strong>
                 </div>
@@ -1361,15 +1427,21 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                   .sort((a, b) => a.time.localeCompare(b.time))
                   .map((appt) => {
                     const cat = getAppointmentCategory(appt);
-                    const isEnCabina = cat === 'en_cabina';
-                    const isAtendido = cat === 'atendido';
+                    const isCancelado = appt.status === 'cancelado';
+                    const isConfirmado = appt.status === 'confirmado';
+                    const isEnCabina = appt.status === 'en_cabina';
+                    const isAtendido = cat === 'atendido' && !isCancelado && !isConfirmado && !isEnCabina;
 
                     return (
                       <div
                         key={appt.id}
                         className={`p-3.5 rounded-2xl border transition-all ${
-                          isEnCabina
-                            ? 'bg-[#d0ef68]/15 border-[#d0ef68] ring-1 ring-[#d0ef68]'
+                          isCancelado
+                            ? 'bg-red-50/85 border-red-300 ring-1 ring-red-200'
+                            : isConfirmado
+                            ? 'bg-[#d0ef68]/20 border-[#b5d24e] ring-1 ring-[#d0ef68]/60 shadow-xs'
+                            : isEnCabina
+                            ? 'bg-[#2F3E3A]/10 border-[#2F3E3A]/40 ring-1 ring-[#2F3E3A]/20'
                             : isAtendido
                             ? 'bg-slate-50/80 border-slate-200 opacity-80'
                             : 'bg-surface-container-low/70 border-surface-container-high/60 hover:border-primary/40'
@@ -1379,8 +1451,12 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                           <div className="flex items-center gap-2">
                             <span
                               className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1 ${
-                                isEnCabina
+                                isCancelado
+                                  ? 'bg-red-100 text-red-800 border border-red-200 line-through'
+                                  : isConfirmado
                                   ? 'bg-[#062217] text-[#d0ef68]'
+                                  : isEnCabina
+                                  ? 'bg-[#2F3E3A] text-[#D9E6D3]'
                                   : isAtendido
                                   ? 'bg-slate-200 text-slate-700'
                                   : 'bg-white text-[#2F3E3A] border border-surface-container-high shadow-xs'
@@ -1391,19 +1467,24 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                             </span>
 
                             {/* Tag */}
-                            {isAtendido && (
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-600">
-                                ✓ Ya Atendido
+                            {isCancelado && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-600 text-white shadow-xs">
+                                ✕ Cancelado
+                              </span>
+                            )}
+                            {isConfirmado && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#d0ef68] text-[#171e00] border border-[#b5d24e] shadow-xs">
+                                ✓ Confirmado
                               </span>
                             )}
                             {isEnCabina && (
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#d0ef68] text-[#171e00]">
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#2F3E3A] text-[#D9E6D3]">
                                 ⚡ En Cabina
                               </span>
                             )}
-                            {cat === 'proximo' && (
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D9E6D3] text-[#2F3E3A]">
-                                ⏳ Por Atender
+                            {isAtendido && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-600">
+                                ✓ Ya Atendido
                               </span>
                             )}
 
@@ -1412,21 +1493,23 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                             </span>
                           </div>
 
-                          {/* Status Select */}
+                          {/* Status Select with direct custom colors */}
                           <select
                             value={appt.status}
                             onChange={(e) => {
                               const next = e.target.value as Appointment['status'];
                               onUpdateAppointmentStatus(appt.id, next);
                             }}
-                            className={`text-[11px] font-bold py-1 px-2.5 rounded-full cursor-pointer border ${
-                              isEnCabina
-                                ? 'bg-[#d0ef68] text-[#171e00] border-[#b5d24e]'
-                                : appt.status === 'confirmado'
-                                ? 'bg-[#2F3E3A] text-white border-[#2F3E3A]'
+                            className={`text-[11px] font-bold py-1 px-2.5 rounded-full cursor-pointer border transition-all ${
+                              isCancelado
+                                ? 'bg-red-600 text-white border-red-700 font-extrabold shadow-xs'
+                                : isConfirmado
+                                ? 'bg-[#d0ef68] text-[#171e00] border-[#b5d24e] font-extrabold shadow-xs'
+                                : isEnCabina
+                                ? 'bg-[#2F3E3A] text-[#D9E6D3] border-[#2F3E3A]'
                                 : appt.status === 'completado'
                                 ? 'bg-surface-container text-secondary border-surface-container-high'
-                                : 'bg-red-100 text-red-700 border-red-200'
+                                : 'bg-surface-container text-on-surface border-surface-container-high'
                             }`}
                           >
                             <option value="confirmado">Confirmado</option>
@@ -1438,7 +1521,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
 
                         {/* Treatment & Specialist */}
                         <div className="mt-2.5">
-                          <h4 className="font-bold text-sm text-on-surface">
+                          <h4 className={`font-bold text-sm ${isCancelado ? 'line-through text-red-900' : 'text-on-surface'}`}>
                             {appt.serviceTitle}
                           </h4>
                           <div className="flex items-center gap-2 text-xs text-secondary mt-1 flex-wrap">
