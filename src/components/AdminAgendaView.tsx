@@ -23,7 +23,9 @@ import {
   CalendarDays,
   User,
   Copy,
-  MessageCircle
+  MessageCircle,
+  CheckCheck,
+  History
 } from 'lucide-react';
 
 interface AdminAgendaViewProps {
@@ -35,6 +37,8 @@ interface AdminAgendaViewProps {
   formatPrice: (val: number) => string;
 }
 
+export type AppointmentCategory = 'proximo' | 'en_cabina' | 'atendido' | 'cancelado';
+
 export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
   business,
   appointments,
@@ -43,18 +47,23 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
   onSendWhatsAppReminder,
   formatPrice,
 }) => {
-  // View mode switcher: 'calendar' (Image 1 style) | 'cards' (Image 2 style) | 'timeline'
+  // View mode switcher: 'calendar' | 'cards' | 'timeline'
   const [viewMode, setViewMode] = useState<'calendar' | 'cards' | 'timeline'>('calendar');
   
+  // Real-time dynamic today
+  const today = new Date();
+  const todayDateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
   // Filters
   const [specialistFilter, setSpecialistFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [scopeFilter, setScopeFilter] = useState<'all' | 'upcoming_only' | 'past_only'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  // Calendar Date Navigation (Default: Octubre 2026)
-  const [currentMonth, setCurrentMonth] = useState<number>(9); // 0-based: 9 = October
-  const [currentYear, setCurrentYear] = useState<number>(2026);
-  const [selectedDayDate, setSelectedDayDate] = useState<string>('2026-10-23');
+  // Calendar Date Navigation
+  const [currentMonth, setCurrentMonth] = useState<number>(today.getMonth());
+  const [currentYear, setCurrentYear] = useState<number>(today.getFullYear());
+  const [selectedDayDate, setSelectedDayDate] = useState<string>(todayDateString);
 
   // Modals & Popovers
   const [activeAppointmentDetail, setActiveAppointmentDetail] = useState<Appointment | null>(null);
@@ -68,12 +77,51 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
 
   const daysLabels = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
+  // Helper: determine if an appointment is upcoming, in cabin, attended or cancelled
+  const getAppointmentCategory = (appt: Appointment, referenceTodayStr = todayDateString): AppointmentCategory => {
+    if (appt.status === 'cancelado') return 'cancelado';
+    if (appt.status === 'en_cabina') return 'en_cabina';
+    if (appt.status === 'completado') return 'atendido';
+
+    // If date is before reference day, it has already passed -> Atendido
+    if (appt.date < referenceTodayStr) return 'atendido';
+
+    // If it's today, check if time + duration has finished
+    if (appt.date === referenceTodayStr) {
+      const [h, m] = (appt.time || '00:00').split(':').map(Number);
+      const endMinutes = (h || 0) * 60 + (m || 0) + (appt.durationMinutes || 45);
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      if (currentMinutes > endMinutes) {
+        return 'atendido';
+      }
+    }
+
+    return 'proximo';
+  };
+
   // Filtered appointments for this business
   const businessAppointments = appointments.filter((a) => a.businessId === business.id);
+
+  // Count active upcoming vs historical attended across business
+  const totalActiveUpcoming = businessAppointments.filter(
+    (a) => getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina'
+  ).length;
+  const totalAttendedPast = businessAppointments.filter(
+    (a) => getAppointmentCategory(a) === 'atendido'
+  ).length;
 
   const filteredAppointments = businessAppointments.filter((a) => {
     if (specialistFilter !== 'all' && a.specialistId !== specialistFilter) return false;
     if (statusFilter !== 'all' && a.status !== statusFilter) return false;
+
+    const cat = getAppointmentCategory(a);
+    if (scopeFilter === 'upcoming_only') {
+      if (cat !== 'proximo' && cat !== 'en_cabina') return false;
+    } else if (scopeFilter === 'past_only') {
+      if (cat !== 'atendido') return false;
+    }
+
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       const matchName = a.clientName.toLowerCase().includes(q);
@@ -136,7 +184,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
         isCurrentMonth: false,
         dateString: dateStr,
         isWeekend: dayOfWeek === 6 || dayOfWeek === 0,
-        isPast: true,
+        isPast: dateStr < todayDateString,
       });
     }
     
@@ -151,11 +199,11 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
         isCurrentMonth: true,
         dateString: dateStr,
         isWeekend: dayOfWeek === 6 || dayOfWeek === 0,
-        isPast: d < 15 && currentMonth === 9 && currentYear === 2026,
+        isPast: dateStr < todayDateString,
       });
     }
     
-    // Next month filler days (up to 35)
+    // Next month filler days (up to 35 or 42)
     const remaining = 35 - days.length > 0 ? 35 - days.length : (42 - days.length > 0 ? 42 - days.length : 0);
     for (let d = 1; d <= remaining; d++) {
       const m = currentMonth === 11 ? 0 : currentMonth + 1;
@@ -169,10 +217,10 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
         isCurrentMonth: false,
         dateString: dateStr,
         isWeekend: dayOfWeek === 6 || dayOfWeek === 0,
-        isPast: false,
+        isPast: dateStr < todayDateString,
       });
     }
-    
+
     return days;
   };
 
@@ -183,7 +231,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
     return filteredAppointments.filter((a) => a.date === dateStr);
   };
 
-  // Helper for status progress dashes (Image 2 style)
+  // Helper for status progress dashes
   const getStatusSegments = (status: Appointment['status']) => {
     switch (status) {
       case 'completado': return [true, true, true, true];
@@ -195,14 +243,22 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
     }
   };
 
-  const getStatusBadge = (status: Appointment['status']) => {
+  const getStatusBadge = (status: Appointment['status'], category: AppointmentCategory) => {
+    if (category === 'atendido') {
+      return { 
+        label: 'Ya Atendido', 
+        bg: 'bg-slate-100/90', 
+        text: 'text-slate-600', 
+        border: 'border-slate-200' 
+      };
+    }
     switch (status) {
       case 'confirmado':
-        return { label: 'Confirmado', bg: 'bg-[#edf9f5]', text: 'text-[#062217]', border: 'border-[#dde4e0]' };
+        return { label: 'Confirmado MP', bg: 'bg-[#edf9f5]', text: 'text-[#062217]', border: 'border-[#dde4e0]' };
       case 'en_cabina':
-        return { label: 'En Cabina', bg: 'bg-[#d0ef68]/20', text: 'text-[#171e00]', border: 'border-[#d0ef68]' };
+        return { label: 'En Cabina Ahora', bg: 'bg-[#d0ef68]/25', text: 'text-[#171e00]', border: 'border-[#d0ef68]' };
       case 'completado':
-        return { label: 'Completado', bg: 'bg-surface-container', text: 'text-secondary', border: 'border-surface-container-high' };
+        return { label: 'Completado', bg: 'bg-slate-100', text: 'text-slate-500', border: 'border-slate-200' };
       case 'cancelado':
         return { label: 'Cancelado', bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' };
       default:
@@ -217,27 +273,36 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
       {/* ============================================================ */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-1">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-on-surface">
               Agenda de Pacientes & Turnos
             </h2>
-            <span className="px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-xs font-bold">
-              {filteredAppointments.length} turnos
-            </span>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] text-xs font-bold border border-[#A8BDA3]/60 flex items-center gap-1 shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#2F3E3A]"></span>
+                {totalActiveUpcoming} {totalActiveUpcoming === 1 ? 'próximo por atender' : 'próximos por atender'}
+              </span>
+              {totalAttendedPast > 0 && (
+                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 text-xs font-medium border border-slate-200 flex items-center gap-1">
+                  <CheckCheck className="w-3 h-3 text-slate-400" />
+                  {totalAttendedPast} ya atendidos
+                </span>
+              )}
+            </div>
           </div>
           <p className="text-xs text-secondary mt-0.5">
-            Vista adaptada para PC y tablet con distribución de cabinas, carga de especialistas y recordatorios WhatsApp.
+            Los turnos próximos se destacan en verde prioritario. Los turnos ya atendidos o de fechas pasadas se muestran en gris neutro para no distraer.
           </p>
         </div>
 
         {/* Action Buttons & View Modes */}
         <div className="flex items-center gap-2.5 flex-wrap">
-          {/* View Mode Switcher (Image 1 / Image 2 / Timeline) */}
+          {/* View Mode Switcher */}
           <div className="flex items-center p-1 bg-surface-container-low rounded-2xl border border-surface-container-high/70 shadow-sm">
             <button
               type="button"
               onClick={() => setViewMode('calendar')}
-              title="Vista Calendario & Equipo (Estilo Imagen 1)"
+              title="Vista Calendario & Equipo"
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 viewMode === 'calendar'
                   ? 'bg-primary-container text-on-primary shadow-sm'
@@ -251,7 +316,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
             <button
               type="button"
               onClick={() => setViewMode('cards')}
-              title="Vista Tablero / Tarjetas (Estilo Imagen 2)"
+              title="Vista Tablero de Tarjetas"
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 viewMode === 'cards'
                   ? 'bg-primary-container text-on-primary shadow-sm'
@@ -288,10 +353,50 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
         </div>
       </div>
 
-      {/* Quick Filter Bar (Specialist, Status, Search) */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3 bg-surface-container-lowest rounded-2xl border border-surface-container-high/60 shadow-sm">
-        <div className="flex items-center gap-2 flex-1 min-w-[200px]">
-          <Search className="w-4 h-4 text-secondary ml-1" />
+      {/* Quick Filter Bar (Scope, Specialist, Status, Search) */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 p-3 bg-surface-container-lowest rounded-2xl border border-surface-container-high/60 shadow-sm">
+        {/* Scope quick buttons (Solo Activos / Todos / Ya Atendidos) */}
+        <div className="flex items-center p-0.5 bg-surface-container rounded-xl gap-1 shrink-0">
+          <button
+            type="button"
+            onClick={() => setScopeFilter('all')}
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              scopeFilter === 'all'
+                ? 'bg-white text-on-surface shadow-xs'
+                : 'text-secondary hover:text-on-surface'
+            }`}
+          >
+            Todos ({businessAppointments.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setScopeFilter('upcoming_only')}
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+              scopeFilter === 'upcoming_only'
+                ? 'bg-[#2F3E3A] text-white shadow-xs'
+                : 'text-secondary hover:text-on-surface'
+            }`}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#D9E6D3]"></span>
+            <span>Solo Próximos ({totalActiveUpcoming})</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setScopeFilter('past_only')}
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
+              scopeFilter === 'past_only'
+                ? 'bg-slate-200 text-slate-800 shadow-xs'
+                : 'text-secondary hover:text-on-surface'
+            }`}
+          >
+            <History className="w-3 h-3 text-slate-500" />
+            <span>Ya Atendidos ({totalAttendedPast})</span>
+          </button>
+        </div>
+
+        {/* Search */}
+        <div className="flex items-center gap-2 flex-1 min-w-[180px]">
+          <Search className="w-4 h-4 text-secondary ml-1 shrink-0" />
           <input
             type="text"
             placeholder="Buscar por paciente, servicio o profesional..."
@@ -309,6 +414,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
           )}
         </div>
 
+        {/* Dropdown Filters */}
         <div className="flex items-center gap-2 flex-wrap">
           {/* Specialist Filter */}
           <select
@@ -361,11 +467,17 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
               )}
             </div>
 
-            {/* Specialist Cards */}
+            {/* Specialist Cards with Active Upcoming vs Attended breakdown */}
             <div className="space-y-3">
               {business.specialists.map((spec) => {
                 const specAppointments = businessAppointments.filter((a) => a.specialistId === spec.id);
-                const activeCount = specAppointments.length;
+                const specUpcoming = specAppointments.filter(
+                  (a) => getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina'
+                ).length;
+                const specAttended = specAppointments.filter(
+                  (a) => getAppointmentCategory(a) === 'atendido'
+                ).length;
+
                 const isSelected = specialistFilter === spec.id;
 
                 return (
@@ -385,7 +497,9 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                           alt={spec.name}
                           className="w-12 h-12 rounded-full object-cover ring-2 ring-surface-container-high shadow-sm"
                         />
-                        <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+                        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full ring-2 ring-white ${
+                          specUpcoming > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'
+                        }`}></span>
                       </div>
 
                       <div className="min-w-0 flex-1">
@@ -395,9 +509,24 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                         <p className="text-[11px] text-secondary truncate">
                           {spec.role}
                         </p>
-                        <span className="inline-block mt-0.5 px-2 py-0.2 rounded-md bg-surface-container text-[10px] font-bold text-primary">
-                          {activeCount} {activeCount === 1 ? 'turno' : 'turnos'} agendados
-                        </span>
+                        
+                        {/* Active vs Attended breakdown */}
+                        <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                            specUpcoming > 0
+                              ? 'bg-[#D9E6D3] text-[#2F3E3A] border border-[#A8BDA3]/60'
+                              : 'bg-slate-100 text-slate-500 border border-slate-200'
+                          }`}>
+                            {specUpcoming > 0 && <span className="w-1.5 h-1.5 rounded-full bg-[#2F3E3A]"></span>}
+                            <span>{specUpcoming} {specUpcoming === 1 ? 'activo por atender' : 'activos por atender'}</span>
+                          </span>
+                          
+                          {specAttended > 0 && (
+                            <span className="text-[10px] text-slate-400 font-medium">
+                              · {specAttended} atendidos
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -406,7 +535,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
             </div>
           </div>
 
-          {/* Right Column: Month Calendar Grid with Tiles & Striped Patterns (Image 1 style) */}
+          {/* Right Column: Month Calendar Grid with Tiles & Visual Distinction */}
           <div className="lg:col-span-8 xl:col-span-8.5 bg-surface-container-lowest rounded-3xl p-4 sm:p-6 border border-surface-container-high/60 shadow-[0_10px_30px_rgba(6,34,23,0.04)] flex flex-col justify-between">
             <div>
               {/* Calendar Month Navigation Header */}
@@ -436,28 +565,32 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <button
                     type="button"
                     onClick={() => {
-                      setCurrentMonth(9);
-                      setCurrentYear(2026);
-                      setSelectedDayDate('2026-10-23');
+                      setCurrentMonth(today.getMonth());
+                      setCurrentYear(today.getFullYear());
+                      setSelectedDayDate(todayDateString);
                     }}
                     className="px-3 py-1 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold text-xs transition-colors cursor-pointer"
                   >
-                    Hoy (Oct 2026)
+                    Hoy
                   </button>
 
-                  {/* Legend */}
-                  <div className="hidden sm:flex items-center gap-3 text-[11px] text-secondary ml-2">
-                    <span className="flex items-center gap-1">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#062217]"></span>
-                      Confirmado MP
+                  {/* Legend distinguishing Active vs In Cabin vs Attended */}
+                  <div className="hidden sm:flex items-center gap-2.5 text-[11px] text-secondary ml-2 flex-wrap">
+                    <span className="flex items-center gap-1 font-medium">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#2F3E3A]"></span>
+                      Por Atender
                     </span>
-                    <span className="flex items-center gap-1">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#d0ef68]"></span>
+                    <span className="flex items-center gap-1 font-medium">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#d0ef68] border border-[#b5d24e]"></span>
                       En Cabina
+                    </span>
+                    <span className="flex items-center gap-1 font-medium text-slate-500">
+                      <span className="w-2.5 h-2.5 rounded-md bg-slate-200 border border-slate-300 flex items-center justify-center text-[8px] font-bold">✓</span>
+                      Ya Atendido (Neutro)
                     </span>
                   </div>
                 </div>
@@ -480,9 +613,15 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                 {calendarDays.map((day, idx) => {
                   const dayAppts = getAppointmentsForDay(day.dateString);
                   const isSelected = selectedDayDate === day.dateString;
-                  const isToday = day.dateString === '2026-10-23';
+                  const isToday = day.dateString === todayDateString;
 
-                  // Diagonal striped background class for past or non-month days (Image 1 style)
+                  // Determine if day has upcoming appointments vs only past appointments
+                  const hasUpcoming = dayAppts.some(
+                    (a) => getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina'
+                  );
+                  const hasOnlyAttended = dayAppts.length > 0 && !hasUpcoming;
+
+                  // Past or other-month background style
                   const isHatched = !day.isCurrentMonth || day.isPast;
 
                   return (
@@ -496,11 +635,11 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                       }}
                       className={`min-h-[72px] sm:min-h-[88px] rounded-2xl p-1.5 sm:p-2 transition-all flex flex-col justify-between relative cursor-pointer border ${
                         isSelected
-                          ? 'border-[#062217] ring-2 ring-[#062217]/20 shadow-md'
+                          ? 'border-[#2F3E3A] ring-2 ring-[#2F3E3A]/20 shadow-md'
                           : 'border-surface-container-high/40 hover:border-primary/40'
                       } ${
                         isToday
-                          ? 'bg-[#d0ef68]/15 border-[#d0ef68]'
+                          ? 'bg-[#D9E6D3]/40 border-[#A8BDA3]'
                           : isHatched
                           ? 'bg-[repeating-linear-gradient(45deg,#fafcfb,#fafcfb_5px,#f3f6f5_5px,#f3f6f5_10px)] text-secondary/60'
                           : 'bg-surface-container-low/60 hover:bg-surface-container-low text-on-surface'
@@ -511,9 +650,9 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                         <span
                           className={`text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center ${
                             isToday
-                              ? 'bg-[#d0ef68] text-[#171e00] shadow-sm font-extrabold'
+                              ? 'bg-[#2F3E3A] text-white shadow-sm font-extrabold'
                               : isSelected
-                              ? 'bg-surface-container-high font-extrabold text-[#062217]'
+                              ? 'bg-surface-container-high font-extrabold text-[#2F3E3A]'
                               : day.isCurrentMonth
                               ? 'text-on-surface'
                               : 'text-secondary/50'
@@ -522,15 +661,23 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                           {day.dayNumber}
                         </span>
 
-                        {dayAppts.length > 0 && (
-                          <span className="w-2 h-2 rounded-full bg-[#062217]"></span>
+                        {/* Status dot indicator for the day */}
+                        {hasUpcoming && (
+                          <span className="w-2 h-2 rounded-full bg-[#2F3E3A]" title="Tiene turnos próximos por atender"></span>
+                        )}
+                        {hasOnlyAttended && (
+                          <span className="w-2 h-2 rounded-full bg-slate-300" title="Turnos ya atendidos en historial"></span>
                         )}
                       </div>
 
-                      {/* Appointments Horizontal Pills (Image 1 style) */}
+                      {/* Appointments Horizontal Pills (Visual differentiation) */}
                       <div className="mt-1 space-y-1">
                         {dayAppts.slice(0, 2).map((appt) => {
-                          const isEnCabina = appt.status === 'en_cabina';
+                          const cat = getAppointmentCategory(appt);
+                          const isEnCabina = cat === 'en_cabina';
+                          const isAtendido = cat === 'atendido';
+                          const isCancelado = cat === 'cancelado';
+
                           return (
                             <div
                               key={appt.id}
@@ -538,13 +685,28 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                                 e.stopPropagation();
                                 setActiveAppointmentDetail(appt);
                               }}
-                              title={`${appt.time} - ${appt.clientName}: ${appt.serviceTitle}`}
-                              className={`px-1.5 py-0.5 rounded-lg text-[10px] font-bold truncate flex items-center gap-1 shadow-xs transition-transform active:scale-95 ${
+                              title={`${appt.time} - ${appt.clientName}: ${appt.serviceTitle} (${isAtendido ? 'Ya Atendido' : isEnCabina ? 'En Cabina' : 'Próximo'})`}
+                              className={`px-1.5 py-0.5 rounded-lg text-[10px] truncate flex items-center gap-1 shadow-xs transition-all active:scale-95 ${
                                 isEnCabina
                                   ? 'bg-[#d0ef68] text-[#171e00] font-extrabold border border-[#b5d24e]'
-                                  : 'bg-[#062217] text-white'
+                                  : isAtendido
+                                  ? 'bg-slate-100/90 text-slate-500 border border-slate-200/90 font-medium opacity-80 hover:opacity-100 hover:bg-slate-200/70'
+                                  : isCancelado
+                                  ? 'bg-stone-100 text-stone-400 line-through opacity-50 border border-stone-200'
+                                  : 'bg-[#2F3E3A] text-white font-bold hover:bg-[#3d4f4a]'
                               }`}
                             >
+                              {/* Icon indicator */}
+                              {isAtendido && (
+                                <span className="text-[9px] font-bold text-slate-400 shrink-0">✓</span>
+                              )}
+                              {isEnCabina && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#171e00] animate-pulse shrink-0"></span>
+                              )}
+                              {!isAtendido && !isEnCabina && !isCancelado && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#D9E6D3] shrink-0"></span>
+                              )}
+
                               <span className="text-[9px] opacity-90">{appt.time}</span>
                               <span className="truncate">{appt.clientName.split(' ')[0]}</span>
                             </div>
@@ -559,7 +721,11 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                               setSelectedDayDate(day.dateString);
                               setSelectedDayModalDate(day.dateString);
                             }}
-                            className="w-full py-0.5 text-[9px] text-[#062217] font-extrabold bg-[#d0ef68]/70 hover:bg-[#d0ef68] rounded-md transition-colors cursor-pointer text-center block shadow-xs active:scale-95"
+                            className={`w-full py-0.5 text-[9px] font-extrabold rounded-md transition-colors cursor-pointer text-center block shadow-xs active:scale-95 ${
+                              hasUpcoming
+                                ? 'text-[#2F3E3A] bg-[#D9E6D3] hover:bg-[#A8BDA3]'
+                                : 'text-slate-600 bg-slate-200/80 hover:bg-slate-300'
+                            }`}
                           >
                             +{dayAppts.length - 2} más
                           </button>
@@ -571,11 +737,11 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
               </div>
             </div>
 
-            {/* Selected Day Agenda Inline Strip (replaces unnecessary pagination) */}
+            {/* Selected Day Agenda Inline Strip */}
             {selectedDayDate && (
               <div className="mt-4 pt-3.5 border-t border-surface-container-high/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-[#062217] text-[#d0ef68] flex items-center justify-center font-bold text-xs shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[#2F3E3A] text-[#D9E6D3] flex items-center justify-center font-bold text-xs shrink-0">
                     <CalendarDays className="w-4 h-4" />
                   </div>
                   <div>
@@ -583,14 +749,40 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                       <span className="font-bold text-xs sm:text-sm text-on-surface">
                         Día {selectedDayDate}
                       </span>
-                      <span className="px-2 py-0.5 rounded-full bg-[#d0ef68] text-[#171e00] font-bold text-[10px]">
-                        {getAppointmentsForDay(selectedDayDate).length} {getAppointmentsForDay(selectedDayDate).length === 1 ? 'turno' : 'turnos'}
-                      </span>
+                      {(() => {
+                        const dayAppts = getAppointmentsForDay(selectedDayDate);
+                        const dayUpcoming = dayAppts.filter(
+                          (a) => getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina'
+                        ).length;
+                        const dayAttended = dayAppts.filter(
+                          (a) => getAppointmentCategory(a) === 'atendido'
+                        ).length;
+
+                        return (
+                          <div className="flex items-center gap-1">
+                            {dayUpcoming > 0 && (
+                              <span className="px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] font-bold text-[10px] border border-[#A8BDA3]/60">
+                                {dayUpcoming} {dayUpcoming === 1 ? 'por atender' : 'por atender'}
+                              </span>
+                            )}
+                            {dayAttended > 0 && (
+                              <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium text-[10px] border border-slate-200">
+                                {dayAttended} atendidos
+                              </span>
+                            )}
+                            {dayAppts.length === 0 && (
+                              <span className="px-2 py-0.5 rounded-full bg-surface-container text-secondary text-[10px]">
+                                Sin turnos
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </div>
                     <span className="text-[11px] text-secondary">
                       {getAppointmentsForDay(selectedDayDate).length > 0
-                        ? `${getAppointmentsForDay(selectedDayDate).map((a) => a.time).sort().join(' • ')} hs`
-                        : 'Sin turnos registrados'}
+                        ? `${getAppointmentsForDay(selectedDayDate).map((a) => a.time).sort().join(' · ')} hs`
+                        : 'Sin turnos agendados en este día'}
                     </span>
                   </div>
                 </div>
@@ -599,10 +791,10 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setSelectedDayModalDate(selectedDayDate)}
-                    className="self-start sm:self-auto px-3.5 py-1.5 rounded-full bg-[#062217] hover:bg-[#1d382b] text-[#d0ef68] text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
+                    className="self-start sm:self-auto px-3.5 py-1.5 rounded-full bg-[#2F3E3A] hover:bg-[#3d4f4a] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
                   >
                     <span>Ver todos ({getAppointmentsForDay(selectedDayDate).length})</span>
-                    <span className="material-symbols-outlined text-[15px]">visibility</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
@@ -618,31 +810,52 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
         <div className="animate-in fade-in duration-200">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredAppointments.map((appt) => {
+              const cat = getAppointmentCategory(appt);
+              const isAtendido = cat === 'atendido';
               const segments = getStatusSegments(appt.status);
-              const badge = getStatusBadge(appt.status);
+              const badge = getStatusBadge(appt.status, cat);
               const isMenuOpen = openMenuApptId === appt.id;
 
               return (
                 <div
                   key={appt.id}
                   onClick={() => setActiveAppointmentDetail(appt)}
-                  className={`rounded-3xl p-4 sm:p-5 transition-all shadow-sm hover:shadow-md cursor-pointer flex flex-col justify-between relative group ${badge.bg} ${badge.border} border`}
+                  className={`rounded-3xl p-4 sm:p-5 transition-all cursor-pointer flex flex-col justify-between relative group border ${
+                    isAtendido 
+                      ? 'bg-slate-50/80 border-slate-200 opacity-80 hover:opacity-100 hover:shadow-sm' 
+                      : `${badge.bg} ${badge.border} shadow-sm hover:shadow-md`
+                  }`}
                 >
                   {/* Card Header: Service Title + 3 dots menu button */}
                   <div>
                     <div className="flex items-start justify-between gap-2">
-                      <h4 className="font-bold text-sm text-slate-900 leading-snug line-clamp-2">
-                        {appt.serviceTitle}
-                      </h4>
+                      <div className="min-w-0">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold mb-1.5 ${
+                          isAtendido
+                            ? 'bg-slate-200 text-slate-600'
+                            : cat === 'en_cabina'
+                            ? 'bg-[#d0ef68] text-[#171e00]'
+                            : 'bg-[#D9E6D3] text-[#2F3E3A]'
+                        }`}>
+                          {isAtendido && <span>✓ Ya Atendido</span>}
+                          {cat === 'en_cabina' && <span>⚡ En Cabina</span>}
+                          {cat === 'proximo' && <span>⏳ Por Atender</span>}
+                          {cat === 'cancelado' && <span>✕ Cancelado</span>}
+                        </span>
 
-                      <div className="relative">
+                        <h4 className="font-bold text-sm text-slate-900 leading-snug line-clamp-2">
+                          {appt.serviceTitle}
+                        </h4>
+                      </div>
+
+                      <div className="relative shrink-0">
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             setOpenMenuApptId(isMenuOpen ? null : appt.id);
                           }}
-                          className="w-7 h-7 rounded-full bg-white/60 hover:bg-white flex items-center justify-center text-slate-700 transition-colors shadow-xs"
+                          className="w-7 h-7 rounded-full bg-white/70 hover:bg-white flex items-center justify-center text-slate-700 transition-colors shadow-xs"
                         >
                           <MoreVertical className="w-3.5 h-3.5" />
                         </button>
@@ -699,14 +912,14 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                       </div>
                     </div>
 
-                    {/* Middle: 4-dash segmented status track (Image 2 style) */}
+                    {/* Middle: 4-dash segmented status track */}
                     <div className="my-3.5">
                       <div className="flex items-center gap-1.5">
                         {segments.map((filled, idx) => (
                           <div
                             key={idx}
                             className={`h-1.5 flex-1 rounded-full transition-all ${
-                              filled ? 'bg-slate-900' : 'bg-slate-300/80'
+                              filled ? (isAtendido ? 'bg-slate-400' : 'bg-slate-900') : 'bg-slate-200'
                             }`}
                           ></div>
                         ))}
@@ -762,7 +975,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
       )}
 
       {/* ============================================================ */}
-      {/* VISTA 3: LISTA CRONOLÓGICA TRADICIONAL */}
+      {/* VISTA 3: LISTA CRONOLÓGICA */}
       {/* ============================================================ */}
       {viewMode === 'timeline' && (
         <div className="bg-surface-container-lowest rounded-3xl p-4 shadow-[0_10px_30px_rgba(0,70,55,0.04)] border border-surface-container-high/60 space-y-3 animate-in fade-in duration-200">
@@ -771,64 +984,88 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
               No hay turnos registrados en este momento.
             </div>
           ) : (
-            filteredAppointments.map((appt) => (
-              <div
-                key={appt.id}
-                className="p-3.5 rounded-2xl bg-surface-container-low hover:bg-surface-container transition-all border border-surface-container-high/40 flex flex-col md:flex-row md:items-center justify-between gap-3"
-              >
-                {/* Time & Client */}
-                <div className="flex items-start gap-3 min-w-0">
-                  <div className="w-14 h-14 rounded-2xl bg-surface-container-lowest flex flex-col items-center justify-center text-primary font-bold shadow-sm border border-surface-container-high/40 shrink-0">
-                    <span className="text-sm leading-none">{appt.time}</span>
-                    <span className="text-[10px] text-secondary mt-0.5">{appt.durationMinutes}m</span>
-                  </div>
+            filteredAppointments.map((appt) => {
+              const cat = getAppointmentCategory(appt);
+              const isAtendido = cat === 'atendido';
 
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-bold text-sm text-on-surface truncate">{appt.clientName}</h4>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary-fixed text-on-primary-fixed-variant">
-                        Seña Pagada ✅
-                      </span>
+              return (
+                <div
+                  key={appt.id}
+                  className={`p-3.5 rounded-2xl transition-all border flex flex-col md:flex-row md:items-center justify-between gap-3 ${
+                    isAtendido
+                      ? 'bg-slate-50/70 border-slate-200 opacity-80 hover:opacity-100'
+                      : 'bg-surface-container-low hover:bg-surface-container border-surface-container-high/40'
+                  }`}
+                >
+                  {/* Time & Client */}
+                  <div className="flex items-start gap-3 min-w-0">
+                    <div className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center font-bold shadow-sm border shrink-0 ${
+                      isAtendido
+                        ? 'bg-slate-100 text-slate-500 border-slate-200'
+                        : 'bg-surface-container-lowest text-primary border-surface-container-high/40'
+                    }`}>
+                      <span className="text-sm leading-none">{appt.time}</span>
+                      <span className="text-[10px] text-secondary mt-0.5">{appt.durationMinutes}m</span>
                     </div>
 
-                    <p className="text-xs text-secondary mt-0.5 truncate">
-                      {appt.serviceTitle} · Con {appt.specialistName}
-                    </p>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h4 className="font-bold text-sm text-on-surface truncate">{appt.clientName}</h4>
+                        {isAtendido ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-600 flex items-center gap-1">
+                            <CheckCheck className="w-3 h-3 text-slate-500" />
+                            <span>Ya Atendido</span>
+                          </span>
+                        ) : cat === 'en_cabina' ? (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#d0ef68] text-[#171e00]">
+                            ⚡ En Cabina
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D9E6D3] text-[#2F3E3A]">
+                            ⏳ Por Atender
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="flex items-center gap-3 text-xs text-on-surface-variant mt-1 flex-wrap">
-                      <span>WhatsApp: <strong>{appt.clientPhone}</strong></span>
-                      <span>·</span>
-                      <span>Fecha: <strong>{appt.date}</strong></span>
-                      <span>·</span>
-                      <span>A cobrar: <strong className="text-primary font-bold">{formatPrice(appt.remainingBalance)}</strong></span>
+                      <p className="text-xs text-secondary mt-0.5 truncate">
+                        {appt.serviceTitle} · Con {appt.specialistName}
+                      </p>
+
+                      <div className="flex items-center gap-3 text-xs text-on-surface-variant mt-1 flex-wrap">
+                        <span>WhatsApp: <strong>{appt.clientPhone}</strong></span>
+                        <span>·</span>
+                        <span>Fecha: <strong>{appt.date}</strong></span>
+                        <span>·</span>
+                        <span>A cobrar: <strong className="text-primary font-bold">{formatPrice(appt.remainingBalance)}</strong></span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Actions & Status */}
-                <div className="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-surface-container-high/60">
-                  <button
-                    onClick={() => onSendWhatsAppReminder(appt)}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold shadow-sm transition-all active:scale-95 cursor-pointer"
-                    title="Enviar recordatorio con Google Maps y saldo por WhatsApp"
-                  >
-                    <Send className="w-3 h-3" />
-                    <span>WhatsApp</span>
-                  </button>
+                  {/* Actions & Status */}
+                  <div className="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-surface-container-high/60">
+                    <button
+                      onClick={() => onSendWhatsAppReminder(appt)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-bold shadow-sm transition-all active:scale-95 cursor-pointer"
+                      title="Enviar recordatorio por WhatsApp"
+                    >
+                      <Send className="w-3 h-3" />
+                      <span>WhatsApp</span>
+                    </button>
 
-                  <select
-                    value={appt.status}
-                    onChange={(e) => onUpdateAppointmentStatus(appt.id, e.target.value as Appointment['status'])}
-                    className="text-xs font-semibold py-2 px-3 rounded-full bg-surface-container-lowest border border-surface-container-high focus:outline-none focus:ring-1 focus:ring-primary text-on-surface cursor-pointer"
-                  >
-                    <option value="confirmado">Confirmado</option>
-                    <option value="en_cabina">En Cabina</option>
-                    <option value="completado">Completado</option>
-                    <option value="cancelado">Cancelado</option>
-                  </select>
+                    <select
+                      value={appt.status}
+                      onChange={(e) => onUpdateAppointmentStatus(appt.id, e.target.value as Appointment['status'])}
+                      className="text-xs font-semibold py-2 px-3 rounded-full bg-surface-container-lowest border border-surface-container-high focus:outline-none focus:ring-1 focus:ring-primary text-on-surface cursor-pointer"
+                    >
+                      <option value="confirmado">Confirmado</option>
+                      <option value="en_cabina">En Cabina</option>
+                      <option value="completado">Completado</option>
+                      <option value="cancelado">Cancelado</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       )}
@@ -857,23 +1094,35 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                       #{activeAppointmentDetail.id}
                     </span>
                     <span className="text-[10px] text-[#A8BDA3]">·</span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      activeAppointmentDetail.status === 'confirmado'
-                        ? 'bg-[#D9E6D3] text-[#2F3E3A] border border-[#A8BDA3]/50'
-                        : activeAppointmentDetail.status === 'en_cabina'
-                        ? 'bg-[#2F3E3A] text-[#D9E6D3]'
-                        : activeAppointmentDetail.status === 'completado'
-                        ? 'bg-[#E8EFE5] text-[#6F8A78]'
-                        : 'bg-red-50 text-red-700 border border-red-200'
-                    }`}>
-                      {activeAppointmentDetail.status === 'confirmado'
-                        ? '✓ Confirmado'
-                        : activeAppointmentDetail.status === 'en_cabina'
-                        ? 'En Cabina'
-                        : activeAppointmentDetail.status === 'completado'
-                        ? 'Finalizado'
-                        : 'Cancelado'}
-                    </span>
+                    {(() => {
+                      const cat = getAppointmentCategory(activeAppointmentDetail);
+                      if (cat === 'atendido') {
+                        return (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                            ✓ Ya Atendido
+                          </span>
+                        );
+                      }
+                      if (cat === 'en_cabina') {
+                        return (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#d0ef68] text-[#171e00] border border-[#b5d24e]">
+                            ⚡ En Cabina
+                          </span>
+                        );
+                      }
+                      if (cat === 'cancelado') {
+                        return (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200">
+                            ✕ Cancelado
+                          </span>
+                        );
+                      }
+                      return (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D9E6D3] text-[#2F3E3A] border border-[#A8BDA3]/50">
+                          ⏳ Próximo a Atender
+                        </span>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -958,7 +1207,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
               </div>
             )}
 
-            {/* Financial Breakdown (Ticket Voucher Style) */}
+            {/* Financial Breakdown */}
             <div className="p-3.5 rounded-[22px] bg-[#F6F0E6] border border-[#A8BDA3]/50 space-y-2 text-xs">
               <div className="flex items-center justify-between text-[#6F8A78]">
                 <span>Precio Total del Servicio:</span>
@@ -1062,7 +1311,7 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
             {/* Header */}
             <div className="flex items-center justify-between pb-3.5 border-b border-surface-container-high/60 shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-[#062217] text-[#d0ef68] flex items-center justify-center font-bold shadow-sm shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-[#2F3E3A] text-[#D9E6D3] flex items-center justify-center font-bold shadow-sm shrink-0">
                   <CalendarDays className="w-5 h-5" />
                 </div>
                 <div>
@@ -1070,12 +1319,12 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                     <h3 className="font-bold text-base sm:text-lg text-on-surface font-display leading-tight">
                       Agenda del {selectedDayModalDate}
                     </h3>
-                    <span className="px-2 py-0.5 rounded-full bg-[#d0ef68] text-[#171e00] font-bold text-[10px]">
+                    <span className="px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] font-bold text-[10px] border border-[#A8BDA3]/60">
                       {getAppointmentsForDay(selectedDayModalDate).length} {getAppointmentsForDay(selectedDayModalDate).length === 1 ? 'turno' : 'turnos'}
                     </span>
                   </div>
                   <p className="text-xs text-secondary mt-0.5">
-                    Todos los servicios y pacientes asignados a cabina
+                    Distribución de cabinas y profesionales para este día
                   </p>
                 </div>
               </div>
@@ -1127,8 +1376,9 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                 [...getAppointmentsForDay(selectedDayModalDate)]
                   .sort((a, b) => a.time.localeCompare(b.time))
                   .map((appt) => {
-                    const isEnCabina = appt.status === 'en_cabina';
-                    const isConfirmado = appt.status === 'confirmado';
+                    const cat = getAppointmentCategory(appt);
+                    const isEnCabina = cat === 'en_cabina';
+                    const isAtendido = cat === 'atendido';
 
                     return (
                       <div
@@ -1136,21 +1386,42 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                         className={`p-3.5 rounded-2xl border transition-all ${
                           isEnCabina
                             ? 'bg-[#d0ef68]/15 border-[#d0ef68] ring-1 ring-[#d0ef68]'
+                            : isAtendido
+                            ? 'bg-slate-50/80 border-slate-200 opacity-80'
                             : 'bg-surface-container-low/70 border-surface-container-high/60 hover:border-primary/40'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start justify-between gap-2 flex-wrap">
                           <div className="flex items-center gap-2">
                             <span
                               className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold flex items-center gap-1 ${
                                 isEnCabina
                                   ? 'bg-[#062217] text-[#d0ef68]'
-                                  : 'bg-white text-[#062217] border border-surface-container-high shadow-xs'
+                                  : isAtendido
+                                  ? 'bg-slate-200 text-slate-700'
+                                  : 'bg-white text-[#2F3E3A] border border-surface-container-high shadow-xs'
                               }`}
                             >
-                              <Clock className="w-3 h-3 text-[#d0ef68]" />
+                              <Clock className="w-3 h-3" />
                               {appt.time} hs
                             </span>
+
+                            {/* Tag */}
+                            {isAtendido && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-600">
+                                ✓ Ya Atendido
+                              </span>
+                            )}
+                            {isEnCabina && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#d0ef68] text-[#171e00]">
+                                ⚡ En Cabina
+                              </span>
+                            )}
+                            {cat === 'proximo' && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D9E6D3] text-[#2F3E3A]">
+                                ⏳ Por Atender
+                              </span>
+                            )}
 
                             <span className="text-[10px] text-secondary font-mono">
                               #{appt.id}
@@ -1167,8 +1438,8 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                             className={`text-[11px] font-bold py-1 px-2.5 rounded-full cursor-pointer border ${
                               isEnCabina
                                 ? 'bg-[#d0ef68] text-[#171e00] border-[#b5d24e]'
-                                : isConfirmado
-                                ? 'bg-[#062217] text-white border-[#062217]'
+                                : appt.status === 'confirmado'
+                                ? 'bg-[#2F3E3A] text-white border-[#2F3E3A]'
                                 : appt.status === 'completado'
                                 ? 'bg-surface-container text-secondary border-surface-container-high'
                                 : 'bg-red-100 text-red-700 border-red-200'
@@ -1190,11 +1461,11 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
                             <span className="text-on-surface font-semibold">
                               Paciente: {appt.clientName}
                             </span>
-                            <span>•</span>
+                            <span>·</span>
                             <span className="text-primary font-medium">
                               Atiende: {appt.specialistName}
                             </span>
-                            <span>•</span>
+                            <span>·</span>
                             <span>{appt.durationMinutes} min</span>
                           </div>
                           {appt.clientNotes && (
@@ -1244,24 +1515,12 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
               )}
             </div>
 
-            {/* Footer */}
-            <div className="pt-3 border-t border-surface-container-high/60 flex items-center justify-between gap-3 shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedDayModalDate(null);
-                  onAddManualAppointmentClick();
-                }}
-                className="px-4 py-2 rounded-full bg-primary-container hover:bg-[#b5d24e] text-on-primary font-bold text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>+ Agregar Turno en esta fecha</span>
-              </button>
-
+            {/* Close footer */}
+            <div className="pt-3 border-t border-surface-container-high/60 shrink-0 text-right">
               <button
                 type="button"
                 onClick={() => setSelectedDayModalDate(null)}
-                className="px-4 py-2 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors cursor-pointer"
+                className="px-5 py-2 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-bold text-xs transition-colors cursor-pointer"
               >
                 Cerrar
               </button>

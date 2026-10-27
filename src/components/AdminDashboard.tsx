@@ -231,6 +231,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Business specific appointments
   const businessAppointments = appointments.filter((a) => a.businessId === business.id);
 
+  const todayStr = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  })();
+
+  const activeBookings = businessAppointments.filter(
+    (a) => a.status !== 'cancelado' && a.status !== 'completado' && a.date >= todayStr
+  ).length;
+
   // Financial calculations
   const totalBookings = businessAppointments.length;
   const totalRevenue = businessAppointments.reduce((acc, curr) => acc + curr.totalPrice, 0);
@@ -599,8 +608,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* Business Metrics Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-5 pt-4 border-t border-white/15">
           <div className="bg-white/10 rounded-2xl p-3 backdrop-blur-sm">
-            <span className="text-[11px] text-white/70 block font-medium">Turnos Agendados</span>
-            <span className="text-xl font-bold text-white mt-0.5 block">{totalBookings}</span>
+            <span className="text-[11px] text-white/70 block font-medium">Turnos Próximos</span>
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="text-xl font-bold text-white">{activeBookings}</span>
+              <span className="text-[11px] text-white/70">activos ({totalBookings} total)</span>
+            </div>
           </div>
 
           <div className="bg-white/10 rounded-2xl p-3 backdrop-blur-sm">
