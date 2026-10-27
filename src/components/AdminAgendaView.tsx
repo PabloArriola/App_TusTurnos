@@ -738,67 +738,51 @@ export const AdminAgendaView: React.FC<AdminAgendaViewProps> = ({
             </div>
 
             {/* Selected Day Agenda Inline Strip */}
-            {selectedDayDate && (
-              <div className="mt-4 pt-3.5 border-t border-surface-container-high/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-[#2F3E3A] text-[#D9E6D3] flex items-center justify-center font-bold text-xs shrink-0">
-                    <CalendarDays className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-xs sm:text-sm text-on-surface">
-                        Día {selectedDayDate}
-                      </span>
-                      {(() => {
-                        const dayAppts = getAppointmentsForDay(selectedDayDate);
-                        const dayUpcoming = dayAppts.filter(
-                          (a) => getAppointmentCategory(a) === 'proximo' || getAppointmentCategory(a) === 'en_cabina'
-                        ).length;
-                        const dayAttended = dayAppts.filter(
-                          (a) => getAppointmentCategory(a) === 'atendido'
-                        ).length;
+            {selectedDayDate && (() => {
+              const dayAppts = getAppointmentsForDay(selectedDayDate);
+              const count = dayAppts.length;
 
-                        return (
-                          <div className="flex items-center gap-1">
-                            {dayUpcoming > 0 && (
-                              <span className="px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] font-bold text-[10px] border border-[#A8BDA3]/60">
-                                {dayUpcoming} {dayUpcoming === 1 ? 'por atender' : 'por atender'}
-                              </span>
-                            )}
-                            {dayAttended > 0 && (
-                              <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium text-[10px] border border-slate-200">
-                                {dayAttended} atendidos
-                              </span>
-                            )}
-                            {dayAppts.length === 0 && (
-                              <span className="px-2 py-0.5 rounded-full bg-surface-container text-secondary text-[10px]">
-                                Sin turnos
-                              </span>
-                            )}
-                          </div>
-                        );
-                      })()}
+              return (
+                <div className="mt-4 pt-3.5 border-t border-surface-container-high/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-9 h-9 rounded-2xl flex items-center justify-center font-bold text-xs shrink-0 ${
+                      count > 0 ? 'bg-[#2F3E3A] text-[#D9E6D3]' : 'bg-surface-container text-secondary'
+                    }`}>
+                      <CalendarDays className="w-4 h-4" />
                     </div>
-                    <span className="text-[11px] text-secondary">
-                      {getAppointmentsForDay(selectedDayDate).length > 0
-                        ? `${getAppointmentsForDay(selectedDayDate).map((a) => a.time).sort().join(' · ')} hs`
-                        : 'Sin turnos agendados en este día'}
-                    </span>
-                  </div>
-                </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-xs sm:text-sm text-on-surface">
+                          Día {selectedDayDate}
+                        </span>
+                        {count > 0 && (
+                          <span className="px-2 py-0.5 rounded-full bg-[#D9E6D3] text-[#2F3E3A] font-bold text-[10px] border border-[#A8BDA3]/60">
+                            {count} {count === 1 ? 'turno' : 'turnos'}
+                          </span>
+                        )}
+                      </div>
 
-                {getAppointmentsForDay(selectedDayDate).length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedDayModalDate(selectedDayDate)}
-                    className="self-start sm:self-auto px-3.5 py-1.5 rounded-full bg-[#2F3E3A] hover:bg-[#3d4f4a] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
-                  >
-                    <span>Ver todos ({getAppointmentsForDay(selectedDayDate).length})</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-            )}
+                      <span className="text-[11px] text-secondary mt-0.5 block">
+                        {count > 0
+                          ? dayAppts.map((a) => `${a.time} hs (${a.clientName.split(' ')[0]})`).sort().join(' · ')
+                          : 'Sin turnos agendados en este día'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {count > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDayModalDate(selectedDayDate)}
+                      className="self-start sm:self-auto px-3.5 py-1.5 rounded-full bg-[#2F3E3A] hover:bg-[#3d4f4a] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
+                    >
+                      <span>Ver todos ({count})</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
